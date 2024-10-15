@@ -28,6 +28,7 @@ use ILIAS\Refinery\Transformation as TransformationInterface;
 class ilObjTestSettingsAccess extends TestSettings
 {
     private const MAX_PASSWORD_LENGTH = 20;
+    private const MAX_CLIENTIP_FILTER_LENGTH = 100; // uzk-patch (extended test ip filter)
 
     public function __construct(
         int $test_id,
@@ -37,6 +38,8 @@ class ilObjTestSettingsAccess extends TestSettings
         protected ?DateTimeImmutable $end_time = null,
         protected bool $password_enabled = false,
         protected ?string $password = null,
+        protected bool $clientip_filter_enabled = false, // uzk-patch (extended test ip filter)
+        protected ?string $clientip_filter = null, // uzk-patch (extended test ip filter)
         protected bool $fixed_participants = false,
     ) {
         parent::__construct($test_id);
@@ -50,6 +53,10 @@ class ilObjTestSettingsAccess extends TestSettings
     ): FormInput {
         $inputs['access_window'] = $this->getInputAccessWindow($lng, $f, $refinery, $environment);
         $inputs['test_password'] = $this->getInputPassword($lng, $f, $refinery);
+
+        // uzk-patch (extended test ip filter): begin
+        $inputs['test_clientip_filter'] = $this->getInputClientIPFilter($lng, $f, $refinery);
+        // uzk-patch (extended test ip filter): end
 
         $inputs['fixed_participants_enabled'] = $f->checkbox(
             $lng->txt('participants_invitation'),
@@ -175,6 +182,46 @@ class ilObjTestSettingsAccess extends TestSettings
         );
     }
 
+    // uzk-patch (extended test ip filter): begin
+    private function getInputClientIPFilter(
+        \ilLanguage $lng,
+        FieldFactory $f,
+        Refinery $refinery
+    ): OptionalGroup {
+        $trafo = $refinery->custom()->transformation(
+            static function (?array $vs): array {
+                if ($vs === null) {
+                    return [
+                        'clientip_filter_enabled' => false,
+                        'clientip_filter_value' => null
+                    ];
+                }
+
+                $vs['clientip_filter_enabled'] = true;
+                return $vs;
+            }
+        );
+
+        $sub_inputs_clientip_filter['clientip_filter_value'] = $f->text($lng->txt('tst_clientip_filter_enter'))
+                                                   ->withRequired(true)->withMaxLength(self::MAX_CLIENTIP_FILTER_LENGTH);
+
+        $clientip_filter_input = $f->optionalGroup(
+            $sub_inputs_clientip_filter,
+            $lng->txt('tst_clientip_filter'),
+            $lng->txt('tst_clientip_filter_details')
+        )->withValue(null)
+                            ->withAdditionalTransformation($trafo);
+
+        if (!$this->getClientIPFilterEnabled()) {
+            return $clientip_filter_input;
+        }
+
+        return $clientip_filter_input->withValue(
+            ['clientip_filter_value' => $this->getClientIPFilter()]
+        );
+    }
+    // uzk-patch (extended test ip filter): end
+
     public function toStorage(): array
     {
         return [
@@ -184,6 +231,8 @@ class ilObjTestSettingsAccess extends TestSettings
             'ending_time' => ['integer', $this->getEndTime() !== null ? $this->getEndTime()->getTimestamp() : 0],
             'password_enabled' => ['integer', (int) $this->getPasswordEnabled()],
             'password' => ['text', $this->getPassword()],
+            'clientip_filter_enabled' => ['integer', (int) $this->getClientIPFilterEnabled()], // uzk-patch (extended test ip filter)
+            'clientip_filter' => ['text', $this->getClientIPFilter()], // uzk-patch (extended test ip filter)
             'fixed_participants' => ['integer', (int) $this->getFixedParticipants()]
         ];
     }
@@ -253,6 +302,30 @@ class ilObjTestSettingsAccess extends TestSettings
         $clone->password = $password;
         return $clone;
     }
+
+    // uzk-patch (extended test ip filter): begin
+    public function getClientIPFilterEnabled(): bool
+    {
+        return $this->clientip_filter_enabled;
+    }
+    public function withClientIPFilterEnabled(bool $clientip_filter_enabled): self
+    {
+        $clone = clone $this;
+        $clone->clientip_filter_enabled = $clientip_filter_enabled;
+        return $clone;
+    }
+
+    public function getClientIPFilter(): ?string
+    {
+        return $this->clientip_filter;
+    }
+    public function withClientIPFilter(?string $clientip_filter): self
+    {
+        $clone = clone $this;
+        $clone->clientip_filter = $clientip_filter;
+        return $clone;
+    }
+    // uzk-patch (extended test ip filter): end
 
     public function getFixedParticipants(): bool
     {
