@@ -1096,18 +1096,6 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         return $this->getMainSettings()->getAccessSettings()->getPassword();
     }
 
-    // uzk-patch (extended test ip filter): begin
-    public function isClientIPFilterEnabled(): bool
-    {
-        return $this->getMainSettings()->getAccessSettings()->getClientIPFilterEnabled();
-    }
-
-    public function getClientIPFilter(): ?string
-    {
-        return $this->getMainSettings()->getAccessSettings()->getClientIPFilter();
-    }
-    // uzk-patch (extended test ip filter): end
-
     /**
      * @param int $questionId
      * @param array $activeIds
@@ -3454,13 +3442,6 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                         $metadata["entry"] !== null && $metadata["entry"] !== ''
                     )->withPassword($metadata["entry"]);
                     break;
-                // uzk-patch (extended test ip filter): begin
-                case "clientip_filter":
-                    $access_settings = $access_settings->withClientIPFilterEnabled(
-                        $metadata["entry"] !== null && $metadata["entry"] !== ''
-                    )->withClientIPFilter($metadata["entry"]);
-                    break;
-                // uzk-patch (extended test ip filter): end
                 case "pass_scoring":
                     $scoring_settings = $scoring_settings->withPassScoring((int) $metadata["entry"]);
                     break;
@@ -3789,13 +3770,6 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         $a_xml_writer->xmlElement("fieldlabel", null, "password");
         $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getAccessSettings()->getPassword() ?? '');
         $a_xml_writer->xmlEndTag("qtimetadatafield");
-
-        // uzk-patch (extended test ip filter): begin
-        $a_xml_writer->xmlStartTag("qtimetadatafield");
-        $a_xml_writer->xmlElement("fieldlabel", null, "clientip_filter");
-        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getAccessSettings()->getClientIPFilter() ?? '');
-        $a_xml_writer->xmlEndTag("qtimetadatafield");
-        // uzk-patch (extended test ip filter): end
 
         // pass scoring
         $a_xml_writer->xmlStartTag("qtimetadatafield");
@@ -6353,8 +6327,6 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             'EndingTime' => $main_settings->getAccessSettings()->getEndTime(),
             'password_enabled' => (int) $main_settings->getAccessSettings()->getPasswordEnabled(),
             'password' => $main_settings->getAccessSettings()->getPassword(),
-            'clientip_filter_enabled' => (int) $main_settings->getAccessSettings()->getClientIPFilterEnabled(), // uzk-patch (extended test ip filter)
-            'clientip_filter' => $main_settings->getAccessSettings()->getClientIPFilter(), // uzk-patch (extended test ip filter)
             'fixed_participants' => (int) $main_settings->getAccessSettings()->getFixedParticipants(),
 
             'NrOfTries' => $main_settings->getTestBehaviourSettings()->getNumberOfTries(),
@@ -6482,8 +6454,6 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                 ->withEndTime($this->convertTimeToDateTimeImmutableIfNecessary($testsettings['EndingTime']))
                 ->withPasswordEnabled((bool) $testsettings['password_enabled'])
                 ->withPassword($testsettings['password'])
-                ->withClientIPFilterEnabled((bool) $testsettings['clientip_filter_enabled']) // uzk-patch (extended test ip filter)
-                ->withClientIPFilter($testsettings['clientip_filter']) // uzk-patch (extended test ip filter)
                 ->withFixedParticipants((bool) $testsettings['fixed_participants'])
             )
             ->withTestBehaviourSettings(
