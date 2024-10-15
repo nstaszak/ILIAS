@@ -61,6 +61,8 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
             . 'ending_time,' . PHP_EOL
             . 'password_enabled,' . PHP_EOL
             . 'password,' . PHP_EOL
+            . 'clientip_filter_enabled,' . PHP_EOL // uzk-patch (extended test ip filter)
+            . 'clientip_filter,' . PHP_EOL // uzk-patch (extended test ip filter)
             . 'fixed_participants,' . PHP_EOL
             . 'nr_of_tries,' . PHP_EOL
             . 'block_after_passed,' . PHP_EOL
@@ -137,6 +139,8 @@ class ilObjTestMainSettingsDatabaseRepository implements MainSettingsRepository
                     : null,
                 (bool) $row['password_enabled'],
                 $row['password'],
+                (bool) $row['clientip_filter_enabled'], // uzk-patch (extended test ip filter)
+                $row['clientip_filter'], // uzk-patch (extended test ip filter)
                 (bool) $row['fixed_participants'],
             ),
             new ilObjTestSettingsTestBehaviour(

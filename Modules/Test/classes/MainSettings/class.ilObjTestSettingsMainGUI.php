@@ -592,6 +592,8 @@ class ilObjTestSettingsMainGUI extends ilTestSettingsGUI
             ->withEndTime($section['access_window']['end_time'])
             ->withPasswordEnabled($section['test_password']['password_enabled'])
             ->withPassword($section['test_password']['password_value'])
+            ->withClientIPFilterEnabled($section['test_clientip_filter']['clientip_filter_enabled']) // uzk-patch (extended test ip filter)
+            ->withClientIPFilter($section['test_clientip_filter']['clientip_filter_value']) // uzk-patch (extended test ip filter)
             ->withFixedParticipants($section['fixed_participants_enabled']);
 
         if ($this->test_object->participantDataExist()) {
