@@ -544,7 +544,7 @@ class ilObjTestAccess extends ilObjectAccess implements ilConditionHandling
 
         if ($result->numRows()) {
             $row = $ilDB->fetchAssoc($result);
-            $test_clientip = $row['clientip_filter'];
+            $test_clientip = $row['clientip_filter'] ?? null;
 
             // Check if the test has fixed participants
             if ($row["fixed_participants"]) {
