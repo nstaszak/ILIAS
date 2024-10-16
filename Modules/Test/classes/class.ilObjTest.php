@@ -8464,18 +8464,31 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
         return $result;
     }
 
-
     public function canShowTestResults(ilTestSession $testSession)
     {
         global $DIC; /* @var ILIAS\DI\Container $DIC */
+        $ilUser = $DIC['ilUser'];
 
-        require_once 'Modules/Test/classes/class.ilTestPassesSelector.php';
-        $passSelector = new ilTestPassesSelector($DIC->database(), $this);
+        // uzk-patch (extended test ip filter): begin
+        $online_access = false;
+        include_once "./Modules/Test/classes/class.ilObjTestAccess.php";
+        $online_access_result = ilObjTestAccess::_lookupOnlineTestAccess($this->getId(), $ilUser->getId());
+        if ($online_access_result === true) {
+            $online_access = true;
+        }
+        // uzk-patch (extended test ip filter): end
 
-        $passSelector->setActiveId($testSession->getActiveId());
-        $passSelector->setLastFinishedPass($testSession->getLastFinishedPass());
+        if ($online_access) { // uzk-patch (extended test ip filter)
+            require_once 'Modules/Test/classes/class.ilTestPassesSelector.php';
+            $passSelector = new ilTestPassesSelector($DIC->database(), $this);
 
-        return $passSelector->hasReportablePasses();
+            $passSelector->setActiveId($testSession->getActiveId());
+            $passSelector->setLastFinishedPass($testSession->getLastFinishedPass());
+
+            return $passSelector->hasReportablePasses();
+        } else {
+            return false;
+        } // uzk-patch (extended test ip filter)
     }
 
     public function hasAnyTestResult(ilTestSession $testSession)
