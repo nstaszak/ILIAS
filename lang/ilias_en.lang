@@ -1673,6 +1673,9 @@ assessment#:#tst_password_enter#:#Enter Password
 assessment#:#tst_password_entered_wrong_password#:#You cannot start the test because you entered the wrong test password!
 assessment#:#tst_password_form#:#Enter Test Password
 assessment#:#tst_password_introduction#:#This test can only be accessed with a test password. Please enter the test password to start the test.
+assessment#:#tst_clientip_filter#:#IP Filtering
+assessment#:#tst_clientip_filter_details#:#If a filter is specified, participants' IP addresses will be checked against the filter criteria. Valid formats include individual IP addresses, CIDR, subnet notations, and multiple entries separated by commas.
+assessment#:#tst_clientip_filter_enter#:#Enter filter
 assessment#:#tst_percent_solved#:#Percent Solved
 assessment#:#tst_player_answer_saved_and_locked#:#Answer is saved and locked and can no longer be changed
 assessment#:#tst_please_select_source_pool#:#Please select a question pool.

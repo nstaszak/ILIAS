@@ -863,6 +863,20 @@ class ilObjTestSettingsGeneralGUI extends ilTestSettingsGUI
         $pwEnabled->addSubItem($password);
         $form->addItem($pwEnabled);
 
+        // uzk-patch (extended test ip filter): begin
+        // clientip filter
+        $clientipFilterEnabled = new ilCheckboxInputGUI($this->lng->txt('tst_clientip_filter'), 'clientip_filter_enabled');
+        $clientipFilterEnabled->setChecked($this->testOBJ->isClientIPFilterEnabled());
+        $clientipFilterEnabled->setInfo($this->lng->txt("tst_clientip_filter_details"));
+        $clientipFilter = new ilTextInputGUI($this->lng->txt("tst_clientip_filter_enter"), "clientip_filter");
+        $clientipFilter->setRequired(true);
+        $clientipFilter->setSize(100);
+        $clientipFilter->setMaxLength(100);
+        $clientipFilter->setValue($this->testOBJ->getClientIPFilter());
+        $clientipFilterEnabled->addSubItem($clientipFilter);
+        $form->addItem($clientipFilterEnabled);
+        // uzk-patch (extended test ip filter): end
+
         // fixed participants
         $fixedparticipants = new ilCheckboxInputGUI($this->lng->txt('participants_invitation'), "fixedparticipants");
         $fixedparticipants->setValue(1);
@@ -934,6 +948,18 @@ class ilObjTestSettingsGeneralGUI extends ilTestSettingsGUI
                 $this->testOBJ->setPassword(''); // otherwise test will still respect value
             }
         }
+
+        // uzk-patch (extended test ip filter): begin
+        if ($this->formPropertyExists($form, 'clientip_filter_enabled')) {
+            $this->testOBJ->setClientIPFilterEnabled((bool) $form->getInput('clientip_filter_enabled'));
+
+            if ($form->getInput('clientip_filter_enabled')) {
+                $this->testOBJ->setClientIPFilter($form->getInput('clientip_filter'));
+            } else {
+                $this->testOBJ->setClientIPFilter('');
+            }
+        }
+        // uzk-patch (extended test ip filter): end
 
         if ($this->formPropertyExists($form, 'fixedparticipants') && !$this->testOBJ->participantDataExist()) {
             $this->testOBJ->setFixedParticipants((bool) $form->getInput('fixedparticipants'));

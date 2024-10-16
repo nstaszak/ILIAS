@@ -533,39 +533,56 @@ class ilObjTestAccess extends ilObjectAccess implements ilConditionHandling
         return $tests;
     }
     // fim.
-    
+
+    // uzk-patch (extended test ip filter): begin
     /**
-    * Checks if a user is allowd to run an online exam
-    *
-    * @return mixed true if the user is allowed to run the online exam or if the test isn't an online exam, an alert message if the test is an online exam and the user is not allowed to run it
-    * @access public
-    */
+     * Checks if a user is allowed to run an online exam
+     *
+     * @param int $a_test_id The test ID
+     * @param int $a_user_id The user ID
+     * @return bool|string True if the user is allowed, an alert message otherwise
+     */
     public static function _lookupOnlineTestAccess($a_test_id, $a_user_id)
     {
         global $DIC;
         $ilDB = $DIC['ilDB'];
         $lng = $DIC['lng'];
-        
+
+        // Query tst_tests table to get test details, including client IP restriction
         $result = $ilDB->queryF(
-            "SELECT tst_tests.* FROM tst_tests WHERE tst_tests.obj_fi = %s",
-            array('integer'),
-            array($a_test_id)
+            "SELECT * FROM tst_tests WHERE tst_tests.obj_fi = %s",
+            ['integer'],
+            [$a_test_id]
         );
+
         if ($result->numRows()) {
             $row = $ilDB->fetchAssoc($result);
+            $test_clientip = isset($row['clientip_filter']) ? $row['clientip_filter'] : null;
+
+            // Check if the test has fixed participants
             if ($row["fixed_participants"]) {
+                // Query tst_invited_user table to check if the user is invited
                 $result = $ilDB->queryF(
                     "SELECT * FROM tst_invited_user WHERE test_fi = %s AND user_fi = %s",
-                    array('integer','integer'),
-                    array($row["test_id"], $a_user_id)
+                    ['integer', 'integer'],
+                    [$row["test_id"], $a_user_id]
                 );
+
                 if ($result->numRows()) {
-                    $row = $ilDB->fetchAssoc($result);
-                    if (trim($row['clientip']) != "") {
-                        $row['clientip'] = preg_replace("/[^0-9.?*,:]+/", "", $row['clientip']);
-                        $row['clientip'] = str_replace(".", "\\.", $row['clientip']);
-                        $row['clientip'] = str_replace(array("?","*",","), array("[0-9]","[0-9]*","|"), $row['clientip']);
-                        if (!preg_match("/^" . $row['clientip'] . "$/", $_SERVER["REMOTE_ADDR"])) {
+                    $invited_row = $ilDB->fetchAssoc($result);
+                    $invited_clientip = $invited_row['clientip'];
+
+                    // Check if client IP is set for the invited user and validate it
+                    if ($invited_clientip !== null && trim($invited_clientip) != "") {
+                        if (!self::isClientIpAllowed($invited_clientip, $_SERVER["REMOTE_ADDR"])) {
+                            $lng->loadLanguageModule('assessment');
+                            return $lng->txt("user_wrong_clientip");
+                        } else {
+                            return true;
+                        }
+                        // If no client IP is set for the invited user, check against test-level client IP
+                    } elseif ($test_clientip !== null && trim($test_clientip) != "") {
+                        if (!self::isClientIpAllowed($test_clientip, $_SERVER["REMOTE_ADDR"])) {
                             $lng->loadLanguageModule('assessment');
                             return $lng->txt("user_wrong_clientip");
                         } else {
@@ -577,6 +594,14 @@ class ilObjTestAccess extends ilObjectAccess implements ilConditionHandling
                 } else {
                     return $lng->txt("tst_user_not_invited");
                 }
+                // If the test does not have fixed participants, check against test-level client IP if set
+            } elseif ($test_clientip !== null && trim($test_clientip) != "") {
+                if (!self::isClientIpAllowed($test_clientip, $_SERVER["REMOTE_ADDR"])) {
+                    $lng->loadLanguageModule('assessment');
+                    return $lng->txt("user_wrong_clientip");
+                } else {
+                    return true;
+                }
             } else {
                 return true;
             }
@@ -584,6 +609,85 @@ class ilObjTestAccess extends ilObjectAccess implements ilConditionHandling
             return true;
         }
     }
+
+    /**
+     * Checks if the client's IP address matches the allowed IP pattern
+     *
+     * @param string $allowed_ip The allowed IP pattern (single IP, list, range, CIDR)
+     * @param string $client_ip The client's IP address
+     * @return bool True if the client's IP matches, false otherwise
+     */
+    private static function isClientIpAllowed($allowed_ip, $client_ip)
+    {
+        $ip_patterns = preg_split('/[,;]/', $allowed_ip);
+        foreach ($ip_patterns as $ip_pattern) {
+            $ip_pattern = trim($ip_pattern);
+
+            // Handle CIDR format
+            if (strpos($ip_pattern, '/') !== false) {
+                if (self::checkCidr($ip_pattern, $client_ip)) {
+                    return true;
+                }
+                continue;
+            }
+
+            // Handle range format
+            if (strpos($ip_pattern, '-') !== false) {
+                if (self::checkIpRange($ip_pattern, $client_ip)) {
+                    return true;
+                }
+                continue;
+            }
+
+            // Sanitize the allowed IP pattern
+            $ip_pattern = preg_replace("/[^0-9.?*:\/\\-]+/", "", $ip_pattern);
+            $ip_pattern = str_replace(".", "\\.", $ip_pattern);
+            $ip_pattern = str_replace(["?", "*"], ["[0-9]", "[0-9]*"], $ip_pattern);
+
+            // Match the client IP with the allowed IP pattern
+            if (preg_match("/^" . $ip_pattern . "$/", $client_ip)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if an IP address is within a CIDR range
+     *
+     * @param string $cidr The CIDR range
+     * @param string $ip The IP address to check
+     * @return bool True if the IP is within the range, false otherwise
+     */
+    private static function checkCidr($cidr, $ip)
+    {
+        list($subnet, $bits) = explode('/', $cidr);
+        $ip = ip2long($ip);
+        $subnet = ip2long($subnet);
+        $mask = -1 << (32 - $bits);
+        $subnet &= $mask; // Align subnet to mask
+
+        return ($ip & $mask) === $subnet;
+    }
+
+    /**
+     * Checks if an IP address is within a given range
+     *
+     * @param string $range The IP range in the format 'start_ip-end_ip'
+     * @param string $ip The IP address to check
+     * @return bool True if the IP is within the range, false otherwise
+     */
+    private static function checkIpRange($range, $ip)
+    {
+        list($start_ip, $end_ip) = explode('-', $range);
+        $ip_long = ip2long($ip);
+        $start_ip_long = ip2long($start_ip);
+        $end_ip_long = ip2long($end_ip);
+
+        return ($ip_long >= $start_ip_long && $ip_long <= $end_ip_long);
+    }
+    // uzk-patch (extended test ip filter): end
 
     /**
     * Retrieves a participant name from active id

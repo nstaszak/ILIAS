@@ -1672,6 +1672,9 @@ assessment#:#tst_password_enter#:#Passwort eingeben
 assessment#:#tst_password_entered_wrong_password#:#Sie können den Test nicht starten, da Sie ein falsches Testpasswort eingegeben haben!
 assessment#:#tst_password_form#:#Eingabe Testpasswort
 assessment#:#tst_password_introduction#:#Dieser Test kann nur mit einem Testpasswort gestartet bzw. fortgeführt werden. Bitte tragen Sie das Passwort hier ein.
+assessment#:#tst_clientip_filter#:#IP-Filterung
+assessment#:#tst_clientip_filter_details#:#Wird ein Filter angegeben, werden die IP-Adressen der Teilnehmer*innen mit dem Filter abgeglichen. Gültige Formate sind einzelne IP-Adressen, CIDR, Subnetzangaben und Mehrfachangaben, getrennt durch Komma oder Semikolon.
+assessment#:#tst_clientip_filter_enter#:#Filter eingeben
 assessment#:#tst_percent_solved#:#Prozent gelöst
 assessment#:#tst_player_answer_saved_and_locked#:#Antwort wird gespeichert und gesperrt. Dadurch kann die Antwort nicht mehr geändert werden.
 assessment#:#tst_please_select_source_pool#:#Bitte wählen Sie einen Fragenpool aus.

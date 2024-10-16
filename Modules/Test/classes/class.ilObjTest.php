@@ -345,6 +345,20 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
      */
     protected $password;
 
+    // uzk-patch (extended test ip filter): begin
+    /**
+     * @var bool
+     */
+    protected $clientip_filter_enabled = false;
+
+    /**
+     * Client ip filter to filter test access
+     *
+     * @var string
+     */
+    protected $clientip_filter = null;
+    // uzk-patch (extended test ip filter): end
+
     /**
      * @var bool
      */
@@ -1339,6 +1353,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
                 'char_selector_availability' => array('integer', (int) $this->getCharSelectorAvailability()),
                 'char_selector_definition' => array('text', (string) $this->getCharSelectorDefinition()),
                 'skill_service' => array('integer', (int) $this->isSkillServiceEnabled()),
+                // uzk-patch (extended test ip filter): begin
+                'clientip_filter_enabled' => array('integer', (int) $this->isClientIPFilterEnabled()),
+                'clientip_filter' => array('text', (string) $this->getClientIPFilter()),
+                // uzk-patch (extended test ip filter): end
                 'result_tax_filters' => array('text', serialize((array) $this->getResultFilterTaxIds())),
                 'show_grading_status' => array('integer', (int) $this->isShowGradingStatusEnabled()),
                 'show_grading_mark' => array('integer', (int) $this->isShowGradingMarkEnabled()),
@@ -1459,6 +1477,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
                         'char_selector_availability' => array('integer', (int) $this->getCharSelectorAvailability()),
                         'char_selector_definition' => array('text', (string) $this->getCharSelectorDefinition()),
                         'skill_service' => array('integer', (int) $this->isSkillServiceEnabled()),
+                        // uzk-patch (extended test ip filter): begin
+                        'clientip_filter_enabled' => array('integer', (int) $this->isClientIPFilterEnabled()),
+                        'clientip_filter' => array('text', (string) $this->getClientIPFilter()),
+                        // uzk-patch (extended test ip filter): end
                         'result_tax_filters' => array('text', serialize((array) $this->getResultFilterTaxIds())),
                         'show_grading_status' => array('integer', (int) $this->isShowGradingStatusEnabled()),
                         'show_grading_mark' => array('integer', (int) $this->isShowGradingMarkEnabled()),
@@ -1952,6 +1974,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
             $this->setCharSelectorAvailability((int) $data->char_selector_availability);
             $this->setCharSelectorDefinition($data->char_selector_definition);
             $this->setSkillServiceEnabled((bool) $data->skill_service);
+            // uzk-patch (extended test ip filter): begin
+            $this->setClientIPFilterEnabled((bool) $data->clientip_filter_enabled);
+            $this->setClientIPFilter($data->clientip_filter);
+            // uzk-patch (extended test ip filter): end
             $this->setResultFilterTaxIds(strlen($data->result_tax_filters) ? unserialize($data->result_tax_filters) : array());
             $this->setShowGradingStatusEnabled((bool) $data->show_grading_status);
             $this->setShowGradingMarkEnabled((bool) $data->show_grading_mark);
@@ -3231,6 +3257,48 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
     {
         $this->password = $a_password;
     }
+
+    // uzk-patch (extended test ip filter): begin
+    /**
+     * Check if the client IP filter is enabled.
+     *
+     * @return bool Returns true if client IP filtering is enabled, false otherwise.
+     */
+    public function isClientIPFilterEnabled()
+    {
+        return $this->clientip_filter_enabled;
+    }
+
+    /**
+     * Enable or disable the client IP filter.
+     *
+     * @param bool $clientip_filter_enabled Set to true to enable, false to disable.
+     */
+    public function setClientIPFilterEnabled($clientip_filter_enabled)
+    {
+        $this->clientip_filter_enabled = $clientip_filter_enabled;
+    }
+
+    /**
+     * Get the current client IP filter.
+     *
+     * @return string|null Returns the client IP filter
+     */
+    public function getClientIPFilter()
+    {
+        return $this->clientip_filter;
+    }
+
+    /**
+     * Set the client IP filter.
+     *
+     * @param string|null $clientip_filter Set the client IP filter
+     */
+    public function setClientIPFilter($clientip_filter)
+    {
+        $this->clientip_filter = $clientip_filter;
+    }
+    // uzk-patch (extended test ip filter): end
 
     /**
     * Sets the type of score cutting
@@ -5975,6 +6043,14 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
                 case 'skill_service':
                     $this->setSkillServiceEnabled((bool) $metadata['entry']);
                     break;
+                // uzk-patch (extended test ip filter): begin
+                case 'clientip_filter_enabled':
+                    $this->setClientIPFilterEnabled((bool)$metadata['entry']);
+                    break;
+                case 'clientip_filter':
+                    $this->setClientIPFilter($metadata['entry']);
+                    break;
+                // uzk-patch (extended test ip filter): end
                 case 'result_tax_filters':
                     $this->setResultFilterTaxIds(strlen($metadata['entry']) ? unserialize($metadata['entry']) : array());
                     break;
@@ -6436,6 +6512,20 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
         $a_xml_writer->xmlElement("fieldlabel", null, "skill_service");
         $a_xml_writer->xmlElement("fieldentry", null, (int) $this->isSkillServiceEnabled());
         $a_xml_writer->xmlEndTag("qtimetadatafield");
+
+        // uzk-patch (extended test ip filter): begin
+        // clientip_filter_enabled
+        $a_xml_writer->xmlStartTag("qtimetadatafield");
+        $a_xml_writer->xmlElement("fieldlabel", NULL, "clientip_filter_enabled");
+        $a_xml_writer->xmlElement("fieldentry", NULL, (int)$this->isClientIPFilterEnabled());
+        $a_xml_writer->xmlEndTag("qtimetadatafield");
+
+        // clientip_filter
+        $a_xml_writer->xmlStartTag("qtimetadatafield");
+        $a_xml_writer->xmlElement("fieldlabel", NULL, "clientip_filter");
+        $a_xml_writer->xmlElement("fieldentry", NULL, $this->getClientIPFilter());
+        $a_xml_writer->xmlEndTag("qtimetadatafield");
+        // uzk-patch (extended test ip filter): end
 
         // result_tax_filters
         $a_xml_writer->xmlStartTag("qtimetadatafield");
@@ -9750,6 +9840,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
             'char_selector_availability' => $this->getCharSelectorAvailability(),
             'char_selector_definition' => $this->getCharSelectorDefinition(),
             'skill_service' => (int) $this->isSkillServiceEnabled(),
+            // uzk-patch (extended test ip filter): begin
+            'clientip_filter_enabled' => (int) $this->isClientIPFilterEnabled(),
+            'clientip_filter' => (int) $this->getClientIPFilter(),
+            // uzk-patch (extended test ip filter): end
             'result_tax_filters' => (array) $this->getResultFilterTaxIds(),
             'show_grading_status' => (int) $this->isShowGradingStatusEnabled(),
             'show_grading_mark' => (int) $this->isShowGradingMarkEnabled(),
@@ -9918,6 +10012,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
         $this->setShowExamIdInTestResultsEnabled((int) $testsettings['examid_in_test_res']);
         $this->setPasswordEnabled($testsettings['password_enabled']);
         $this->setPassword($testsettings['password']);
+        // uzk-patch (extended test ip filter): begin
+        $this->setClientIPFilterEnabled((bool) $testsettings['clientip_filter_enabled']);
+        $this->setClientIPFilter($testsettings['clientip_filter']);
+        // uzk-patch (extended test ip filter): end
         $this->setFixedParticipants($testsettings['fixed_participants']);
         $this->setLimitUsersEnabled($testsettings['limit_users_enabled']);
         $this->setAllowedUsers($testsettings['allowedusers']);
