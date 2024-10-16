@@ -2353,13 +2353,15 @@ class ilObjTestGUI extends ilObjectGUI
                 $lng = $DIC['lng'];
                 $ilCtrl = $DIC['ilCtrl'];
                 $online_access = false;
-                if ($this->object->getFixedParticipants()) {
+                // uzk-patch (extended test ip filter): begin
+                //if ($this->object->getFixedParticipants()) {
                     include_once "./Modules/Test/classes/class.ilObjTestAccess.php";
                     $online_access_result = ilObjTestAccess::_lookupOnlineTestAccess($this->object->getId(), $ilUser->getId());
                     if ($online_access_result === true) {
                         $online_access = true;
                     }
-                }
+                //}
+                // uzk-patch (extended test ip filter): end
                 /*
                 if (!$this->object->getOfflineStatus() && $this->object->isComplete($this->testQuestionSetConfigFactory->getQuestionSetConfig())) {
                     if ((!$this->object->getFixedParticipants() || $online_access) && $ilAccess->checkAccess("read", "", $this->ref_id)) {
@@ -3382,16 +3384,20 @@ class ilObjTestGUI extends ilObjectGUI
         $ilUser = $DIC['ilUser'];
 
         $online_access = false;
-        if ($this->object->getFixedParticipants()) {
+        // uzk-patch (extended test ip filter): begin
+        //if ($this->object->getFixedParticipants()) {
             include_once "./Modules/Test/classes/class.ilObjTestAccess.php";
             $online_access_result = ilObjTestAccess::_lookupOnlineTestAccess($this->object->getId(), $ilUser->getId());
             if ($online_access_result === true) {
                 $online_access = true;
             }
-        }
+        //}
+        // uzk-patch (extended test ip filter): end
 
         if (!$this->object->getOfflineStatus() && $this->object->isComplete($this->testQuestionSetConfigFactory->getQuestionSetConfig())) {
-            if ((!$this->object->getFixedParticipants() || $online_access) && $ilAccess->checkAccess("read", "", $this->ref_id)) {
+            // uzk-patch (extended test ip filter): begin
+            if ($online_access && $ilAccess->checkAccess("read", "", $this->ref_id)) {
+                // uzk-patch (extended test ip filter): end
                 $testSession = $this->testSessionFactory->getSession();
 
                 $executable = $this->object->isExecutable($testSession, $ilUser->getId(), $allowPassIncrease = true);

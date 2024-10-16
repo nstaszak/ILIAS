@@ -493,7 +493,8 @@ class ilTestInfoScreenToolbarGUI extends ilToolbarGUI
         $this->setFormAction($this->buildFormAction($this->testPlayerGUI));
         
         $online_access = false;
-        if ($this->getTestOBJ()->getFixedParticipants()) {
+        // uzk-patch (extended test ip filter): begin
+        //if ($this->getTestOBJ()->getFixedParticipants()) {
             include_once "./Modules/Test/classes/class.ilObjTestAccess.php";
             $online_access_result = ilObjTestAccess::_lookupOnlineTestAccess($this->getTestOBJ()->getId(), $this->getTestSession()->getUserId());
             if ($online_access_result === true) {
@@ -501,10 +502,13 @@ class ilTestInfoScreenToolbarGUI extends ilToolbarGUI
             } else {
                 $this->addInfoMessage($online_access_result);
             }
-        }
+        //}
+        // uzk-patch (extended test ip filter): end
 
         if (!$this->getTestOBJ()->getOfflineStatus() && $this->getTestOBJ()->isComplete($this->getTestQuestionSetConfig())) {
-            if ((!$this->getTestOBJ()->getFixedParticipants() || $online_access) && $this->access->checkAccess("read", "", $this->getTestOBJ()->getRefId())) {
+            // uzk-patch (extended test ip filter): begin
+            if ($online_access && $this->access->checkAccess("read", "", $this->getTestOBJ()->getRefId())) {
+                // uzk-patch (extended test ip filter): end
                 $executable = $this->getTestOBJ()->isExecutable(
                     $this->getTestSession(),
                     $this->getTestSession()->getUserId(),
