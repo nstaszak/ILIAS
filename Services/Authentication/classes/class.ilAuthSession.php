@@ -67,6 +67,12 @@ class ilAuthSession
      */
     public function init(): bool
     {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $this->getLogger()->error(__METHOD__ . ' called with active session.');
+            $this->getLogger()->logStack(ilLogLevel::ERROR);
+            return false;
+        }
+
         session_start();
 
         $this->setId(session_id());
@@ -142,6 +148,16 @@ class ilAuthSession
         if ($a_status) {
             $this->regenerateId();
         }
+    }
+
+    public function isFullyAuthenticated(): bool
+    {
+        return $this->isValid() && $this->user_id !== ANONYMOUS_USER_ID;
+    }
+
+    public function isAnonymouslyAuthenticated(): bool
+    {
+        return $this->isValid() && $this->user_id === ANONYMOUS_USER_ID;
     }
 
     /**

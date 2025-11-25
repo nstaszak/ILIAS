@@ -27,6 +27,8 @@ use ILIAS\Refinery\Transformation;
 use ILIAS\Test\Setup\ilManScoringSettingsToOwnDbTableMigration;
 use ILIAS\Test\Setup\ilRemoveDynamicTestsAndCorrespondingDataMigration;
 use ILIAS\Test\Setup\ilSeparateQuestionListSettingMigration;
+use ILIAS\Test\Setup\CloneIntroductionAndClosingRemarksMigration;
+use ILIAS\Test\Setup\ilManScoringRecalculateReachedPoints;
 
 class ilTestSetupAgent extends NullAgent
 {
@@ -72,7 +74,9 @@ class ilTestSetupAgent extends NullAgent
         return [
             new ilManScoringSettingsToOwnDbTableMigration(),
             new ilRemoveDynamicTestsAndCorrespondingDataMigration(),
-            new ilSeparateQuestionListSettingMigration()
+            new ilSeparateQuestionListSettingMigration(),
+            new CloneIntroductionAndClosingRemarksMigration(),
+            new ilManScoringRecalculateReachedPoints()
         ];
     }
 }

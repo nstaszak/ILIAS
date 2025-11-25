@@ -18,6 +18,8 @@
 
 declare(strict_types=1);
 
+use ILIAS\ResourceStorage\Services as ResourceStorage;
+
 /**
  * Importer class for files
  *
@@ -34,12 +36,14 @@ class ilTestImporter extends ilXmlImporter
 
     private ilLogger $log;
     private ilDBInterface $db;
+    private ResourceStorage $irss;
 
     public function __construct()
     {
         global $DIC;
         $this->log = $DIC['ilLog'];
         $this->db = $DIC['ilDB'];
+        $this->irss = $DIC['resource_storage'];
 
         parent::__construct();
     }
@@ -96,7 +100,13 @@ class ilTestImporter extends ilXmlImporter
         $idents = ilSession::get('tst_import_idents');
 
         // start parsing of QTI files
-        $qtiParser = new ilQTIParser($qti_file, ilQTIParser::IL_MO_PARSE_QTI, $question_parent_obj_id, $idents);
+        $qtiParser = new ilQTIParser(
+            $qti_file,
+            ilQTIParser::IL_MO_PARSE_QTI,
+            $question_parent_obj_id,
+            $idents,
+            $a_mapping->getAllMappings()
+        );
         $qtiParser->setTestObject($new_obj);
         $qtiParser->startParsing();
         $new_obj = $qtiParser->getTestObject();
@@ -106,39 +116,16 @@ class ilTestImporter extends ilXmlImporter
         $questionPageParser->setQuestionMapping($qtiParser->getImportMapping());
         $questionPageParser->startParsing();
 
-        foreach ($qtiParser->getQuestionIdMapping() as $oldQuestionId => $newQuestionId) {
-            $a_mapping->addMapping(
-                "Services/Taxonomy",
-                "tax_item",
-                "tst:quest:$oldQuestionId",
-                (string) $newQuestionId
-            );
-
-            $a_mapping->addMapping(
-                "Services/Taxonomy",
-                "tax_item_obj_id",
-                "tst:quest:$oldQuestionId",
-                (string) $new_obj->getId()
-            );
-
-            $a_mapping->addMapping(
-                "Modules/Test",
-                "quest",
-                (string) $oldQuestionId,
-                (string) $newQuestionId
-            );
-        }
+        $a_mapping = $this->addTexonomyAndQuestionsMapping($qtiParser->getQuestionIdMapping(), $new_obj->getId(), $a_mapping);
 
         if ($new_obj->isRandomTest()) {
-            $new_obj->questions = [];
             $this->importRandomQuestionSetConfig($new_obj, $xml_file, $a_mapping);
         }
-
 
         $results_file_path = ilSession::get("tst_import_results_file");
         // import test results
         if ($results_file_path !== null && file_exists($results_file_path)) {
-            $results = new ilTestResultsImportParser($results_file_path, $new_obj, $this->db, $this->log);
+            $results = new ilTestResultsImportParser($results_file_path, $new_obj, $this->db, $this->log, $this->irss);
             $results->setQuestionIdMapping($a_mapping->getMappingsOfEntity('Modules/Test', 'quest'));
             $results->setSrcPoolDefIdMapping($a_mapping->getMappingsOfEntity('Modules/Test', 'rnd_src_pool_def'));
             $results->startParsing();
@@ -152,6 +139,34 @@ class ilTestImporter extends ilXmlImporter
         $this->importSkillLevelThresholds($a_mapping, $importedAssignmentList, $new_obj, $xml_file);
 
         $a_mapping->addMapping("Modules/Test", "tst", (string) $a_id, (string) $new_obj->getId());
+    }
+
+    public function addTexonomyAndQuestionsMapping(array $question_id_mapping, int $new_obj_id, ilImportMapping $mapping): ilImportMapping
+    {
+        foreach ($question_id_mapping as $oldQuestionId => $newQuestionId) {
+            $mapping->addMapping(
+                "Services/Taxonomy",
+                "tax_item",
+                "tst:quest:$oldQuestionId",
+                (string) $newQuestionId
+            );
+
+            $mapping->addMapping(
+                "Services/Taxonomy",
+                "tax_item_obj_id",
+                "tst:quest:$oldQuestionId",
+                (string) $new_obj_id
+            );
+
+            $mapping->addMapping(
+                "Modules/Test",
+                "quest",
+                (string) $oldQuestionId,
+                (string) $newQuestionId
+            );
+        }
+
+        return $mapping;
     }
 
     /**
@@ -300,8 +315,9 @@ class ilTestImporter extends ilXmlImporter
         return $name;
     }
 
-    protected function importRandomQuestionSetConfig(ilObjTest $test_obj, $xmlFile, $a_mapping)
+    public function importRandomQuestionSetConfig(ilObjTest $test_obj, $xmlFile, $a_mapping)
     {
+        $test_obj->questions = [];
         $parser = new ilObjTestXMLParser($xmlFile);
         $parser->setTestOBJ($test_obj);
         $parser->setImportMapping($a_mapping);

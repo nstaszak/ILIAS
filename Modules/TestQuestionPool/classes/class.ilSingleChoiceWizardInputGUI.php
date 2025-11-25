@@ -19,6 +19,7 @@
 use ILIAS\HTTP\Wrapper\ArrayBasedRequestWrapper as ArrayBasedRequestWrapper;
 use ILIAS\UI\Renderer;
 use ILIAS\UI\Component\Symbol\Glyph\Factory as GlyphFactory;
+use ILIAS\UI\Implementation\Component\Input\UploadLimitResolver;
 
 /**
 * This class represents a single choice wizard property in a property form.
@@ -40,6 +41,7 @@ class ilSingleChoiceWizardInputGUI extends ilTextInputGUI
     protected ArrayBasedRequestWrapper $post_wrapper;
     protected GlyphFactory $glyph_factory;
     protected Renderer $renderer;
+    protected UploadLimitResolver $upload_limit;
 
     /**
     * Constructor
@@ -52,12 +54,14 @@ class ilSingleChoiceWizardInputGUI extends ilTextInputGUI
         parent::__construct($a_title, $a_postvar);
         $this->setSuffixes(['jpg', 'jpeg', 'png', 'gif']);
         $this->setSize('25');
+        $this->setMaxLength(1000);
         $this->validationRegexp = '';
 
         global $DIC;
         $this->post_wrapper = $DIC->http()->wrapper()->post();
         $this->glyph_factory = $DIC->ui()->factory()->symbol()->glyph();
         $this->renderer = $DIC->ui()->renderer();
+        $this->upload_limit = $DIC['ui.upload_limit_resolver'];
     }
 
     public function setValue($a_value): void
@@ -247,6 +251,11 @@ class ilSingleChoiceWizardInputGUI extends ilTextInputGUI
                         $this->setAlert($lng->txt("msg_input_is_required"));
                         return false;
                     }
+
+                    if (mb_strlen($answervalue) > $this->getMaxLength()) {
+                        $this->setAlert($lng->txt("msg_input_char_limit_max"));
+                        return false;
+                    }
                 }
             }
             // check points
@@ -400,6 +409,8 @@ class ilSingleChoiceWizardInputGUI extends ilTextInputGUI
                     $tpl->setCurrentBlock('addimage');
                     $tpl->setVariable("IMAGE_BROWSE", $lng->txt('select_file'));
                     $tpl->setVariable("IMAGE_ID", $this->getPostVar() . "[image][$i]");
+                    $tpl->setVariable('MAX_SIZE_WARNING', $this->lng->txt('form_msg_file_size_exceeds'));
+                    $tpl->setVariable('MAX_SIZE', $this->upload_limit->getPhpUploadLimitInBytes());
                     $tpl->setVariable("IMAGE_SUBMIT", $lng->txt("upload"));
                     $tpl->setVariable("IMAGE_ROW_NUMBER", $i);
                     $tpl->setVariable("IMAGE_POST_VAR", $this->getPostVar());
@@ -457,6 +468,7 @@ class ilSingleChoiceWizardInputGUI extends ilTextInputGUI
                 $tpl->setVariable("MULTILINE_ID", $this->getPostVar() . "[answer][$i]");
                 $tpl->setVariable("MULTILINE_ROW_NUMBER", $i);
                 $tpl->setVariable("MULTILINE_POST_VAR", $this->getPostVar());
+                $tpl->setVariable("MAXLENGTH", $this->getMaxLength());
                 if ($this->getDisabled()) {
                     $tpl->setVariable("DISABLED_MULTILINE", " disabled=\"disabled\"");
                 }

@@ -44,6 +44,7 @@ class ilObjectTranslationGUI
     protected const CMD_SAVE_CONTENT_TRANSLATION_ACTIVATION = 'saveContentTranslationActivation';
     protected ilToolbarGUI $toolbar;
     protected ilObjUser $user;
+    protected ilAccess $access;
     protected ilLanguage $lng;
     protected ilCtrl $ctrl;
     protected ilGlobalTemplateInterface $tpl;
@@ -69,6 +70,7 @@ class ilObjectTranslationGUI
 
         $this->toolbar = $DIC['ilToolbar'];
         $this->user = $DIC['ilUser'];
+        $this->access = $DIC['ilAccess'];
         $this->lng = $DIC['lng'];
         $this->ctrl = $DIC['ilCtrl'];
         $this->tpl = $DIC['tpl'];
@@ -193,6 +195,10 @@ class ilObjectTranslationGUI
 
         $this->ctrl->getNextClass($this);
         $cmd = $this->ctrl->getCmd(self::CMD_LIST_TRANSLATIONS);
+        if (!$this->access->checkAccess('write', '', $this->obj_gui->getRefId())) {
+            $this->tpl->setOnScreenMessage('failure', $this->lng->txt('no_permission'));
+            $this->ctrl->redirect($this->obj_gui);
+        }
         if (in_array($cmd, $commands)) {
             $this->$cmd();
         }
@@ -243,7 +249,7 @@ class ilObjectTranslationGUI
     {
         return $this->ui_factory->modal()->roundtrip(
             $this->lng->txt('confirm'),
-            $this->ui_factory->legacy($this->lng->txt('obj_select_master_lang')),
+            null,
             [
                 'langs' => $this->getMultiLangFormInput(true)
             ],
@@ -449,14 +455,14 @@ class ilObjectTranslationGUI
             ->withRequest($this->request)
             ->getData();
         $this->obj_trans->setMasterLanguage($data['lang']);
-        $this->obj_trans->addLanguage(
-            $data['lang'],
-            $this->obj->getTitle(),
-            $this->obj->getDescription(),
-            true
-        );
-        $this->obj_trans->setDefaultTitle($this->obj->getTitle());
-        $this->obj_trans->setDefaultDescription($this->obj->getDescription());
+        if (!in_array($data['lang'], $this->obj_trans->getLanguages())) {
+            $this->obj_trans->addLanguage(
+                $data['lang'],
+                $this->obj->getTitle(),
+                $this->obj->getDescription(),
+                true
+            );
+        }
         $this->obj_trans->save();
 
         $this->ctrl->redirect($this, self::CMD_LIST_TRANSLATIONS);

@@ -176,6 +176,7 @@ administration#:#auth_auth_mode_determination#:#Bestämning av autentiseringsmet
 administration#:#auth_automatic#:#Fast order
 administration#:#auth_by_user#:#Av användaren
 administration#:#auth_kind_determination#:#Typ av destination
+administration#:#auth_mode_default_change_info#:#Changing the default authentication method affects all user accounts configured to use the default authentication method. If the selected default method (e.g., Shibboleth, SAML, SOAP, ...) does not support or is not configured to allow fallback to local ILIAS authentication, affected users may no longer be able to log in. To avoid this, please ensure that local fallback authentication is activated in the configuration of the selected method, or that the authentication method stored for affected user accounts is manually changed.###20 05 2025 new variable
 administration#:#auth_mode_determination_info#:#Här kan du ange om autentiseringsmetoden måste väljas av användarna vid inloggning eller om autentiseringsdata ska kontrolleras med hjälp av en fördefinierad sekvens.
 administration#:#clean#:#Rensa upp
 administration#:#clean_desc#:#Ta bort ogiltiga referenser och trädposter. Initiera luckor i trädstrukturen
@@ -648,6 +649,7 @@ assessment#:#errFormulaQuestion#:#En formelfråga innehåller felaktig informati
 assessment#:#errRecursionInResult#:#Formeln innehåller en icke-lösbar rekursion.
 assessment#:#err_category_in_use#:#Kategorin kan inte raderas. En eller flera enheter i kategorin används redan.
 assessment#:#err_divider_too_big#:#Divisorn för en av variablerna i denna fråga är för stor.
+assessment#:#err_divider_too_big_specific#:#The divider of this variable is too big.###04 11 2025 new variable
 assessment#:#err_division#:#Det värde du anger gör det omöjligt att generera ett giltigt värde för variabeln.
 assessment#:#err_duplicate_results#:#Du har använt en resultatvariabel mer än en gång. Detta är inte tillåtet i uppgiftstexten!
 assessment#:#err_no_formula#:#Ange en formel för att beräkna resultatet.
@@ -1115,7 +1117,10 @@ assessment#:#redirect_after_finishing_rule#:#Forwarding
 assessment#:#redirect_after_finishing_tst#:#Forwarding
 assessment#:#redirect_after_finishing_tst_desc#:#Deltagarna omdirigeras automatiskt till en definierad webbplats efter att ha slutfört testet. Detta händer bara om testet har konfigurerats så att deltagarna inte kan se sina testresultat efter att testet har slutförts. Om du anger adressen till en exter
 assessment#:#redirect_always#:# alltid till den definierade målsidan
+assessment#:#redirect_always_to_logout#:#Always to the logout screen###04 11 2025 new variable
 assessment#:#redirect_in_kiosk_mode#:#Nur när granskningsvyn är aktiverad
+assessment#:#redirect_url_invalid#:#Please enter a valid url of the target webpage.###04 11 2025 new variable
+assessment#:#redirect_url_required_for_rule#:#The url of the webpage is required when "%s" is selected.###04 11 2025 new variable
 assessment#:#redirection_url#:#URL målsida
 assessment#:#region#:#Region
 assessment#:#remove_as_participant#:#Avlägsna som fast deltagare
@@ -1258,6 +1263,7 @@ assessment#:#toplist_col_percentage#:#Procent
 assessment#:#toplist_col_rank#:#Plats
 assessment#:#toplist_col_score#:#Score
 assessment#:#toplist_col_wtime#:#Bearbetningstid
+assessment#:#total_max_points_cannot_be_negative#:#The maximum amount of reachable points cannot be negative.###01 04 2025 new variable
 assessment#:#true#:#Sant
 assessment#:#tst_access_code_created#:#För att du ska ha permanent tillgång till dina testresultat och kunna återuppta ett avbrutet test har en personlig åtkomstnyckel genererats för dig. Vänligen notera koden nedan för att kunna fortsätta testet senare.
 assessment#:#tst_activate_skill_service#:#Kompetens
@@ -1269,6 +1275,8 @@ assessment#:#tst_add_quest_cont_edit_mode_IPE#:#Oformaterad text för frågor oc
 assessment#:#tst_add_quest_cont_edit_mode_IPE_info#:#Tillhandahåller inte formatering av text i frågor och svar, men tillåter utformning av feedback och lösningsanteckningar med ILIAS sidredigerare och återanvändning i frågor i ILIAS inlärningsmoduler.
 assessment#:#tst_add_quest_cont_edit_mode_RTE#:#Riktig textredigerare (TinyMCE) för redigering av frågor, svar, feedback och lösningsanteckningar.
 assessment#:#tst_add_quest_cont_edit_mode_RTE_info#:#Tillåter formaterad text för frågor, svar, feedback och lösningsanteckningar. Feedback och lösningsanteckningar antas dock inte när frågor integreras i ILIAS inlärningsmoduler.
+assessment#:#tst_add_quest_cont_edit_mode_plain#:#Use plain text###10 12 2024 new variable
+assessment#:#tst_add_quest_cont_edit_mode_plain_info#:#No formatting of text in question, answers, feedback, and hints.###10 12 2024 new variable
 assessment#:#tst_addit_passes_blocked_after_passed_msg#:#Du har klarat testet. Testet kan inte påbörjas igen.
 assessment#:#tst_all_test_competences#:#Alla testfärdigheter
 assessment#:#tst_all_user_data_deleted#:#Uppgifterna för alla testdeltagare har raderats!
@@ -1491,7 +1499,6 @@ assessment#:#tst_instant_feedback_answer_specific#:#Olika feedback per givet sva
 assessment#:#tst_instant_feedback_answer_specific_desc#:#När du klickar på knappen "Begär feedback" visar ILIAS respektive feedback för varje inlämnat svar. Inte alla frågetyper stöder denna typ av feedback. Återkopplingen måste lagras i frågan på fliken "Återkoppling".
 assessment#:#tst_instant_feedback_contents#:#Innehållet i återkopplingen
 assessment#:#tst_instant_feedback_desc#:#Om frågorna är försedda med feedback är dessa tillgängliga för deltagarna under testet.
-assessment#:#tst_instant_feedback_forced#:#Visa alltid feedback när du skickar ett svar
 assessment#:#tst_instant_feedback_results#:#Antal uppnådda poäng
 assessment#:#tst_instant_feedback_results_desc#:#När deltagarna svarar på en fråga klickar de på knappen "Begär feedback" och ILIAS visar hur många poäng som uppnåddes för det givna svaret.
 assessment#:#tst_instant_feedback_solution#:#Visa bästa möjliga lösning
@@ -1604,7 +1611,6 @@ assessment#:#tst_objective_oriented_test_pass_without_questions#:#Den påbörjad
 assessment#:#tst_objective_progress_header#:#Framsteg när det gäller lärandemålet
 assessment#:#tst_objectives_progress_header#:#Framsteg när det gäller lärandemålen
 assessment#:#tst_old_style_rnd_quest_set_broken#:#Detta slumpmässiga test är i ett irreparabelt tillstånd eftersom anslutna frågepooler har raderats. Av denna anledning kan deltagarna inte längre göra detta test.
-assessment#:#tst_optional_questions_confirmation_fixed_test#:#Frågor<b>om inlärningsmål som redan har uppnåtts har besvarats framgångsrikt i tidigare försök.</b><br /><br />Du vill nu växla till en fråga som hör till ett inlärningsmål som redan har uppnåtts.<br />Du kan välja
 assessment#:#tst_optional_questions_confirmation_non_fixed_test#:#Frågor<b>om inlärningsmål som redan har uppnåtts är frivilliga.</b><br /><br />Du vill nu växla till en fråga som hör till ett inlärningsmål som redan har uppnåtts.<br />Du kan välja
 assessment#:#tst_out_of_time_message#:#You have reached the maximum allowed processing time of the test!###30 04 2024 new variable
 assessment#:#tst_participant#:#Deltagare
@@ -1761,6 +1767,7 @@ assessment#:#tst_res_jump_to_participant_hint_opt#:#-- Hoppa till deltagare--
 assessment#:#tst_res_lo_objectives_header#:#Relevanta lärandemål
 assessment#:#tst_res_lo_try_header#:#Försök
 assessment#:#tst_res_lo_try_n#:#%s. Försök
+assessment#:#tst_res_tab_msg_no_lp_access#:#You are currently not allowed to access your Learning Progress, as you are not allowed to see your test results.###01 04 2025 new variable
 assessment#:#tst_res_tab_msg_res_after_date#:#Testresultaten kommer att presenteras för dig här på följande datum
 assessment#:#tst_res_tab_msg_res_after_date_no_res#:#Om du utför testet kommer testresultaten att presenteras här på följande datum
 assessment#:#tst_res_tab_msg_res_after_finish_test#:#När du har slutfört testet presenteras testresultaten här.
@@ -1835,6 +1842,7 @@ assessment#:#tst_setting_offer_hints_label#:#Tips på lösningar
 assessment#:#tst_settings_conflict_compulsory_and_lock#:#"Compulsory Questions" cannot be used together with "Answer Lock".###30 04 2024 new variable
 assessment#:#tst_settings_conflict_postpone_and_lock#:#"Unanswered questions will be enqueued" cannot be used together with "Lock Answers After Moving to Next Question".###30 04 2024 new variable
 assessment#:#tst_settings_conflict_shuffle_and_lock#:#"Shuffle Questions" cannot be used together with "Lock Answers After Moving to Next Question".###30 04 2024 new variable
+assessment#:#tst_settings_form_reload_needed#:#The form needed to be reloaded to avoid data loss as the available settings have changed due to the removal of all results of participants.###23 09 2025 new variable
 assessment#:#tst_settings_header_additional#:#Additional Features###30 04 2024 new variable
 assessment#:#tst_settings_header_execution#:#Utförande
 assessment#:#tst_settings_header_intro#:#Information om hur du kommer igång
@@ -1843,8 +1851,6 @@ assessment#:#tst_show_answer_sheet#:#Visa översikt över svar
 assessment#:#tst_show_cancel#:#Display "Avbrottstest
 assessment#:#tst_show_cancel_description#:#Visar en knapp under testet som kan användas för att avbryta testet. Uppmärksamhet
 assessment#:#tst_show_comp_results#:#Kompetensresultat
-assessment#:#tst_show_pass_details#:#Visa 'Tabell över detaljerade testresultat' för varje godkänt test vid vald tidpunkt###31 03 2023 ny variabel
-assessment#:#tst_show_pass_details_desc#:#Sammanfattningen av resultaten kommer att bifogas vid den tidpunkt som anges i inställningen ovan
 assessment#:#tst_show_results#:#Testresultat
 assessment#:#tst_show_side_list#:#Frågelista till
 assessment#:#tst_show_solution_answers_only#:#Skriv ut resultaten (endast svar)
@@ -2017,7 +2023,6 @@ auth#:#auth_cron_destroy_expired_sessions_desc#:#This job deletes expires sessio
 auth#:#auth_err_expired#:#Din session har löpt ut. Logga in igen.
 auth#:#auth_err_invalid_user_account#:#Autentiseringen kunde inte utföras på grund av ett internt fel.
 auth#:#auth_err_ldap_exception#:#Autenticering kunde inte utföras på grund av ett fel i inloggningsproceduren (LDAP).
-auth#:#auth_err_login_attempts_deactivation#:#ILIAS-kontot har avaktiverats på grund av för många felaktiga inloggningsförsök.
 auth#:#auth_info_add#:#Välj den här inställningen om du aldrig har registrerat dig för ILIAS tidigare. I så fall kommer ett nytt ILIAS-konto att skapas.
 auth#:#auth_info_migrate#:#Om du redan har ett ILIAS-konto anger du inloggningsnamn och lösenord för att överföra dina personuppgifter (e-postmeddelanden, testresultat ...).
 auth#:#auth_ldap_server_ds#:#LDAP-server
@@ -2073,6 +2078,8 @@ auth#:#auth_oidc_update_field_info#:#Automatisk uppdatering
 auth#:#auth_oidc_update_role_info#:#Gäller endast vid första inloggning (automatisk synkronisering)
 auth#:#auth_oidconnect#:#OpenID Connect
 auth#:#auth_page_type_auth#:#Inloggningssida
+auth#:#auth_required_password#:#Please enter a password.###10 12 2024 new variable
+auth#:#auth_required_username#:#Please enter a username.###10 12 2024 new variable
 auth#:#auth_saml#:#SAML
 auth#:#auth_saml_add_idp_btn#:#Identitet - lägg till
 auth#:#auth_saml_add_idp_md_error#:#Det angivna värdet motsvarade tyvärr inte ett välformulerat XML-dokument. Se till att XML innehåller en giltig identitetsleverantör.
@@ -2530,6 +2537,7 @@ book#:#book_new#:#Skapa ny bokningspool
 book#:#book_no_bookings_for_you#:#Inga reservationer har gjorts för dig.
 book#:#book_no_objects#:#Ingen tilldelning
 book#:#book_no_of_objects#:#Antal objekt
+book#:#book_no_pools_selected#:#No booking pools have been assigned to this course. Booking pools can be assigned via the course's 'Resources' tab.###23 09 2025 new variable
 book#:#book_no_preferences_for_you#:#Du har inte sparat några inställningar.
 book#:#book_no_recurrence#:#Book only this date###30 04 2024 new variable
 book#:#book_not#:#Not
@@ -2887,8 +2895,6 @@ chatroom#:#chat_osc_accepts_messages_yes#:#Tar emot chattmeddelanden
 chatroom#:#chat_osc_add_user#:#Lägg till fler användare i chatten
 chatroom#:#chat_osc_conversations#:#Chatt
 chatroom#:#chat_osc_doesnt_accept_msg#:#Chatting inte möjligt
-chatroom#:#chat_osc_dont_accept_msg#:#Du kan för närvarande inte bli inbjuden till en chatt av andra personer. Du kan ändra detta i din %s om det behövs.
-chatroom#:#chat_osc_dont_accept_msg_link_txt#:#Personliga inställningar
 chatroom#:#chat_osc_head_grp_x_persons#:#%s användare
 chatroom#:#chat_osc_invite_to_conversation#:#Lägg till i chatten
 chatroom#:#chat_osc_leave_grp_conv#:#Lämna chatten
@@ -3528,7 +3534,7 @@ common#:#auth_allow_local#:#Tillåt lokal autentisering
 common#:#auth_cas#:#CAS
 common#:#auth_cas_allow_local_desc#:#Tillåter personer med CAS-konton att logga in med sitt lokala ILIAS-inloggningsnamn och lösenord.
 common#:#auth_cas_auth#:#Konfigurera CAS-autentisering
-common#:#auth_cas_auth_desc#:#CAS kräver PHP 4.3.1 eller senare med stöd för CURL (7.5 eller senare)
+common#:#auth_cas_auth_desc#:#För att CAS-autentisering ska fungera måste serverinställningen prevent_super_global_replacement i client.ini.php vara inställd.
 common#:#auth_cas_port_desc#:#Till exempel "443" för en CAS-server URI "https
 common#:#auth_cas_server_desc#:#Till exempel "auth.yourserver.com" för en CAS-server URI "https
 common#:#auth_cas_uri_desc#:#Lokal URI, t.ex. "cas" för en CAS-server URI "https
@@ -3768,6 +3774,7 @@ common#:#copy_all#:#Kopiera alla
 common#:#copy_n_of_suffix#:#- Kopie (%1$s)
 common#:#copy_of#:#Kopia från
 common#:#copy_of_suffix#:#- Kopia
+common#:#copy_perma_link#:#Copy link to clipboard###10 12 2024 new variable
 common#:#copy_selected_items#:#Kopia
 common#:#count#:#Nummer
 common#:#counter_novelty#:#News###30 04 2024 new variable
@@ -3915,6 +3922,7 @@ common#:#download_selected_items#:#Ladda ner
 common#:#downloading_settings#:#Inställningar
 common#:#dpro_accept_usr_agreement#:#Accept Declaration of Data Protection?###30 04 2024 new variable
 common#:#dpro_accept_usr_agreement_intro#:#There is a new Declaration of Data Protection. You need to accept it before proceeding with the use of ILIAS. Read the following document carefully and give your consent or dissent at the bottom of the page.###30 04 2024 new variable
+common#:#dpro_agreed_on#:#DoDP agreed to on###01 04 2025 new variable
 common#:#dpro_force_accept_usr_agreement#:#You must accept the Declaration of Data Protection!###30 04 2024 new variable
 common#:#dpro_no_agreement_description#:#There is currently no Declaration of Data Protection document available for this installation. Please contact the <a href="%1$s">system administrator</a>.###30 04 2024 new variable
 common#:#dpro_refuse_acceptance#:#Refuse to Accept the Declaration of Data Protection###30 04 2024 new variable
@@ -4525,6 +4533,7 @@ common#:#login_information_settings_saved#:#Inloggningsuppgifterna sparades fram
 common#:#login_invalid#:#Ditt inloggningsnamn måste vara minst tre tecken långt och får endast innehålla följande tecken
 common#:#login_to_ilias#:#Logga in på ILIAS
 common#:#login_to_ilias_via_cas#:#Logga in på ILIAS via det centrala autentiseringssystemet
+common#:#login_to_ilias_via_login_form#:#Login to ILIAS###20 05 2025 new variable
 common#:#login_to_ilias_via_saml#:#Logga in på ILIAS via SAML-autentisering
 common#:#login_to_ilias_via_shibboleth#:#Logga in på ILIAS via
 common#:#loginname_already_exists#:#Detta inloggningsnamn är redan upptaget. Vänligen välj ett annat inloggningsnamn.
@@ -4742,6 +4751,7 @@ common#:#msg_no_perm_perm#:#Du har inte tillräcklig behörighet för att komma 
 common#:#msg_no_perm_read#:#Du har inte tillräcklig behörighet för att komma åt detta objekt.
 common#:#msg_no_perm_read_item#:#Du har inte behörighet att komma åt objektet '%s'.
 common#:#msg_no_perm_read_lm#:#Du har inte tillräcklig behörighet för att visa denna utbildningsmodul.
+common#:#msg_no_perm_view_roles_of_user#:#You have no permission to view the role assignment of this user###26 08 2025 new variable
 common#:#msg_no_perm_write#:#Du har inte skrivtillstånd!
 common#:#msg_no_search_result#:#Inga poster hittades
 common#:#msg_no_search_string#:#Var god ange en sökterm
@@ -5250,6 +5260,7 @@ common#:#pd_items_news#:#Inkluderar nyheter om de utvalda objekten
 common#:#pdf_export#:#PDF-export
 common#:#perm_settings#:#Rättigheter
 common#:#perma_link#:#Länk till denna sida
+common#:#perma_link_copied#:#Link to this page has been copied to the clipboard.###10 12 2024 new variable
 common#:#permission#:#Lagstiftning
 common#:#permission_denied#:#Ingen åtkomsträtt
 common#:#permission_settings#:#Inställningar för rättigheter
@@ -5629,7 +5640,6 @@ common#:#show_users_online#:#Visa aktiva användare
 common#:#show_who_is_online#:#Visa vem som är online
 common#:#side_frame#:#Frame Trädvy
 common#:#signature#:#Signatur
-common#:#simultaneous_login_detected#:#Åtkomst till systemet nekas eftersom en användare med dessa autentiseringsuppgifter redan befinner sig i en ILIAS-session.
 common#:#size#:#Storlek
 common#:#skills#:#Kompetens
 common#:#skin_style#:#Standard hud/stil
@@ -6006,7 +6016,6 @@ common#:#withdrawal_sure_account_no_consent_yet#:#Är du säker på att du inte 
 common#:#wizard_search_list#:#Din sökning gav följande resultat. Välj ett av dessa.
 common#:#wizard_title_info#:#Ange titeln för att söka efter det objekt du vill kopiera. Delar av titeln är också tillräckligt. Klicka på "Sök" för att få träffarna visade.
 common#:#write#:#Skrivande
-common#:#wrong_ip_detected#:#Åtkomst till systemet nekas på grund av en felaktig klient-IP.<br>Din aktuella IP-adress
 common#:#year#:#År
 common#:#yearly#:#årlig
 common#:#years#:#År
@@ -7251,8 +7260,6 @@ content#:#glo_online_info#:#Endast när ordlistan är online kan användarna se 
 content#:#glo_presentation_mode#:#Visa
 content#:#glo_presentation_view#:#Presentation vy
 content#:#glo_quick_navigation#:#Snabb åtkomst
-content#:#glo_show_taxonomy#:#Taxonomi
-content#:#glo_show_taxonomy_info#:#Taxonomin erbjuds i presentationsvyn för filtrering av ordlistans termer. Den kan skapas i underfliken "Taxonomi".
 content#:#glo_style#:#glossar stil
 content#:#glo_table_form#:#Tabell
 content#:#glo_table_form_info#:#Termer och förkortade definitioner visas i en översiktstabell. Om du klickar på en term visas den med den fullständiga definitionen.
@@ -7368,6 +7375,8 @@ copg#:#copg_page_element_not_found#:# Okänt sidelement.
 copg#:#copg_page_type_stys#:#Sidans layout
 copg#:#copg_par_format_selection#:#Paragraph Format Selection###17 01 2024 new variable
 copg#:#copg_pc_mob_does_not_exist#:#This media object does not exist.###28 11 2023 new variable
+copg#:#copg_plugin#:#Plugin###23 09 2025 new variable
+copg#:#copg_plugin_not_avail#:#Plugin %s not available.###10 12 2024 new variable
 copg#:#copg_questions_not_supported_here#:#Inga frågor stöds i detta sammanhang.
 copg#:#copg_reload_page#:#Reload sida
 copg#:#copg_remove_formats#:#Remove Formatting###17 01 2024 new variable
@@ -8540,7 +8549,6 @@ dcl#:#dcl_change_notification_dcl_new_record#:#Följande post har skapats
 dcl#:#dcl_change_notification_dcl_update_record#:#Följande post har uppdaterats
 dcl#:#dcl_change_notification_link#:#Gå till datainsamling
 dcl#:#dcl_change_notification_subject#:#Datainsamlingen "%s" har redigerats.
-dcl#:#dcl_change_why_you_receive_this_email#:#Du får detta meddelande eftersom du har aktiverat anmälningsfunktionen för ovanstående datainsamling.
 dcl#:#dcl_changed_by#:#Sista ändring av
 dcl#:#dcl_checked#:#Vald
 dcl#:#dcl_comments#:#Kommentarer
@@ -8555,6 +8563,9 @@ dcl#:#dcl_confirm_delete_table#:#Vill du verkligen radera denna tabell inklusive
 dcl#:#dcl_confirm_storing_records#:#Kontrollera detaljerna innan du sparar.
 dcl#:#dcl_confirm_storing_records_no_permission#:#Du har ingen rätt att redigera inspelningen igen senare.
 dcl#:#dcl_copy#:#Kopiering av datainsamling
+dcl#:#dcl_copy_field#:#Copy###10 12 2024 new variable
+dcl#:#dcl_copy_field_desc#:#Field to copy options stored in a different field of a table.###10 12 2024 new variable
+dcl#:#dcl_copy_title#:#Copy of table and field###10 12 2024 new variable
 dcl#:#dcl_create_date#:#Datum för skapande
 dcl#:#dcl_create_entry_rules#:#Skapande av ingång
 dcl#:#dcl_create_field#:#Lägg till fält
@@ -8562,10 +8573,10 @@ dcl#:#dcl_create_fields#:#Klicka på en tabell på fliken "Tabeller" och skapa n
 dcl#:#dcl_creation_date#:#Datum för skapande
 dcl#:#dcl_creation_date_description#:#Det datum då denna post skapades.
 dcl#:#dcl_datatype#:#Typ av data
+dcl#:#dcl_date#:#Date Entry###20 05 2025 new variable
+dcl#:#dcl_date_desc#:#Field for a date.###20 05 2025 new variable
 dcl#:#dcl_date_selection#:#Meny för val av datum
 dcl#:#dcl_date_selection_desc#:#Ange alternativ för urval (datum)
-dcl#:#dcl_datetime#:#Inmatning av datum
-dcl#:#dcl_datetime_desc#:#Datuminmatning via valmeny eller kalender
 dcl#:#dcl_deactivate_view#:#Inaktivera mall för enskild vy
 dcl#:#dcl_default_sort_field#:#Sortering
 dcl#:#dcl_default_sort_field_desc#:#Som standard sorteras tabellen efter det valda fältet.
@@ -8579,6 +8590,7 @@ dcl#:#dcl_delete_tables_no_selection#:#Minst en tabell måste väljas för rader
 dcl#:#dcl_delete_views#:# Radera vyer
 dcl#:#dcl_delete_views_no_selection#:#Minst en vy måste väljas för radering
 dcl#:#dcl_deleted_records#:#%s poster har raderats
+dcl#:#dcl_deprecated_copy#:#(Deprecated)###10 12 2024 new variable
 dcl#:#dcl_desc#:#Descendent ordning (DESC)
 dcl#:#dcl_description#:#Beskrivning
 dcl#:#dcl_detailed_view#:#Singelutsikt
@@ -8616,7 +8628,6 @@ dcl#:#dcl_formula#:#Formel
 dcl#:#dcl_formula_desc#:#I likhet med kalkylblad kan poster länkas eller beräknas med en formel.
 dcl#:#dcl_formula_detail_desc#:#Poster i detta fält genereras automatiskt. Du kan inte göra en post här.
 dcl#:#dcl_height#:#Höjd
-dcl#:#dcl_hello#:#Hello
 dcl#:#dcl_id#:#ID
 dcl#:#dcl_id_description#:#Det interna ID:t.
 dcl#:#dcl_ilias_reference#:#Objekt i tidningen
@@ -8674,16 +8685,14 @@ dcl#:#dcl_new#:#Skapa ny datainsamling
 dcl#:#dcl_new_field#:#Nytt fält
 dcl#:#dcl_new_table#:#Ny tabell
 dcl#:#dcl_next_record#:#Nästa post
-dcl#:#dcl_no_content_warning#:#Attention, datainsamlingen är redan online, men har inget innehåll ännu!
 dcl#:#dcl_no_entry#:#Ingen post
-dcl#:#dcl_no_export_content_available#:#Inga data tillgängliga för export.
+dcl#:#dcl_no_export_async_config#:#No SOAP Configuration for asyncronous exports available.###20 05 2025 new variable
 dcl#:#dcl_no_export_data_available#:#Inga data eller fält tillgängliga för export.
-dcl#:#dcl_no_export_fields_available#:#Inga fält aktiverade för export. Markera minst ett fält som "Exportable" i <a href="%s">tabellinställningarna</a>.
 dcl#:#dcl_no_fields_yet#:#Inga fält har skapats för denna tabell ännu, så inga poster kan infogas ännu.
 dcl#:#dcl_no_read_access_on_any_standard_view#:#Du har inte läsbehörighet till någon standardtabellvy.
 dcl#:#dcl_no_search_results_found_for#:#Inga moduler hittades med
 dcl#:#dcl_no_such_reference#:#Följande värde finns inte i referenstabellen
-dcl#:#dcl_no_warnings#:#Importen slutfördes utan problem.
+dcl#:#dcl_no_tableview_found#:#No visible tableview found!###08 07 2025 new variable
 dcl#:#dcl_not_checked#:#Inte vald
 dcl#:#dcl_not_supported_in_import#:#Den här fälttypen stöds inte under import.
 dcl#:#dcl_notification_activate_dcl#:# Aktivera avisering
@@ -8696,7 +8705,10 @@ dcl#:#dcl_noturl_exception#:#Ange en länk (som börjar med http
 dcl#:#dcl_number#:#Integers
 dcl#:#dcl_number_desc#:#Inmatningsfält för hela tal (högst 9 siffror). Bråk och decimaltal är inte tillåtna.
 dcl#:#dcl_online_info#:#Endast när datainsamlingen är online kan användarna se och använda datainsamlingen.
+dcl#:#dcl_open_detail_view#:#Open detail view###26 08 2025 new variable
+dcl#:#dcl_open_url#:#Open link###26 08 2025 new variable
 dcl#:#dcl_order#:#Sortering
+dcl#:#dcl_origin_not_found#:#Origin field was not found!###10 12 2024 new variable
 dcl#:#dcl_own_entries#:#Endast egna poster
 dcl#:#dcl_owner#:#Own entry by ###Modifierad som en del av arbetet med att integrera ett jämställdhetsperspektiv i ILIAS 8
 dcl#:#dcl_owner_description#:#Own entries always remain visible.###Modifierad som en del av jämställdhetsintegreringsaktiviteter för ILIAS 8
@@ -8706,7 +8718,6 @@ dcl#:#dcl_permissions_form#:#Tillstånd för denna tabell
 dcl#:#dcl_please_select#:#--- Vänligen välj ---
 dcl#:#dcl_plugin#:#Plugin
 dcl#:#dcl_plugin_desc#:#DataCollection Fälttillägg
-dcl#:#dcl_plugin_hooks#:#Tillgängliga tillägg
 dcl#:#dcl_plugin_no_hooks_available#:#Inga aktiva plugins för fälttyp hittades
 dcl#:#dcl_prev_record#:#Tidigare post
 dcl#:#dcl_prop_expression#:#Uttryck
@@ -8750,8 +8761,6 @@ dcl#:#dcl_supported_filetypes_desc#:#Du kan ange kommaseparerade filnamnstilläg
 dcl#:#dcl_switch_table#:#Switch Table###30 04 2024 new variable
 dcl#:#dcl_switch_view#:#Change View###30 04 2024 new variable
 dcl#:#dcl_table#:#Tabell
-dcl#:#dcl_table_create#:#Skapa tabell
-dcl#:#dcl_table_edit#:#Spara
 dcl#:#dcl_table_id#:#Tabeller ID
 dcl#:#dcl_table_info#:#I det följande definierar du vad användare som har "Enter"-rättigheten för datainsamlingen får göra i den här tabellen.
 dcl#:#dcl_table_info_title#:#Info
@@ -8792,7 +8801,9 @@ dcl#:#dcl_title_standardview#:#Standardvy
 dcl#:#dcl_unique#:#Förhindra samma inmatningar
 dcl#:#dcl_unique_desc#:#En identisk post kan endast göras en gång i detta fält.
 dcl#:#dcl_unique_exception#:#Det angivna värdet används redan av en annan post.
+dcl#:#dcl_unknown#:#Unkown###20 05 2025 new variable
 dcl#:#dcl_unknown_exception#:#Det angivna värdet är inte giltigt.
+dcl#:#dcl_unknown_plugin#:#Unknown plugin type###20 05 2025 new variable
 dcl#:#dcl_update_field#:#Uppdatera fält
 dcl#:#dcl_update_record#:#Uppdatera inmatning
 dcl#:#dcl_url#:#URL eller e-post
@@ -8806,7 +8817,7 @@ dcl#:#dcl_width#:#Bredd
 dcl#:#dcl_wrong_input_type#:#Den inmatade texten stämmer inte överens med typen av fält (Fel typ).
 dcl#:#dcl_wrong_length#:#Den angivna texten är för lång.
 dcl#:#dcl_wrong_regex#:#Den inmatade texten stämmer inte överens med specifikationen för detta fält (reguljärt uttryck).
-dcl#:#dlc_xls_async_export#:#Asynkron XLSX-export
+dcl#:#dcl_xls_async_export#:#as XLSX (asynchronous)###20 05 2025 new variable
 dcl#:#fieldtitle_allow_chars#:#Inte tillåtna tecken
 dcl#:#fileupload_not_migrated#:#File has not yet been migration and cannot be displayed. Please contact your System-Administrator.###30 04 2024 new variable
 didactic#:#activate_exclusive_template#:#Grå ut standard
@@ -9091,6 +9102,7 @@ ecs#:#ecs_protocol#:#Protokoll
 ecs#:#ecs_publish_as#:#Publicera under
 ecs#:#ecs_publish_for#:#Släpp för
 ecs#:#ecs_published_for#:#Släppt för
+ecs#:#ecs_rcat_created_body_a#:#A new ECS Category has been created:###10 12 2024 new variable
 ecs#:#ecs_rcrs_created_body_a#:#En ny ECS-kurs skapades
 ecs#:#ecs_read_remote_links#:#Uppdatera kursinformation
 ecs#:#ecs_refresh_participants#:#Uppdatera ECS deltagare
@@ -9153,8 +9165,10 @@ etal#:#etal_date_series_edit#:#Talkserie
 etal#:#etal_delete_confirmation_msg#:#Are you sure that you want to delete the following talk?###30 04 2024 new variable
 etal#:#etal_edit#:#Allmänt
 etal#:#etal_invalid_user#:#Detta konto existerar inte eller kan inte bjudas in.
+etal#:#etal_location#:#Location###04 11 2025 new variable
 etal#:#etal_new#:#Nytt samtal
 etal#:#etal_open#:#Öppen konversation
+etal#:#etal_recurrence#:#Recurrence###04 11 2025 new variable
 etal#:#etal_status_all#:#Alla
 etal#:#etal_status_completed#:#Fullbordad
 etal#:#etal_status_pending#:#Utgående
@@ -9170,6 +9184,7 @@ etal#:#notification_talks_subject#:#Datum inbjudan
 etal#:#notification_talks_subject_update#:#Uppdatering av datum
 etal#:#notification_talks_updated#:#Följande mötesdatum har justerats.
 etal#:#pending_talks_warning#:#Följande utestående intervjutillsättningar kommer att ersättas
+etal#:#tala_no_content_without_admin_info#:#The Administrator role is required for access to Talk Templates.###08 07 2025 new variable
 etal#:#talk_serial#:#Talk Serial
 etal#:#tals_add#:#Lägg till konversationer
 etal#:#tals_new#:#Nya samtalsserier
@@ -9772,6 +9787,8 @@ file#:#preview_caption#:#Preview %sof %s###30 04 2024 new variable
 file#:#preview_image_size_info#:#The preview versions of images will be downscaled or upscaled as appropriate, so that their longest side is the length (in px) entered here.###30 04 2024 new variable
 file#:#preview_persisting#:#Persistent Preview Images###30 04 2024 new variable
 file#:#preview_persisting_info#:#Generated preview images will be stored by ILIAS and used from then on each time the preview icon for that file is clicked on. If deactivated, previews will be generated anew each time.###30 04 2024 new variable
+file#:#previews_for_tiles#:#Tiles###01 04 2025 new variable
+file#:#previews_for_tiles_info#:#Use Preview for Tiles where possible.###01 04 2025 new variable
 file#:#publish_before_delete#:#Version(s) could not be deleted because an unpublished draft exists.###30 04 2024 new variable
 file#:#replace_file_info#:#Alla filversioner raderas.
 file#:#resource_id#:#Resurser ID
@@ -10759,6 +10776,7 @@ ldoc#:#ldoc_form_edit_doc_head#:#Edit Document###30 04 2024 new variable
 ldoc#:#ldoc_form_new_doc_head#:#Create Document###30 04 2024 new variable
 ldoc#:#ldoc_last_modified#:#Last Change###30 04 2024 new variable
 ldoc#:#ldoc_ldoc_settings#:#Settings###30 04 2024 new variable
+ldoc#:#ldoc_order_invalid#:#Please enter a number for the order###14 01 2025 new variable
 ldoc#:#ldoc_period#:#Period###30 04 2024 new variable
 ldoc#:#ldoc_period_from#:#From###30 04 2024 new variable
 ldoc#:#ldoc_period_until#:#Until###30 04 2024 new variable
@@ -10926,6 +10944,7 @@ lso#:#lso_player_abstract#:#Till inledningen
 lso#:#lso_player_extro#:#Till den avslutande sidan
 lso#:#lso_player_finish#:#Utgång
 lso#:#lso_player_next#:#Fortsättning
+lso#:#lso_player_noitems#:#There are no available items in this Learning Sequence.###08 07 2025 new variable
 lso#:#lso_player_previous#:#Tillbaka
 lso#:#lso_player_resume#:#Återuppta inlärningssekvensen
 lso#:#lso_player_review#:#Se över inlärningssekvensen
@@ -10936,7 +10955,6 @@ lso#:#lso_print_list#:#Skapa lista
 lso#:#lso_read#:#Läsning tillgång till Learning Sequence
 lso#:#lso_search_users#:#Sök användare
 lso#:#lso_settings_availability#:#Tillgänglighet
-lso#:#lso_settings_availability_error#:#The end date can not be earlier than the start date###30 04 2024 new variable
 lso#:#lso_settings_extro#:#Redigera sista sidan
 lso#:#lso_settings_intro#:#Redigera introduktionssida
 lso#:#lso_settings_old_extro#:#Visa gamla avslutande sidan
@@ -11189,6 +11207,7 @@ lti#:#lti_object_consumer#:#LTI konsumenter
 lti#:#lti_object_release_settings_form#:#Redigera LTI-utgåvor
 lti#:#lti_provider#:#LTI-utgåvor
 lti#:#lti_provider_not_avail_msg#:#LTI leverantör eller verktyg är inställt på "Ej tillgängligt".
+lti#:#lti_provider_not_set_msg#:#Configuration of LTI Provider / tool is not completely finished.###08 07 2025 new variable
 lti#:#lti_providing_tab#:#ILIAS som LTI-leverantör/verktyg
 lti#:#lti_released_objects#:#Utsläpp av objekt
 lti#:#lti_select_provider#:#Välj leverantör eller verktyg
@@ -12781,18 +12800,12 @@ noti#:#noti_notification_deactivated#:#Notifieringar är inaktiverade
 notifications_adm#:#enable_osd#:#Aktivera popup-aviseringar
 notifications_adm#:#enable_osd_desc#:#När detta är aktiverat meddelas användarna om nya aviseringar via en popup.
 notifications_adm#:#notification_settings#:#Inställningar för meddelanden
-notifications_adm#:#osd_delay#:#Visa fördröjning
-notifications_adm#:#osd_delay_desc#:#Fördröjning av visningen av aviseringarna i millisekunder
-notifications_adm#:#osd_error_presentation_time_too_small#:#Displayens varaktighet måste vara minst 1000 millisekunder.
-notifications_adm#:#osd_error_refresh_interval_smaller_than_delay_and_vanish_combined#:#Avfrågningsintervallet måste vara större än summan av visningstiden och fördröjningen.
 notifications_adm#:#osd_error_refresh_interval_too_small#:#Pollningsintervallet måste vara minst 3000 millisekunder.
 notifications_adm#:#osd_interval#:#Query intervall
 notifications_adm#:#osd_interval_desc#:#Intervall för begäran om meddelanden i millisekunder. En lägre tid ger snabbare meddelanden, men ökar belastningen på servern.
 notifications_adm#:#osd_play_sound#:#Spela upp ljud
 notifications_adm#:#osd_play_sound_desc#:#Spela upp ljud när ett nytt meddelande tas emot.
 notifications_adm#:#osd_settings#:#Popup-aviseringar
-notifications_adm#:#osd_vanish#:#Visa varaktighet
-notifications_adm#:#osd_vanish_desc#:#Duration för visning av aviseringar i millisekunder
 obj#:#activation_visible_when_disabled#:#Visibility###30 04 2024 new variable
 obj#:#activation_visible_when_disabled_info#:#The item is visible outside of the selected availability period, but it cannot be opened.###30 04 2024 new variable
 obj#:#availability_period_changed#:#The availability period for the selected objects has been changed successfully.###30 04 2024 new variable
@@ -12805,6 +12818,7 @@ obj#:#copy_container_page_yes_label#:#Copy Content Page###30 04 2024 new variabl
 obj#:#custom_icon#:#Custom Icon###30 04 2024 new variable
 obj#:#edit_availability_period#:#Availability Period###30 04 2024 new variable
 obj#:#edit_questions#:#Redigera frågor
+obj#:#multiple_reference_deletion_info#:#Further references exist for the following objects.###01 04 2025 new variable
 obj#:#no_objects_selected#:#At least one object needs to be selected.###30 04 2024 new variable
 obj#:#obj_activate_content_lang#:#Aktivera flerspråkighet för sidredigeraren
 obj#:#obj_activate_multilang#:#Möjliggöra flerspråkighet
@@ -12860,6 +12874,7 @@ obj#:#obj_tool_setting_skills_info#:#Funktionen gör det möjligt att välja kom
 obj#:#obj_tool_setting_tag_cloud#:#Tag Moln
 obj#:#obj_tool_setting_tag_cloud_info#:#Ett taggmoln visas i blocket "Urval efter ämne" på fliken "Innehåll".
 obj#:#obj_tool_setting_taxonomies#:#Taxonomier
+obj#:#obj_tool_setting_taxonomies_info#:#Taxonomies allow the filtering of objects. They are created in the "Taxonomy" sub-tab in the "Settings" tab.###10 12 2024 new variable
 obj#:#obj_tool_setting_use_news#:#Nyheter
 obj#:#obj_tool_setting_use_news_info#:#Användning av News-blocket eller Timeline för nyheter. Användare kan aktivera aviseringar för nyheter så snart blocket eller tidslinjen är aktiv.
 obj#:#obj_tool_setting_use_news_open_settings#:#Öppna inställningar för block och tidslinje
@@ -13118,6 +13133,7 @@ prg#:#auto_membership_src_type#:#Typ
 prg#:#auto_membership_title#:#Källor för automatisk tilldelning
 prg#:#auto_memberships#:#Automatisk tilldelning
 prg#:#category#:#Kategori
+prg#:#cert_relevance#:#Certificate###08 07 2025 new variable
 prg#:#completion_date#:#Datum för stängning
 prg#:#confirm_to_remove_selected_assignments#:#Verkligen ta bort användartilldelning(ar)?
 prg#:#cont_ed_insert_prgactionnote#:#Insert Study Programme Action Note###30 04 2024 new variable
@@ -13202,6 +13218,7 @@ prg#:#pc_prgstatus_unlimited_validation#:#Unlimited validity###30 04 2024 new va
 prg#:#percentage#:#%
 prg#:#prg_access_by_orgu#:#Tillgång till föreskrifter enligt organisatoriska enheter
 prg#:#prg_access_by_orgu_byline#:#Om aktiverat kan ytterligare tillträdesregler tilldelas via positioner i organisatoriska enheter.
+prg#:#prg_acknowledge_all_completed_courses#:#Acknowledge All Completed Courses###10 12 2024 new variable
 prg#:#prg_acknowledge_completed_courses#:#Erkänna godkända kurser
 prg#:#prg_add#:#Skapa studieprogram
 prg#:#prg_added_course_ref_successful#:#Ny kurslänk har lagts till framgångsrikt.
@@ -13687,6 +13704,7 @@ pwsp#:#pwsp_enable_personal_resources#:#Aktivera personliga resurser
 pwsp#:#pwsp_enable_wsp_blogs#:#Aktivera bloggar
 pwsp#:#pwsp_enable_wsp_files#:# Aktivera filer
 pwsp#:#pwsp_enable_wsp_links#:# Aktivera länkar
+pwsp#:#pwsp_type_cannot_be_copied#:#Objects of type '%s' cannot be copied.###23 09 2025 new variable
 qpl#:#qpl_filter_commented_exclude#:#Questions without comments###30 04 2024 new variable
 qpl#:#qpl_filter_commented_only#:#Questions with comments###30 04 2024 new variable
 qpl#:#qpl_page_type_qfbg#:#Allmän feedback
@@ -13835,7 +13853,7 @@ rbac#:#chtr_moderate#:#Moderat diskussion i chattrum
 rbac#:#chtr_read#:#Delta i diskussionen i chattrummet
 rbac#:#chtr_visible#:#Chatroom är synligt
 rbac#:#chtr_write#:#Redigera inställningar för chattrum och blockera användare
-rbac#:#cmis_edit_permissions#:#Ändra inställningar för administrationsrättigheter för xAPI/cmi5
+rbac#:#cmis_edit_permission#:#User can change permission settings of xAPI/cmi5 administration.###01 04 2025 new variable
 rbac#:#cmis_read#:#Läs tillgång till administration för xAPI/cmi5
 rbac#:#cmis_visible#:#Administrationen för xAPI/cmi5 är synlig.
 rbac#:#cmis_write#:#Ändra inställningar i Administration för xAPI/cmi5
@@ -13907,6 +13925,10 @@ rbac#:#dcl_write#:#Redigera datainsamling
 rbac#:#delete_files#:#Radera filer
 rbac#:#delete_folders#:#Ta bort mapp
 rbac#:#delete_wiki_pages#:#Ta bort sida
+rbac#:#dpro_edit_permission#:#User can change permission settings in the Declaration of Data Protected administration###01 04 2025 new variable
+rbac#:#dpro_read#:#User has read access to the Declaration of Data Protection administration###01 04 2025 new variable
+rbac#:#dpro_visible#:#Declaration of Data Protection administration is visible###01 04 2025 new variable
+rbac#:#dpro_write#:#Edit settings in the Declaration of Data Protection###01 04 2025 new variable
 rbac#:#dshs_change_presentation#:#Ändra utseendet på instrumentpanelen
 rbac#:#dshs_edit_permission#:#Ändra rättighetsinställningar i administrationen av instrumentpanelen
 rbac#:#dshs_read#:#Läsa åtkomst till administration av instrumentpanelen
@@ -13988,9 +14010,11 @@ rbac#:#frm_add_reply#:#Användare kan svara på foruminlägg
 rbac#:#frm_add_thread#:#Skapa forumämne
 rbac#:#frm_copy#:#Kopia Forum
 rbac#:#frm_delete#:#Radera eller flytta forum
+rbac#:#frm_edit_learning_progress#:#User can edit learning progress settings###14 01 2025 new variable
 rbac#:#frm_edit_permission#:#Ändra inställningar för rättigheter
 rbac#:#frm_moderate_frm#:#Radera och censurera inlägg i forumet
 rbac#:#frm_read#:#Läsa forum och inlägg
+rbac#:#frm_read_learning_progress#:#User can view learning progress of other users###14 01 2025 new variable
 rbac#:#frm_visible#:#Forum är synligt
 rbac#:#frm_write#:#Redigera foruminställningar och hantera moderering###Modifierad som en del av jämställdhetsintegreringen för ILIAS 8
 rbac#:#frma_edit_permission#:#Ändra rättighetsinställningar för administration
@@ -14053,6 +14077,10 @@ rbac#:#il_lti_global_role#:#LTI Användare
 rbac#:#il_sess_participant#:#Deltagare i sessionen
 rbac#:#il_sess_status_closed#:#Sluten session med icke-deltagare
 rbac#:#ilias_id#:#ILIAS ID
+rbac#:#impr_edit_permission#:#User can change permission settings of Legal Notice administration###01 04 2025 new variable
+rbac#:#impr_read#:#User can read in Legal Notice administration###01 04 2025 new variable
+rbac#:#impr_visible#:#Administration of Legal Notice is visible###01 04 2025 new variable
+rbac#:#impr_write#:#User can edit content and settings of Legal Notice###01 04 2025 new variable
 rbac#:#info_user_view_changed#:#Användarvy ändrad
 rbac#:#internal_mail#:#Internt postsystem
 rbac#:#invite#:#Inbjudan till undersökning
@@ -14100,7 +14128,7 @@ rbac#:#lso_read_learning_progress#:#Användaren kan se andra användares inlärn
 rbac#:#lso_unparticipate#:#Logga ut från inlärningssekvensen
 rbac#:#lso_visible#:#Lärsekvens synlig
 rbac#:#lso_write#:#Redigera inlärningssekvens
-rbac#:#lsos_edit_permissions#:#Ändra rättighetsinställningar för administrationen för inlärningssekvenser
+rbac#:#lsos_edit_permission#:#User can change permission settings of Learning Sequences administration.###01 04 2025 new variable
 rbac#:#lsos_read#:#Läs tillgång till administration för inlärningssekvenser
 rbac#:#lsos_visible#:#Administrationen för utbildningssekvenser är synlig.
 rbac#:#lsos_write#:#Ändra inställningar i Administration för inlärningssekvenser
@@ -14165,7 +14193,8 @@ rbac#:#moderate_frm#:#Måttlig
 rbac#:#msg_anonymous_cannot_be_assigned#:#Anonymous cannot be assigned to a role.###19 03 2024 new variable
 rbac#:#msg_no_roles_of_type#:#Inga rullar närvarande med den valda filterinställningen
 rbac#:#news_add_news#:#Skapa nyheter
-rbac#:#nots_edit_permissions#:#Ändra administrationens rättighetsinställningar för anteckningar
+rbac#:#no_corresponding_roles#:#No corresponding roles could be found.###01 04 2025 new variable
+rbac#:#nots_edit_permission#:#User can change permission settings of Notes administration.###01 04 2025 new variable
 rbac#:#nots_read#:#Läs tillgång till administration för anteckningar
 rbac#:#nots_visible#:#Administrationen för noter är synlig.
 rbac#:#nots_write#:#Ändra inställningar i Administration för anteckningar
@@ -14242,7 +14271,7 @@ rbac#:#prgs_edit_permission#:#Ändra rättighetsinställningar i studieprogramad
 rbac#:#prgs_read#:#Läs tillgång till administration av studieprogram
 rbac#:#prgs_visible#:#Studieprogramadministration är synlig
 rbac#:#prgs_write#:#Redigera inställningar i Studieprogramadministration
-rbac#:#prss_edit_permissions#:#Ändra rättighetsinställningar för administrationen av personliga resurser
+rbac#:#prss_edit_permission#:#User can change permission settings of Personal Resources administration.###01 04 2025 new variable
 rbac#:#prss_read#:#Läs tillgång till administration för personliga resurser
 rbac#:#prss_visible#:#Administrationen för personliga resurser är synlig.
 rbac#:#prss_write#:#Ändra inställningar i Administration för personliga resurser
@@ -14280,7 +14309,10 @@ rbac#:#rbac_choose_copy_targets#:#Ange ett sökord för att hitta de roller till
 rbac#:#rbac_condition_delete_sure#:#Vill du verkligen ta bort följande förutsättningar?
 rbac#:#rbac_context_global#:#Global
 rbac#:#rbac_copy_behaviour#:#Inställningar för kopiering av rättigheter
+rbac#:#rbac_copy_behaviour_info#:#Transfer Permissions from: %s to: %s###20 05 2025 new variable
 rbac#:#rbac_copy_finished#:#Rättigheterna har överförts till de valda rollerna.
+rbac#:#rbac_copy_multi_targets#:#%s, %s and %s further Roles selected%s###20 05 2025 new variable
+rbac#:#rbac_copy_no_targets#:#At least one Role must be selected as Target###20 05 2025 new variable
 rbac#:#rbac_copy_role#:#Kopiera roll
 rbac#:#rbac_copy_role_add_perm#:#Lägg till rättigheter
 rbac#:#rbac_copy_role_copy#:#Kopieringsrätt
@@ -14401,6 +14433,7 @@ rbac#:#rbac_role_rights_copy_empty#:#Ingen
 rbac#:#rbac_role_selection#:#Typ av rullning
 rbac#:#rbac_role_title#:#Roll titel
 rbac#:#rbac_select_copy_targets#:#Vänligen välj de roller till vilka rättigheterna ska överföras.
+rbac#:#rbac_select_roles#:#Role Selection
 rbac#:#rbac_ud_global#:#Självskapad global roll
 rbac#:#rbac_ud_local#:#Skapa lokal roll själv
 rbac#:#rbac_ud_rolt#:#Självskapad rollmall
@@ -14591,7 +14624,7 @@ rbac#:#usrf_read#:#Läs åtkomst till hantering av inloggningskonton
 rbac#:#usrf_read_users#:#Läsa åtkomst till inloggningskonton för lokala administratörer
 rbac#:#usrf_visible#:#Registreringskontohanteringen är synlig
 rbac#:#usrf_write#:#Redigera inställningar i Hantering av inloggningskonton
-rbac#:#wbdv_edit_permissions#:#Ändra inställningar för administrationsrättigheter för WebDAV
+rbac#:#wbdv_edit_permission#:#User can change permission settings of WebDAV administration.###01 04 2025 new variable
 rbac#:#wbdv_read#:#Läs tillgång till administration för WebDAV
 rbac#:#wbdv_visible#:#Administrationen för WebDAV är synlig.
 rbac#:#wbdv_write#:#Ändra inställningar i Administration för WebDAV
@@ -14775,6 +14808,7 @@ rep#:#rep_fav_intro2#:#Klicka på "%s" och välj ett lärandeobjekt från det ti
 rep#:#rep_fav_intro3#:#Om du har hittat något som intresserar dig kan du enkelt lägga till det i dina favoriter. Välj alternativet<i>"Lägg till i favoriter</i>" i <i>menyn Åtgärder</i> för det önskade objektet.
 rep#:#rep_favourites#:#Favoriter
 rep#:#rep_favourites_info#:#Användare kan markera enskilda tidningsartiklar som favoriter. Favoritlistor kan aktiveras i instrumentpanelen och huvudmenyns konfiguration.
+rep#:#rep_input_not_empty#:#This field must not be empty, please provide a value.###01 04 2025 new variable
 rep#:#rep_intro#:#Välkommen till tidningen!
 rep#:#rep_intro1#:#I det här avsnittet kan du skapa och tillgängliggöra utbildnings- och arbetsmaterial. Allt innehåll är organiserat i kategorier. Dessa kategorier kan till exempel återspegla organisationen på din institution (t.ex. avdelningar eller klasser). Kategorier
 rep#:#rep_intro2#:#Du kan bygga en första struktur med tre steg
@@ -15712,6 +15746,7 @@ style#:#sty_ca_cntr_class#:#Carousel - Behållare
 style#:#sty_ca_icntr_class#:#Carousel - Elementbehållare
 style#:#sty_ca_icont_class#:#Carousel - Innehållselement
 style#:#sty_ca_ihead_class#:#Carousel - Rubrikelement
+style#:#sty_cannot_be_copied#:#The following style types cannot be copied###20 05 2025 new variable
 style#:#sty_caption#:#Legend
 style#:#sty_caption_class#:#Legend
 style#:#sty_carousel_templates#:#karusellmallar
@@ -15812,6 +15847,7 @@ style#:#sty_media_queries#:#Medieförfrågningar
 style#:#sty_media_query_info#:#För varje mediafråga infogas ett separat CSS-avsnitt efter standardavsnittet (utan mediafråga).
 style#:#sty_min_height#:#Minsta höjd
 style#:#sty_move_lm_styles#:#Ändra formatmallarna för utbildningsmodulerna
+style#:#sty_move_obj_styles#:#Change Style of Objects###23 09 2025 new variable
 style#:#sty_move_style#:#Ändra formatmall
 style#:#sty_move_user_styles#:#Ändra stilmall för användarna
 style#:#sty_msg_characteristic_must_only_include#:#Titeln på stilen måste börja med en bokstav och får inte innehålla några mellanslag utan endast följande tecken
@@ -15819,6 +15855,7 @@ style#:#sty_msg_color_must_only_include#:#Färgnamnet får endast innehålla fö
 style#:#sty_msg_input_must_be_numeric#:#Numerisk inmatning krävs.
 style#:#sty_name#:#Namn
 style#:#sty_nr_learning_modules#:#Antal utbildningsmoduler
+style#:#sty_nr_objects#:#Number of Objects###23 09 2025 new variable
 style#:#sty_odd_col_class#:#Even kolumner
 style#:#sty_odd_row_class#:#Odd linjer
 style#:#sty_ol#:#Ordered List###30 04 2024 new variable
@@ -16822,6 +16859,7 @@ tagging#:#tagging_enable_all_users_info#:# Lägger till ett "Alla användare"-om
 tagging#:#tagging_enable_tagging#:#Aktivera taggning
 tagging#:#tagging_forbidden_tags#:#Förbjudna taggar
 tagging#:#tagging_no_obj_for_tag#:#Det finns inget innehåll taggat med '%s'.
+tagging#:#tagging_no_perm_write#:#You have no permission to change this data.###10 12 2024 new variable
 tagging#:#tagging_other_users#:#Tags från andra användare
 tagging#:#tagging_resources_for_tag#:#Innehåll taggat med %s
 tagging#:#tagging_search_users#:#Sök användare
@@ -17176,6 +17214,7 @@ ui#:#order_option_numerical_ascending#:#0 to 9###30 04 2024 new variable
 ui#:#order_option_numerical_descending#:#9 to 0###30 04 2024 new variable
 ui#:#presentation_table_collapse#:#collapse all###30 04 2024 new variable
 ui#:#presentation_table_expand#:#expand all###30 04 2024 new variable
+ui#:#table_posinput_col_title#:#Position###01 04 2025 new variable
 ui#:#ui_chars_max#:#Maximum
 ui#:#ui_chars_min#:#Minimum
 ui#:#ui_chars_remaining#:#Resterande bokstäver
@@ -17353,6 +17392,7 @@ validation#:#not_min_length#:#Din inmatning har en längd på %d och är därfö
 validation#:#not_numeric#:#'%s' är inte numeriskt.
 validation#:#not_numeric_empty_string#:#Din inmatning är inte numerisk.
 validation#:#numeric_only#:#Please insert a whole number.###30 04 2024 new variable
+validation#:#required#:#This input is required.###08 07 2025 new variable
 validation#:#tag_required#:#Please insert at least one tag.###30 04 2024 new variable
 violation#:#not_a_string#:#Värdet är inte en sträng
 webr#:#invalid_links_tbl#:#Ogiltiga länkar

@@ -22,11 +22,9 @@ use ILIAS\Test\InternalRequestService;
 use ILIAS\Test\TestManScoringDoneHelper;
 use ILIAS\Test\MainSettingsRepository;
 use ILIAS\Filesystem\Filesystem;
-use ILIAS\Filesystem\Stream\Streams;
+use ILIAS\Refinery\Factory as Refinery;
 
 require_once 'Modules/Test/classes/inc.AssessmentConstants.php';
-
-use ILIAS\Refinery\Factory as Refinery;
 
 /**
  * Class ilObjTest
@@ -47,6 +45,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
     public const REDIRECT_NONE = 0;
     public const REDIRECT_ALWAYS = 1;
     public const REDIRECT_KIOSK = 2;
+    public const REDIRECT_ALWAYS_TO_LOGOUT = 3;
 
     private ?bool $activation_limited = null;
     private array $mob_ids;
@@ -268,7 +267,8 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
          * Dynamic-Tests in migration. The check can go with ILIAS10
          * @todo: Remove check with ILIAS10
          */
-        if ($this->isFixedTest() || $this->isRandomTest()) {
+        if ($this->main_settings !== null
+            && ($this->isFixedTest() || $this->isRandomTest())) {
             $this->question_set_config_factory->getQuestionSetConfig()->removeQuestionSetRelatedData();
         }
 
@@ -447,7 +447,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                 [
                     'test_id' => ['integer', $next_id],
                     'obj_fi' => ['integer', $this->getId()],
-                    'author' => ['text', $this->getAuthor()],
+                    'author' => ['text', mb_substr($this->getAuthor(), 0, 50)],
                     'created' => ['integer', time()],
                     'tstamp' => ['integer', time()],
                     'template_id' => ['integer', $this->getTemplate()],
@@ -477,7 +477,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             $this->db->update(
                 'tst_tests',
                 [
-                    'author' => ['text', $this->getAuthor()],
+                    'author' => ['text', mb_substr($this->getAuthor(), 0, 50)],
                     'broken' => ['integer', (int) $this->isTestFinalBroken()]
                 ],
                 [
@@ -554,12 +554,12 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             }
         }
 
-        $this->storeActivationSettings([
-            'is_activation_limited' => $this->isActivationLimited(),
-            'activation_starting_time' => $this->getActivationStartingTime(),
-            'activation_ending_time' => $this->getActivationEndingTime(),
-            'activation_visibility' => $this->getActivationVisibility()
-        ]);
+        $this->storeActivationSettings(
+            $this->isActivationLimited(),
+            $this->getActivationStartingTime(),
+            $this->getActivationEndingTime(),
+            $this->getActivationVisibility(),
+        );
 
         if (!$properties_only) {
             if ($this->getQuestionSetType() == self::QUESTION_SET_TYPE_FIXED) {
@@ -743,21 +743,65 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
     public function getIntroduction(): string
     {
         $page_id = $this->getMainSettings()->getIntroductionSettings()->getIntroductionPageId();
-        if ($page_id !== null) {
-            return (new ilTestPageGUI('tst', $page_id))->showPage();
+        if ($page_id !== null
+            && ($content = $this->getPageContentFromPageId($page_id)) !== null) {
+            return $content;
         }
 
-        return $this->getMainSettings()->getIntroductionSettings()->getIntroductionText();
+        return ilRTE::_replaceMediaObjectImageSrc(
+            $this->getMainSettings()->getIntroductionSettings()->getIntroductionText(),
+            1
+        );
+    }
+
+    private function cloneIntroduction(): ?int
+    {
+        $page_id = $this->getMainSettings()->getIntroductionSettings()->getIntroductionPageId();
+        if ($page_id === null) {
+            return null;
+        }
+        return $this->clonePage($page_id);
     }
 
     public function getFinalStatement(): string
     {
         $page_id = $this->getMainSettings()->getFinishingSettings()->getConcludingRemarksPageId();
-        if ($page_id !== null) {
-            return (new ilTestPageGUI('tst', $page_id))->showPage();
+        if ($page_id !== null
+            && ($content = $this->getPageContentFromPageId($page_id)) !== null) {
+            return $content;
+        }
+        return ilRTE::_replaceMediaObjectImageSrc(
+            $this->getMainSettings()->getFinishingSettings()->getConcludingRemarksText(),
+            1
+        );
+    }
+
+    private function cloneConcludingRemarks(): ?int
+    {
+        $page_id = $this->getMainSettings()->getFinishingSettings()->getConcludingRemarksPageId();
+        if ($page_id === null) {
+            return null;
+        }
+        return $this->clonePage($page_id);
+    }
+
+    private function clonePage(int $source_page_id): int
+    {
+        $page_object = new ilTestPage();
+        $page_object->setParentId($this->getId());
+        $new_page_id = $page_object->createPageWithNextId();
+        (new ilTestPage($source_page_id))->copy($new_page_id);
+        return $new_page_id;
+    }
+
+    private function getPageContentFromPageId(int $page_id): ?string
+    {
+        $page = (new ilTestPageGUI('tst', $page_id));
+        if ($page->getPageObject()->getXMLContent() === '<PageObject></PageObject>') {
+            return null;
         }
 
-        return $this->getMainSettings()->getFinishingSettings()->getConcludingRemarksText();
+        return $page->showPage();
     }
 
     /**
@@ -915,13 +959,14 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
     /**
     * Gets the reporting date of the ilObjTest object
     *
-    * @return string The reporting date of the test of an empty string (=FALSE) if no reporting date is set
+    * @return DateTimeImmutable|null The reporting date of the test or null (=FALSE) if no reporting date is set
     * @access public
     * @see $reporting_date
+    * @depracated Use Score Settings instead
     */
-    public function getReportingDate(): ?string
+    public function getReportingDate(): ?DateTimeImmutable
     {
-        return $this->getScoreSettings()->getResultSummarySettings()->getReportingDate()?->format('YmdHis');
+        return $this->getScoreSettings()->getResultSummarySettings()->getReportingDate();
     }
 
     public function getNrOfTries(): int
@@ -1191,9 +1236,11 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
         if (count($participantData->getUserIds())) {
             /* @var ilTestLP $testLP */
-            $testLP = ilObjectLP::getInstance($this->getId());
-            $testLP->setTestObject($this);
-            $testLP->resetLPDataForUserIds($participantData->getUserIds(), false);
+            $test_lp = ilObjectLP::getInstance($this->getId());
+            if ($test_lp instanceof ilTestLP) {
+                $test_lp->setTestObject($this);
+                $test_lp->resetLPDataForUserIds($participantData->getUserIds(), false);
+            }
         }
 
         if (count($participantData->getActiveIds())) {
@@ -1716,7 +1763,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                 [$user_id, $this->test_id, $anonymous_id]
             );
         } else {
-            if ($this->user->getId() === ANONYMOUS_USER_ID) {
+            if ((int) $user_id === ANONYMOUS_USER_ID) {
                 return null;
             }
             $result = $this->db->queryF(
@@ -1731,7 +1778,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             return (int) $row['active_id'];
         }
 
-        return 0;
+        return null;
     }
 
     public static function _getActiveIdOfUser($user_id = "", $test_id = "")
@@ -2581,176 +2628,8 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
     public function getUnfilteredEvaluationData(): ilTestEvaluationData
     {
-        $data = new ilTestEvaluationData($this->db, $this);
-
-        $query = "
-			SELECT		tst_test_result.*,
-						qpl_questions.original_id,
-						qpl_questions.title questiontitle,
-						qpl_questions.points maxpoints
-
-			FROM		tst_test_result, qpl_questions, tst_active
-
-			WHERE		tst_active.active_id = tst_test_result.active_fi
-			AND			qpl_questions.question_id = tst_test_result.question_fi
-			AND			tst_active.test_fi = %s
-
-			ORDER BY	tst_active.active_id ASC, tst_test_result.pass ASC, tst_test_result.tstamp DESC
-		";
-
-        $result = $this->db->queryF(
-            $query,
-            ['integer'],
-            [$this->getTestId()]
-        );
-
-        $pass = null;
-        $checked = [];
-        $datasets = 0;
-        $questionData = [];
-
-        while ($row = $this->db->fetchAssoc($result)) {
-            if (!$data->participantExists($row["active_fi"])) {
-                continue;
-            }
-
-            $participantObject = $data->getParticipant($row["active_fi"]);
-            $passObject = $participantObject->getPass($row["pass"]);
-
-            if (!($passObject instanceof ilTestEvaluationPassData)) {
-                continue;
-            }
-
-            $passObject->addAnsweredQuestion(
-                $row["question_fi"],
-                $row["maxpoints"],
-                $row["points"],
-                (bool) $row['answered'],
-                null,
-                $row['manual']
-            );
-        }
-
-        foreach (array_keys($data->getParticipants()) as $active_id) {
-            if ($this->isRandomTest()) {
-                for ($testpass = 0; $testpass <= $data->getParticipant($active_id)->getLastPass(); $testpass++) {
-                    $this->db->setLimit($this->getQuestionCount(), 0);
-
-                    $query = "
-						SELECT tst_test_rnd_qst.sequence, tst_test_rnd_qst.question_fi, qpl_questions.original_id,
-						tst_test_rnd_qst.pass, qpl_questions.points, qpl_questions.title
-						FROM tst_test_rnd_qst, qpl_questions
-						WHERE tst_test_rnd_qst.question_fi = qpl_questions.question_id
-						AND tst_test_rnd_qst.pass = %s
-						AND tst_test_rnd_qst.active_fi = %s ORDER BY tst_test_rnd_qst.sequence
-					";
-
-                    $result = $this->db->queryF(
-                        $query,
-                        ['integer','integer'],
-                        [$testpass, $active_id]
-                    );
-
-                    if ($result->numRows()) {
-                        while ($row = $this->db->fetchAssoc($result)) {
-                            $tpass = array_key_exists("pass", $row) ? $row["pass"] : 0;
-
-                            if (
-                                !isset($row["question_fi"], $row["points"], $row["sequence"]) ||
-                                !is_numeric($row["question_fi"]) || !is_numeric($row["points"]) || !is_numeric($row["sequence"])
-                            ) {
-                                continue;
-                            }
-
-                            $data->getParticipant($active_id)->addQuestion(
-                                (int) $row["original_id"],
-                                (int) $row["question_fi"],
-                                (float) $row["points"],
-                                (int) $row["sequence"],
-                                $tpass
-                            );
-
-                            $data->addQuestionTitle($row["question_fi"], $row["title"]);
-                        }
-                    }
-                }
-            } else {
-                $query = "
-					SELECT tst_test_question.sequence, tst_test_question.question_fi,
-					qpl_questions.points, qpl_questions.title, qpl_questions.original_id
-					FROM tst_test_question, tst_active, qpl_questions
-					WHERE tst_test_question.question_fi = qpl_questions.question_id
-					AND tst_active.active_id = %s
-					AND tst_active.test_fi = tst_test_question.test_fi
-					ORDER BY tst_test_question.sequence
-				";
-
-                $result = $this->db->queryF(
-                    $query,
-                    ['integer'],
-                    [$active_id]
-                );
-
-                if ($result->numRows()) {
-                    $questionsbysequence = [];
-
-                    while ($row = $this->db->fetchAssoc($result)) {
-                        $questionsbysequence[$row["sequence"]] = $row;
-                    }
-
-                    $seqresult = $this->db->queryF(
-                        "SELECT * FROM tst_sequence WHERE active_fi = %s",
-                        ['integer'],
-                        [$active_id]
-                    );
-
-                    while ($seqrow = $this->db->fetchAssoc($seqresult)) {
-                        $questionsequence = unserialize($seqrow["sequence"]);
-
-                        foreach ($questionsequence as $sidx => $seq) {
-                            $data->getParticipant($active_id)->addQuestion(
-                                $questionsbysequence[$seq]['original_id'] ?? 0,
-                                $questionsbysequence[$seq]['question_fi'],
-                                $questionsbysequence[$seq]['points'],
-                                $sidx + 1,
-                                $seqrow['pass']
-                            );
-
-                            $data->addQuestionTitle(
-                                $questionsbysequence[$seq]["question_fi"],
-                                $questionsbysequence[$seq]["title"]
-                            );
-                        }
-                    }
-                }
-            }
-        }
-
-        foreach (array_keys($data->getParticipants()) as $active_id) {
-            $tstUserData = $data->getParticipant($active_id);
-
-            $percentage = $tstUserData->getReachedPointsInPercent();
-
-            $obligationsAnswered = $tstUserData->areObligationsAnswered();
-
-            $mark = $this->mark_schema->getMatchingMark($percentage);
-
-            if (is_object($mark)) {
-                $tstUserData->setMark($mark->getShortName());
-                $tstUserData->setMarkOfficial($mark->getOfficialName());
-
-                $tstUserData->setPassed(
-                    $mark->getPassed() && $tstUserData->areObligationsAnswered()
-                );
-            }
-
-            $visitingTime = $this->getVisitTimeOfParticipant($active_id);
-
-            $tstUserData->setFirstVisit($visitingTime["firstvisit"]);
-            $tstUserData->setLastVisit($visitingTime["lastvisit"]);
-        }
-
-        return $data;
+        return (new ilTestEvaluationFactory($this->db, $this))
+            ->getEvaluationData();
     }
 
     public static function _getQuestionCountAndPointsForPassOfParticipant($active_id, $pass): array
@@ -2943,22 +2822,25 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
     * @return string The output name of the user
     * @access public
     */
-    public function buildName($user_id, $firstname, $lastname, $title): string
-    {
-        $name = "";
-        if (strlen($firstname . $lastname . $title) == 0) {
-            $name = $this->lng->txt('deleted_user');
-        } else {
-            if ($user_id == ANONYMOUS_USER_ID) {
-                $name = $lastname;
-            } else {
-                $name = trim($lastname . ", " . $firstname . " " . $title);
-            }
-            if ($this->getAnonymity()) {
-                $name = $this->lng->txt("anonymous");
-            }
+    public function buildName(
+        ?int $user_id,
+        ?string $firstname,
+        ?string $lastname
+    ): string {
+        if ($user_id === null
+            || $firstname . $lastname === '') {
+            return $this->lng->txt('deleted_user');
         }
-        return $name;
+
+        if ($this->getAnonymity()) {
+            return $this->lng->txt('anonymous');
+        }
+
+        if ($user_id == ANONYMOUS_USER_ID) {
+            return $lastname;
+        }
+
+        return trim($lastname . ', ' . $firstname);
     }
 
     public function evalTotalStartedAverageTime(?array $active_ids_to_filter = null): float
@@ -3076,7 +2958,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             $question->object->feedbackOBJ = new $feedbackObjectClassname($question->object, $this->ctrl, $this->db, $this->lng);
 
             $assSettings = new ilSetting('assessment');
-            $processLockerFactory = new ilAssQuestionProcessLockerFactory($assSettings, $this->db);
+            $processLockerFactory = new ilAssQuestionProcessLockerFactory($assSettings, $this->db, ilLoggerFactory::getLogger('tst'));
             $processLockerFactory->setQuestionId($question->object->getId());
             $processLockerFactory->setUserId($this->user->getId());
             $processLockerFactory->setAssessmentLogEnabled(ilObjAssessmentFolder::_enabledAssessmentLogging());
@@ -3262,7 +3144,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
      * Receives parameters from a QTI parser and creates a valid ILIAS test object
      * @param ilQTIAssessment $assessment
      */
-    public function fromXML(ilQTIAssessment $assessment)
+    public function fromXML(ilQTIAssessment $assessment, array $mappings)
     {
         ilSession::clear('import_mob_xhtml');
 
@@ -3283,7 +3165,8 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             foreach ($objectives->materials as $material) {
                 $introduction_settings = $this->addIntroductionToSettingsFromImport(
                     $introduction_settings,
-                    $this->qtiMaterialToArray($material)
+                    $this->qtiMaterialToArray($material),
+                    $mappings
                 );
             }
         }
@@ -3295,7 +3178,8 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                 $finishing_settings,
                 $this->qtiMaterialToArray(
                     $assessment->getPresentationMaterial()->getFlowMat(0)->getMaterial(0)
-                )
+                ),
+                $mappings
             );
         }
 
@@ -3332,53 +3216,50 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                     break;
                 case 'show_introduction':
                     $introduction_settings = $introduction_settings->withIntroductionEnabled((bool) $metadata['entry']);
-                    // no break
+                    break;
                 case "showfinalstatement":
                 case 'show_concluding_remarks':
                     $finishing_settings = $finishing_settings->withConcludingRemarksEnabled((bool) $metadata["entry"]);
                     break;
+                case 'exam_conditions':
+                    $introduction_settings = $introduction_settings->withExamConditionsCheckboxEnabled($metadata['entry'] === '1');
+                    break;
                 case "highscore_enabled":
                     $gamification_settings = $gamification_settings->withHighscoreEnabled((bool) $metadata["entry"]);
                     break;
-
                 case "highscore_anon":
                     $gamification_settings = $gamification_settings->withHighscoreAnon((bool) $metadata["entry"]);
                     break;
-
                 case "highscore_achieved_ts":
                     $gamification_settings = $gamification_settings->withHighscoreAchievedTS((bool) $metadata["entry"]);
                     break;
-
                 case "highscore_score":
                     $gamification_settings = $gamification_settings->withHighscoreScore((bool) $metadata["entry"]);
                     break;
-
                 case "highscore_percentage":
                     $gamification_settings = $gamification_settings->withHighscorePercentage((bool) $metadata["entry"]);
                     break;
-
                 case "highscore_hints":
                     $gamification_settings = $gamification_settings->withHighscoreHints((bool) $metadata["entry"]);
                     break;
-
                 case "highscore_wtime":
                     $gamification_settings = $gamification_settings->withHighscoreWTime((bool) $metadata["entry"]);
                     break;
-
                 case "highscore_own_table":
                     $gamification_settings = $gamification_settings->withHighscoreOwnTable((bool) $metadata["entry"]);
                     break;
-
                 case "highscore_top_table":
                     $gamification_settings = $gamification_settings->withHighscoreTopTable((bool) $metadata["entry"]);
                     break;
-
                 case "highscore_top_num":
                     $gamification_settings = $gamification_settings->withHighscoreTopNum((int) $metadata["entry"]);
                     break;
                 case "use_previous_answers":
                     $participant_functionality_settings = $participant_functionality_settings->withUsePreviousAnswerAllowed((bool) $metadata["entry"]);
                     break;
+                case 'question_list_enabled':
+                    $participant_functionality_settings = $participant_functionality_settings->withQuestionListEnabled((bool) $metadata['entry']);
+                    // no break
                 case "title_output":
                     $question_behaviour_settings = $question_behaviour_settings->withQuestionTitleOutputMode((int) $metadata["entry"]);
                     break;
@@ -3392,7 +3273,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                     $result_details_settings = $result_details_settings->withResultsPresentation((int) $metadata["entry"]);
                     break;
                 case "reset_processing_time":
-                    $test_behaviour_settings = $test_behaviour_settings->withResetProcessingTime((bool) $metadata["entry"]);
+                    $test_behaviour_settings = $test_behaviour_settings->withResetProcessingTime($metadata["entry"] === '1');
                     break;
                 case "answer_feedback_points":
                     $question_behaviour_settings = $question_behaviour_settings->withInstantFeedbackPointsEnabled((bool) $metadata["entry"]);
@@ -3551,6 +3432,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                 case 'show_summary':
                     $participant_functionality_settings = $participant_functionality_settings->withQuestionListEnabled(($metadata['entry'] & 1) > 0)
                         ->withUsrPassOverviewMode((int) $metadata['entry']);
+
+                    // no break
+                case 'hide_info_tab':
+                    $additional_settings = $additional_settings->withHideInfoTab($metadata['entry'] === '1');
             }
             if (preg_match("/mark_step_\d+/", $metadata["label"])) {
                 $xmlmark = $metadata["entry"];
@@ -3595,13 +3480,16 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         $this->loadFromDb();
     }
 
-    private function addIntroductionToSettingsFromImport(ilObjTestSettingsIntroduction $settings, array $material)
-    {
+    private function addIntroductionToSettingsFromImport(
+        ilObjTestSettingsIntroduction $settings,
+        array $material,
+        array $mappings
+    ): ilObjTestSettingsIntroduction {
         $text = $material['text'];
         $mobs = $material['mobs'];
         if (str_starts_with($text, '<PageObject>')) {
-            $text = $this->retrieveMobsFromPageImports($text, $mobs);
-            $text = $this->retrieveFilesFromPageImports($text);
+            $text = $this->replaceMobsInPageImports($text, $mappings['Services/MediaObjects']['mob'] ?? []);
+            $text = $this->replaceFilesInPageImports($text, $mappings['Modules/File']['file'] ?? []);
             $page_object = new ilTestPage();
             $page_object->setParentId($this->getId());
             $page_object->setXMLContent($text);
@@ -3618,13 +3506,16 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         );
     }
 
-    private function addConcludingRemarksToSettingsFromImport(ilObjTestSettingsFinishing $settings, array $material)
-    {
+    private function addConcludingRemarksToSettingsFromImport(
+        ilObjTestSettingsFinishing $settings,
+        array $material,
+        array $mappings
+    ): ilObjTestSettingsFinishing {
         $text = $material['text'];
         $mobs = $material['mobs'];
         if (str_starts_with($text, '<PageObject>')) {
-            $text = $this->retrieveMobsFromPageImports($text, $mobs);
-            $text = $this->retrieveFilesFromPageImports($text);
+            $text = $this->replaceMobsInPageImports($text, $mappings['Services/MediaObjects']['mob'] ?? []);
+            $text = $this->replaceFilesInPageImports($text, $mappings['Modules/File']['file'] ?? []);
             $page_object = new ilTestPage();
             $page_object->setParentId($this->getId());
             $page_object->setXMLContent($text);
@@ -3647,33 +3538,27 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         );
     }
 
-    private function retrieveMobsFromPageImports(string $text, array $mobs): string
+    private function replaceMobsInPageImports(string $text, array $mappings): string
     {
-        foreach ($mobs as $mob) {
-            $importfile = ilObjTest::_getImportDirectory() . '/' . ilSession::get('tst_import_subdir') . '/' . $mob['uri'];
-            if (file_exists($importfile)) {
-                $media_object = ilObjMediaObject::_saveTempFileAsMediaObject(basename($importfile), $importfile, false);
-                ilObjMediaObject::_saveUsage($media_object->getId(), 'tst:gp', $this->getId());
-                $text = str_replace($mob['mob'], 'il__mob_' . (string) $media_object->getId(), $text);
+        preg_match_all('/il_(\d+)_mob_(\d+)/', $text, $matches);
+        foreach ($matches[0] as $index => $match) {
+            if (empty($mappings[$matches[2][$index]])) {
+                continue;
             }
+            $text = str_replace($match, "il__mob_{$mappings[$matches[2][$index]]}", $text);
+            ilObjMediaObject::_saveUsage((int) $mappings[$matches[2][$index]], 'tst', $this->getId());
         }
         return $text;
     }
 
-    private function retrieveFilesFromPageImports(string $text): string
+    private function replaceFilesInPageImports(string $text, $mappings): string
     {
         preg_match_all('/il_(\d+)_file_(\d+)/', $text, $matches);
-        foreach ($matches[0] as $match) {
-            $source_dir = ilObjTest::_getImportDirectory() . '/' . ilSession::get('tst_import_subdir') . '/objects/' . $match;
-            $files = scandir($source_dir, SCANDIR_SORT_DESCENDING);
-            if ($files !== false && $files !== [] && is_file($source_dir . '/' . $files[0])) {
-                $file = fopen($source_dir . '/' . $files[0], 'rb');
-                $file_stream = Streams::ofResource($file);
-                $file_obj = new ilObjFile();
-                $file_id = $file_obj->create();
-                $file_obj->appendStream($file_stream, $files[0]);
-                $text = str_replace($match, "il__file_{$file_id}", $text);
+        foreach ($matches[0] as $index => $match) {
+            if (empty($mappings[$matches[2][$index]])) {
+                continue;
             }
+            $text = str_replace($match, "il__file_{$mappings[$matches[2][$index]]}", $text);
         }
         return $text;
     }
@@ -3745,7 +3630,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         // anonymity
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "anonymity");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $main_settings->getGeneralSettings()->getAnonymity()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getGeneralSettings()->getAnonymity() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // question set type (fixed, random, ...)
@@ -3757,7 +3642,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         // sequence settings
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "sequence_settings");
-        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getParticipantFunctionalitySettings()->getPostponedQuestionsMoveToEnd());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getParticipantFunctionalitySettings()->getPostponedQuestionsMoveToEnd() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // author
@@ -3769,7 +3654,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         // reset processing time
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "reset_processing_time");
-        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getTestBehaviourSettings()->getResetProcessingTime());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getTestBehaviourSettings()->getResetProcessingTime() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // count system
@@ -3805,29 +3690,32 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
         $a_xml_writer->xmlStartTag('qtimetadatafield');
         $a_xml_writer->xmlElement('fieldlabel', null, 'pass_deletion_allowed');
-        $a_xml_writer->xmlElement('fieldentry', null, (int) $this->isPassDeletionAllowed());
+        $a_xml_writer->xmlElement('fieldentry', null, $this->isPassDeletionAllowed() ? 1 : 0);
         $a_xml_writer->xmlEndTag('qtimetadatafield');
 
         // score reporting date
         if ($this->getScoreSettings()->getResultSummarySettings()->getReportingDate() !== null) {
             $a_xml_writer->xmlStartTag("qtimetadatafield");
             $a_xml_writer->xmlElement("fieldlabel", null, "reporting_date");
-            $reporting_date = $this->buildPeriodFromFormatedDateString(
-                $this->getScoreSettings()->getResultSummarySettings()->getReportingDate()->format('Y-m-d H:i:s')
+            $a_xml_writer->xmlElement(
+                "fieldentry",
+                null,
+                $this->buildIso8601PeriodForExportCompatibility(
+                    $this->getScoreSettings()->getResultSummarySettings()->getReportingDate(),
+                ),
             );
-            $a_xml_writer->xmlElement("fieldentry", null, $reporting_date);
             $a_xml_writer->xmlEndTag("qtimetadatafield");
         }
         // number of tries
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "nr_of_tries");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $main_settings->getTestBehaviourSettings()->getNumberOfTries()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getTestBehaviourSettings()->getNumberOfTries());
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // number of tries
         $a_xml_writer->xmlStartTag('qtimetadatafield');
         $a_xml_writer->xmlElement('fieldlabel', null, 'block_after_passed');
-        $a_xml_writer->xmlElement('fieldentry', null, (int) $main_settings->getTestBehaviourSettings()->getBlockAfterPassedEnabled());
+        $a_xml_writer->xmlElement('fieldentry', null, $main_settings->getTestBehaviourSettings()->getBlockAfterPassedEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag('qtimetadatafield');
 
         // pass_waiting
@@ -3839,7 +3727,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         // kiosk
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "kiosk");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $main_settings->getTestBehaviourSettings()->getKioskMode()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getTestBehaviourSettings()->getKioskMode());
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
 
@@ -3858,141 +3746,153 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         // use previous answers
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "use_previous_answers");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getParticipantFunctionalitySettings()->getUsePreviousAnswerAllowed());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getParticipantFunctionalitySettings()->getUsePreviousAnswerAllowed() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
-        // hide title points
+        $a_xml_writer->xmlStartTag('qtimetadatafield');
+        $a_xml_writer->xmlElement('fieldlabel', null, 'question_list_enabled');
+        $a_xml_writer->xmlElement('fieldentry', null, $main_settings->getParticipantFunctionalitySettings()->getQuestionListEnabled() ? 1 : 0);
+        $a_xml_writer->xmlEndTag('qtimetadatafield');
+
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "title_output");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $main_settings->getQuestionBehaviourSettings()->getQuestionTitleOutputMode()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getQuestionTitleOutputMode());
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // results presentation
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "results_presentation");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $this->getScoreSettings()->getResultDetailsSettings()->getResultsPresentation()));
+        $a_xml_writer->xmlElement("fieldentry", null, $this->getScoreSettings()->getResultDetailsSettings()->getResultsPresentation());
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // examid in test pass
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "examid_in_test_pass");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $main_settings->getTestBehaviourSettings()->getExamIdInTestPassEnabled()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getTestBehaviourSettings()->getExamIdInTestPassEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // examid in kiosk
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "examid_in_test_res");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $this->getScoreSettings()->getResultDetailsSettings()->getShowExamIdInTestResults()));
+        $a_xml_writer->xmlElement("fieldentry", null, $this->getScoreSettings()->getResultDetailsSettings()->getShowExamIdInTestResults() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // solution details
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "usr_pass_overview_mode");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $main_settings->getParticipantFunctionalitySettings()->getUsrPassOverviewMode()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getParticipantFunctionalitySettings()->getUsrPassOverviewMode());
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // solution details
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "score_reporting");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $this->getScoreSettings()->getResultSummarySettings()->getScoreReporting()));
+        $a_xml_writer->xmlElement("fieldentry", null, $this->getScoreSettings()->getResultSummarySettings()->getScoreReporting());
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "show_solution_list_comparison");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $this->score_settings->getResultDetailsSettings()->getShowSolutionListComparison());
+        $a_xml_writer->xmlElement("fieldentry", null, $this->score_settings->getResultDetailsSettings()->getShowSolutionListComparison() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // solution details
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "instant_verification");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackSolutionEnabled()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackSolutionEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // generic feedback
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "answer_feedback");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackGenericEnabled()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackGenericEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // answer specific feedback
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "instant_feedback_specific");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackSpecificEnabled()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackSpecificEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // answer specific feedback of reached points
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "answer_feedback_points");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackPointsEnabled()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackPointsEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // followup question previous answer freezing
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "follow_qst_answer_fixation");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getQuestionBehaviourSettings()->getLockAnswerOnNextQuestionEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getLockAnswerOnNextQuestionEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // instant response answer freezing
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "instant_feedback_answer_fixation");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getQuestionBehaviourSettings()->getLockAnswerOnInstantFeedbackEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getLockAnswerOnInstantFeedbackEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // instant response forced
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "force_instant_feedback");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getQuestionBehaviourSettings()->getForceInstantFeedbackOnNextQuestion());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getForceInstantFeedbackOnNextQuestion() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
 
         // highscore
         $highscore_metadata = [
-            'highscore_enabled' => ['value' => $this->getHighscoreEnabled()],
-            'highscore_anon' => ['value' => $this->getHighscoreAnon()],
-            'highscore_achieved_ts' => ['value' => $this->getHighscoreAchievedTS()],
-            'highscore_score' => ['value' => $this->getHighscoreScore()],
-            'highscore_percentage' => ['value' => $this->getHighscorePercentage()],
-            'highscore_hints' => ['value' => $this->getHighscoreHints()],
-            'highscore_wtime' => ['value' => $this->getHighscoreWTime()],
-            'highscore_own_table' => ['value' => $this->getHighscoreOwnTable()],
-            'highscore_top_table' => ['value' => $this->getHighscoreTopTable()],
-            'highscore_top_num' => ['value' => $this->getHighscoreTopNum()],
+            'highscore_enabled' => $this->getHighscoreEnabled(),
+            'highscore_anon' => $this->getHighscoreAnon(),
+            'highscore_achieved_ts' => $this->getHighscoreAchievedTS(),
+            'highscore_score' => $this->getHighscoreScore(),
+            'highscore_percentage' => $this->getHighscorePercentage(),
+            'highscore_hints' => $this->getHighscoreHints(),
+            'highscore_wtime' => $this->getHighscoreWTime(),
+            'highscore_own_table' => $this->getHighscoreOwnTable(),
+            'highscore_top_table' => $this->getHighscoreTopTable(),
         ];
-        foreach ($highscore_metadata as $label => $data) {
+        foreach ($highscore_metadata as $label => $value) {
             $a_xml_writer->xmlStartTag("qtimetadatafield");
             $a_xml_writer->xmlElement("fieldlabel", null, $label);
-            $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", $data['value']));
+            $a_xml_writer->xmlElement("fieldentry", null, $value ? 1 : 0);
             $a_xml_writer->xmlEndTag("qtimetadatafield");
         }
+        $a_xml_writer->xmlStartTag("qtimetadatafield");
+        $a_xml_writer->xmlElement("fieldlabel", null, "highscore_top_num");
+        $a_xml_writer->xmlElement("fieldentry", null, $this->getHighscoreTopNum());
+        $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // show cancel
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "suspend_test_allowed");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getParticipantFunctionalitySettings()->getSuspendTestAllowed()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getParticipantFunctionalitySettings()->getSuspendTestAllowed() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // show marker
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "show_marker");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getParticipantFunctionalitySettings()->getQuestionMarkingEnabled()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getParticipantFunctionalitySettings()->getQuestionMarkingEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // fixed participants
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "fixed_participants");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getAccessSettings()->getFixedParticipants()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getAccessSettings()->getFixedParticipants() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // show final statement
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "show_introduction");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getIntroductionSettings()->getIntroductionEnabled()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getIntroductionSettings()->getIntroductionEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // show final statement
         $a_xml_writer->xmlStartTag("qtimetadatafield");
+        $a_xml_writer->xmlElement("fieldlabel", null, 'exam_conditions');
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getIntroductionSettings()->getExamConditionsCheckboxEnabled() ? 1 : 0);
+        $a_xml_writer->xmlEndTag("qtimetadatafield");
+
+        $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "show_concluding_remarks");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getFinishingSettings()->getConcludingRemarksEnabled()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getFinishingSettings()->getConcludingRemarksEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // mail notification
@@ -4004,7 +3904,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         // mail notification type
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "mailnottype");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getFinishingSettings()->getAlwaysSendMailNotification());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getFinishingSettings()->getAlwaysSendMailNotification() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // export settings
@@ -4016,7 +3916,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         // shuffle questions
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "shuffle_questions");
-        $a_xml_writer->xmlElement("fieldentry", null, sprintf("%d", (int) $main_settings->getQuestionBehaviourSettings()->getShuffleQuestions()));
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getShuffleQuestions() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // processing time
@@ -4028,14 +3928,14 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         // enable_examview
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "enable_examview");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getFinishingSettings()->getShowAnswerOverview());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getFinishingSettings()->getShowAnswerOverview() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
 
         // skill_service
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "skill_service");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getAdditionalSettings()->getSkillsServiceEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getAdditionalSettings()->getSkillsServiceEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // add qti assessmentcontrol
@@ -4051,30 +3951,43 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         // show_grading_status
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "show_grading_status");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $this->isShowGradingStatusEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $this->isShowGradingStatusEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // show_grading_mark
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "show_grading_mark");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $this->isShowGradingMarkEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $this->isShowGradingMarkEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
+        $a_xml_writer->xmlStartTag('qtimetadatafield');
+        $a_xml_writer->xmlElement('fieldlabel', null, 'hide_info_tab');
+        $a_xml_writer->xmlElement('fieldentry', null, $this->getMainSettings()->getAdditionalSettings()->getHideInfoTab() ? 1 : 0);
+        $a_xml_writer->xmlEndTag("qtimetadatafield");
 
-        // starting time
-        if ($this->getStartingTime()) {
+        if ($this->getStartingTime() > 0) {
             $a_xml_writer->xmlStartTag("qtimetadatafield");
             $a_xml_writer->xmlElement("fieldlabel", null, "starting_time");
-            $backward_compatibility_format = $this->buildIso8601PeriodFromUnixtimeForExportCompatibility($this->getStartingTime());
-            $a_xml_writer->xmlElement("fieldentry", null, $backward_compatibility_format);
+            $a_xml_writer->xmlElement(
+                "fieldentry",
+                null,
+                $this->buildIso8601PeriodForExportCompatibility(
+                    (new DateTimeImmutable())->setTimestamp($this->getStartingTime()),
+                ),
+            );
             $a_xml_writer->xmlEndTag("qtimetadatafield");
         }
         // ending time
-        if ($this->getEndingTime()) {
+        if ($this->getEndingTime() > 0) {
             $a_xml_writer->xmlStartTag("qtimetadatafield");
             $a_xml_writer->xmlElement("fieldlabel", null, "ending_time");
-            $backward_compatibility_format = $this->buildIso8601PeriodFromUnixtimeForExportCompatibility($this->getEndingTime());
-            $a_xml_writer->xmlElement("fieldentry", null, $backward_compatibility_format);
+            $a_xml_writer->xmlElement(
+                "fieldentry",
+                null,
+                $this->buildIso8601PeriodForExportCompatibility(
+                    (new DateTimeImmutable())->setTimestamp($this->getEndingTime()),
+                ),
+            );
             $a_xml_writer->xmlEndTag("qtimetadatafield");
         }
 
@@ -4082,7 +3995,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         //activation_limited
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "activation_limited");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $this->isActivationLimited());
+        $a_xml_writer->xmlElement("fieldentry", null, $this->isActivationLimited() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         //activation_start_time
@@ -4100,13 +4013,13 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         //activation_visibility
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "activation_visibility");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $this->getActivationVisibility());
+        $a_xml_writer->xmlElement("fieldentry", null, $this->getActivationVisibility() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // autosave
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "autosave");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getQuestionBehaviourSettings()->getAutosaveEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getAutosaveEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         // autosave_ival
@@ -4118,31 +4031,31 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         //offer_question_hints
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "offer_question_hints");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getQuestionBehaviourSettings()->getQuestionHintsEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getQuestionHintsEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         //instant_feedback_specific
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "instant_feedback_specific");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackSpecificEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getInstantFeedbackSpecificEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         //instant_feedback_answer_fixation
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "instant_feedback_answer_fixation");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getQuestionBehaviourSettings()->getLockAnswerOnInstantFeedbackEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getLockAnswerOnInstantFeedbackEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         //obligations_enabled
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "obligations_enabled");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getQuestionBehaviourSettings()->getCompulsoryQuestionsEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getQuestionBehaviourSettings()->getCompulsoryQuestionsEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         //enable_processing_time
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "enable_processing_time");
-        $a_xml_writer->xmlElement("fieldentry", null, (int) $main_settings->getTestBehaviourSettings()->getProcessingTimeEnabled());
+        $a_xml_writer->xmlElement("fieldentry", null, $main_settings->getTestBehaviourSettings()->getProcessingTimeEnabled() ? 1 : 0);
         $a_xml_writer->xmlEndTag("qtimetadatafield");
 
         foreach ($this->mark_schema->mark_steps as $index => $mark) {
@@ -4204,21 +4117,9 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         return $xml;
     }
 
-    /**
-     * @param $unix_timestamp
-     * @return string
-     */
-    protected function buildIso8601PeriodFromUnixtimeForExportCompatibility($unix_timestamp): string
+    protected function buildIso8601PeriodForExportCompatibility(DateTimeImmutable $date_time): string
     {
-        $date_time_unix = new ilDateTime($unix_timestamp, IL_CAL_UNIX);
-        $date_time = $date_time_unix->get(IL_CAL_DATETIME);
-        return $this->buildPeriodFromFormatedDateString($date_time);
-    }
-
-    protected function buildPeriodFromFormatedDateString(string $date_time): string
-    {
-        preg_match("/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/", $date_time, $matches);
-        return sprintf("P%dY%dM%dDT%dH%dM%dS", $matches[1], $matches[2], $matches[3], $matches[4], $matches[5], $matches[6]);
+        return $date_time->setTimezone(new DateTimeZone('UTC'))->format('\PY\Yn\Mj\D\TG\Hi\Ms\S');
     }
 
     protected function buildDateTimeImmutableFromPeriod(?string $period): ?DateTimeImmutable
@@ -4449,27 +4350,18 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
     public function canEditMarks(): bool
     {
         $total = $this->evalTotalPersons();
-        if ($total > 0) {
-            if ($this->getReportingDate()) {
-                if (preg_match("/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/", $this->getReportingDate(), $matches)) {
-                    $epoch_time = mktime(
-                        (int) $matches[4],
-                        (int) $matches[5],
-                        (int) $matches[6],
-                        (int) $matches[2],
-                        (int) $matches[3],
-                        (int) $matches[1]
-                    );
-                    $now = time();
-                    if ($now < $epoch_time) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        } else {
+        $results_summary_settings = $this->getScoreSettings()->getResultSummarySettings();
+        if ($total === 0
+            || $results_summary_settings->getScoreReportingEnabled() === false) {
             return true;
         }
+
+        if ($results_summary_settings->getScoreReporting() === ilObjTestSettingsResultSummary::SCORE_REPORTING_DATE) {
+            return $results_summary_settings->getReportingDate()
+                >= new DateTimeImmutable('now', new DateTimeZone('UTC'));
+        }
+
+        return false;
     }
 
     /**
@@ -4534,7 +4426,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                 }
             }
         }
-        return join(",", $author);
+        return join(", ", $author);
     }
 
     /**
@@ -4615,17 +4507,26 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         $new_obj->setTmpCopyWizardCopyId($copy_id);
         $this->cloneMetaData($new_obj);
 
+        $new_obj->mark_schema = clone $this->mark_schema;
+        $new_obj->setTemplate($this->getTemplate());
         $new_obj->saveToDb();
         $new_obj->addToNewsOnOnline(false, $new_obj->getObjectProperties()->getPropertyIsOnline()->getIsOnline());
+
         $this->getMainSettingsRepository()->store(
             $this->getMainSettings()->withTestId($new_obj->getTestId())
+                ->withIntroductionSettings(
+                    $this->getMainSettings()->getIntroductionSettings()->withIntroductionPageId(
+                        $this->cloneIntroduction()
+                    )->withTestId($new_obj->getTestId())
+                )->withFinishingSettings(
+                    $this->getMainSettings()->getFinishingSettings()->withConcludingRemarksPageId(
+                        $this->cloneConcludingRemarks()
+                    )->withTestId($new_obj->getTestId())
+                )
         );
         $this->getScoreSettingsRepository()->store(
             $this->getScoreSettings()->withTestId($new_obj->getTestId())
         );
-
-        $new_obj->mark_schema = clone $this->mark_schema;
-        $new_obj->setTemplate($this->getTemplate());
 
         // clone certificate
         $pathFactory = new ilCertificatePathFactory();
@@ -4996,33 +4897,8 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         $participants = &$this->getTestParticipants();
         $filtered_participants = [];
         foreach ($participants as $active_id => $participant) {
-            $qstType_IN_manScoreableQstTypes = $this->db->in('qpl_questions.question_type_fi', $scoring, false, 'integer');
-
-            $queryString = "
-				SELECT		tst_test_result.manual
-
-				FROM		tst_test_result
-
-				INNER JOIN	qpl_questions
-				ON			tst_test_result.question_fi = qpl_questions.question_id
-
-				WHERE		tst_test_result.active_fi = %s
-				AND			$qstType_IN_manScoreableQstTypes
-			";
-
-            $result = $this->db->queryF(
-                $queryString,
-                ["integer"],
-                [$active_id]
-            );
-
-            $count = $result->numRows();
-
-            if ($count > 0) {
+            if ($participant['tries'] > 0) {
                 switch ($filter) {
-                    case 3: // all users
-                        $filtered_participants[$active_id] = $participant;
-                        break;
                     case 4:
                         if ($this->testManScoringDoneHelper->isDone((int) $active_id)) {
                             $filtered_participants[$active_id] = $participant;
@@ -5033,21 +4909,8 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                             $filtered_participants[$active_id] = $participant;
                         }
                         break;
-                    case 6:
-                        // partially scored participants
-                        $found = 0;
-                        while ($row = $this->db->fetchAssoc($result)) {
-                            if ($row["manual"]) {
-                                $found++;
-                            }
-                        }
-                        if (($found > 0) && ($found < $count)) {
-                            $filtered_participants[$active_id] = $participant;
-                        }
-                        break;
                     default:
                         $filtered_participants[$active_id] = $participant;
-                        break;
                 }
             }
         }
@@ -5602,6 +5465,12 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             "errormessage" => ""
         ];
 
+        if (!$this->getObjectProperties()->getPropertyIsOnline()->getIsOnline()) {
+            $result["executable"] = false;
+            $result["errormessage"] = $this->lng->txt('autosave_failed') . ': ' . $this->lng->txt('offline');
+            return $result;
+        }
+
         if (!$this->startingTimeReached()) {
             $result["executable"] = false;
             $result["errormessage"] = sprintf($this->lng->txt("detail_starting_time_not_reached"), ilDatePresentation::formatDate(new ilDateTime($this->getStartingTime(), IL_CAL_UNIX)));
@@ -5619,22 +5488,8 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             && $active_id > 0
             && ($starting_time = $this->getStartingTimeOfUser($active_id)) !== false
             && $this->isMaxProcessingTimeReached($starting_time, $active_id)) {
-            if ($allow_pass_increase
-                    && $this->getResetProcessingTime()
-                    && (($this->getNrOfTries() === 0)
-                || ($this->getNrOfTries() > (self::_getPass($active_id) + 1)))) {
-                // a test pass was quitted because the maximum processing time was reached, but the time
-                // will be resetted for future passes, so if there are more passes allowed, the participant may
-                // start the test again.
-                // This code block is only called when $allowPassIncrease is TRUE which only happens when
-                // the test info page is opened. Otherwise this will lead to unexpected results!
-                $test_session->increasePass();
-                $test_session->setLastSequence(0);
-                $test_session->saveToDb();
-            } else {
-                $result["executable"] = false;
-                $result["errormessage"] = $this->lng->txt("detail_max_processing_time_reached");
-            }
+            $result["executable"] = false;
+            $result["errormessage"] = $this->lng->txt("detail_max_processing_time_reached");
             return $result;
         }
 
@@ -6447,6 +6302,12 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
     public function applyDefaults($test_defaults): bool
     {
         $testsettings = unserialize($test_defaults['defaults']);
+        $activation_starting_time = is_numeric($testsettings['activation_starting_time'] ?? false)
+            ? (int) $testsettings['activation_starting_time']
+            : null;
+        $activation_ending_time = is_numeric($testsettings['activation_ending_time'] ?? false)
+            ? (int) $testsettings['activation_ending_time']
+            : null;
         $unserialized_marks = unserialize($test_defaults['marks']);
 
         if ($unserialized_marks instanceof ASS_MarkSchema) {
@@ -6455,20 +6316,23 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
         $this->mark_schema->setMarkSteps($unserialized_marks);
 
-        $this->storeActivationSettings([
-            'is_activation_limited' => $testsettings['activation_limited'],
-            'activation_starting_time' => $testsettings['activation_start_time'],
-            'activation_ending_time' => $testsettings['activation_end_time'],
-            'activation_visibility' => $testsettings['activation_visibility']
-        ]);
+        $this->storeActivationSettings(
+            (bool) ($testsettings['is_activation_limited'] ?? false),
+            $activation_starting_time,
+            $activation_ending_time,
+            (bool) ($testsettings['activation_visibility'] ?? false),
+        );
 
         $main_settings = $this->getMainSettings();
+
+        $general_settings = $main_settings->getGeneralSettings()
+            ->withAnonymity((bool) $testsettings['Anonymity']);
+        if (isset($testsettings['questionSetType'])) {
+            $general_settings = $general_settings->withQuestionSetType($testsettings['questionSetType']);
+        }
+
         $main_settings = $main_settings
-            ->withGeneralSettings(
-                $main_settings->getGeneralSettings()
-                ->withQuestionSetType($testsettings['questionSetType'])
-                ->withAnonymity((bool) $testsettings['Anonymity'])
-            )
+            ->withGeneralSettings($general_settings)
             ->withIntroductionSettings(
                 $main_settings->getIntroductionSettings()
                 ->withIntroductionEnabled((bool) $testsettings['IntroEnabled'])
@@ -6488,10 +6352,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             )
             ->withTestBehaviourSettings(
                 $main_settings->getTestBehaviourSettings()
-                ->withNumberOfTries($testsettings['NrOfTries'])
+                ->withNumberOfTries((int) $testsettings['NrOfTries'])
                 ->withBlockAfterPassedEnabled((bool) $testsettings['BlockAfterPassed'])
                 ->withPassWaiting($testsettings['pass_waiting'])
-                ->withKioskMode($testsettings['Kiosk'])
+                ->withKioskMode((int) $testsettings['Kiosk'])
                 ->withProcessingTimeEnabled((bool) $testsettings['EnableProcessingTime'])
                 ->withProcessingTime($testsettings['ProcessingTime'])
                 ->withResetProcessingTime((bool) $testsettings['ResetProcessingTime'])
@@ -6518,7 +6382,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                 ->withUsePreviousAnswerAllowed((bool) $testsettings['use_previous_answers'])
                 ->withSuspendTestAllowed((bool) $testsettings['ShowCancel'])
                 ->withPostponedQuestionsMoveToEnd((bool) $testsettings['SequenceSettings'])
-                ->withUsrPassOverviewMode($testsettings['ListOfQuestionsSettings'])
+                ->withUsrPassOverviewMode((int) $testsettings['ListOfQuestionsSettings'])
                 ->withQuestionMarkingEnabled((bool) $testsettings['ShowMarker'])
             )
             ->withFinishingSettings(
@@ -6540,7 +6404,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
         $reporting_date = $testsettings['ReportingDate'];
         if (is_string($reporting_date)) {
-            $reporting_date = DateTimeImmutable($testsettings['ReportingDate']);
+            $reporting_date = new DateTimeImmutable($testsettings['ReportingDate'], new DateTimeZone('UTC'));
         }
 
         $score_settings = $this->getScoreSettings();
@@ -7443,28 +7307,34 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         $this->activation_limited = (bool) $a_value;
     }
 
-    public function storeActivationSettings(array $settings): void
-    {
+    public function storeActivationSettings(
+        ?bool $is_activation_limited = false,
+        ?int $activation_starting_time = null,
+        ?int $activation_ending_time = null,
+        bool $activation_visibility = false,
+    ): void {
         if (!$this->ref_id) {
             return;
         }
 
         $item = new ilObjectActivation();
-        if (!$settings['is_activation_limited']) {
+        $is_activation_limited ??= false;
+
+        if (!$is_activation_limited) {
             $item->setTimingType(ilObjectActivation::TIMINGS_DEACTIVATED);
         } else {
             $item->setTimingType(ilObjectActivation::TIMINGS_ACTIVATION);
-            $item->setTimingStart($settings['activation_starting_time']);
-            $item->setTimingEnd($settings['activation_ending_time']);
-            $item->toggleVisible($settings['activation_visibility']);
+            $item->setTimingStart($activation_starting_time);
+            $item->setTimingEnd($activation_ending_time);
+            $item->toggleVisible($activation_visibility);
         }
 
         $item->update($this->ref_id);
 
-        $this->setActivationLimited($settings['is_activation_limited']);
-        $this->setActivationStartingTime($settings['activation_starting_time']);
-        $this->setActivationStartingTime($settings['activation_ending_time']);
-        $this->setActivationVisibility($settings['activation_visibility']);
+        $this->setActivationLimited($is_activation_limited);
+        $this->setActivationStartingTime($activation_starting_time);
+        $this->setActivationStartingTime($activation_ending_time);
+        $this->setActivationVisibility($activation_visibility);
     }
 
     public function getIntroductionPageId(): int
@@ -7804,12 +7674,6 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             }
 
             $this->db->manipulateF(
-                "UPDATE tst_active SET tries = %s, submitted = %s, submittimestamp = %s WHERE active_id = %s",
-                ['integer','integer','timestamp','integer'],
-                [0, 0, null, $active_fi]
-            );
-
-            $this->db->manipulateF(
                 "INSERT INTO tst_addtime (active_fi, additionaltime, tstamp) VALUES (%s, %s, %s)",
                 ['integer','integer','integer'],
                 [$active_fi, $minutes, time()]
@@ -7978,7 +7842,6 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         $scoring = new ilTestScoring($this, $this->db);
         $scoring->setPreserveManualScores($preserve_manscoring);
         $scoring->recalculateSolutions();
-        ilLPStatusWrapper::_updateStatus($this->getId(), $this->user->getId());
     }
 
     public static function getTestObjIdsWithActiveForUserId($userId): array
@@ -8237,8 +8100,11 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
         if ($pass !== null) {
             $query = '
-                SELECT		tst_pass_result.*
+                SELECT		tst_pass_result.*,
+                            tst_active.last_finished_pass
                 FROM		tst_pass_result
+                INNER JOIN  tst_active
+                on          tst_pass_result.active_fi = tst_active.active_id
                 WHERE		active_fi = %s
                 AND			pass = %s
             ';
@@ -8257,11 +8123,12 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
             $max = (float) ($test_pass_result_row['maxpoints'] ?? 0);
             $reached = (float) ($test_pass_result_row['points'] ?? 0);
             $percentage = ($max <= 0.0 || $reached <= 0.0) ? 0 : ($reached / $max) * 100.0;
-
             $obligations_answered = (int) ($test_pass_result_row['obligations_answered'] ?? 1);
 
             $mark = $this->mark_schema->getMatchingMark($percentage);
-            $is_passed = (bool) $mark->getPassed();
+            $is_passed = $test_pass_result_row['last_finished_pass'] !== null
+                && $pass <= $test_pass_result_row['last_finished_pass']
+                && $mark->getPassed();
 
             $hint_count = $test_pass_result_row['hint_count'] ?? 0;
             $hint_points = $test_pass_result_row['hint_points'] ?? 0.0;
@@ -8281,6 +8148,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                     ['integer'],
                     [$active_id]
                 );
+
+                if ($reached < 0.0) {
+                    $reached = 0.0;
+                }
 
                 $mark_short_name = $mark->getShortName();
                 if ($mark_short_name === '') {
@@ -8378,7 +8249,8 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
 
             $row = $this->db->fetchAssoc($result);
 
-            if ($row['reachedpoints'] === null) {
+            if ($row['reachedpoints'] === null
+                || $row['reachedpoints'] < 0.0) {
                 $row['reachedpoints'] = 0.0;
             }
             if ($row['hint_count'] === null) {
@@ -8398,7 +8270,7 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
                         'pass' => ['integer', $pass]
                     ],
                     [
-                        'points' => ['float', $row['reachedpoints'] ?: 0],
+                        'points' => ['float', $row['reachedpoints']],
                         'maxpoints' => ['float', $data['points']],
                         'questioncount' => ['integer', $data['count']],
                         'answeredquestions' => ['integer', $row['answeredquestions']],
@@ -8424,10 +8296,10 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware
         return [
             'active_fi' => $active_id,
             'pass' => $pass,
-            'points' => $row["reachedpoints"] ?? 0.0,
-            'maxpoints' => $data["points"],
-            'questioncount' => $data["count"],
-            'answeredquestions' => $row["answeredquestions"],
+            'points' => $row['reachedpoints'],
+            'maxpoints' => $data['points'],
+            'questioncount' => $data['count'],
+            'answeredquestions' => $row['answeredquestions'],
             'workingtime' => $time,
             'tstamp' => time(),
             'hint_count' => $row['hint_count'],

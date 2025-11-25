@@ -150,40 +150,39 @@ class assKprimChoiceGUI extends assQuestionGUI implements ilGuiQuestionScoringAd
 
         $this->addBasicQuestionFormProperties($form);
 
-        $this->populateQuestionSpecificFormPart($form);
-        $this->populateAnswerSpecificFormPart($form);
+        $answer_type = $this->request->string('answer_type') ?: null;
+        $this->populateQuestionSpecificFormPart($form, $answer_type);
+        $this->populateAnswerSpecificFormPart($form, $answer_type);
 
         $this->populateTaxonomyFormSection($form);
 
         return $form;
     }
 
-    /**
-     * @param ilPropertyFormGUI $form
-     * @return ilPropertyFormGUI
-     */
-    public function populateQuestionSpecificFormPart(ilPropertyFormGUI $form): ilPropertyFormGUI
+    public function populateQuestionSpecificFormPart(ilPropertyFormGUI $form, ?string $answer_type = null): ilPropertyFormGUI
     {
         // shuffle answers
         $shuffleAnswers = new ilCheckboxInputGUI($this->lng->txt("shuffle_answers"), "shuffle_answers_enabled");
         $shuffleAnswers->setChecked($this->object->isShuffleAnswersEnabled());
         $form->addItem($shuffleAnswers);
 
+        $answer_type ??= $this->object->getAnswerType();
         if (!$this->object->getSelfAssessmentEditingMode()) {
             // answer mode (single-/multi-line)
             $answerType = new ilSelectInputGUI($this->lng->txt('answer_types'), 'answer_type');
             $answerType->setOptions($this->object->getAnswerTypeSelectOptions($this->lng));
-            $answerType->setValue($this->object->getAnswerType());
+            $answerType->setValue($answer_type);
             $form->addItem($answerType);
         }
 
-        if (!$this->object->getSelfAssessmentEditingMode() && $this->object->isSingleLineAnswerType($this->object->getAnswerType())) {
+        if (!$this->object->getSelfAssessmentEditingMode() && $this->object->isSingleLineAnswerType($answer_type)) {
             // thumb size
             $thumb_size = new ilNumberInputGUI($this->lng->txt('thumb_size'), 'thumb_size');
-            $thumb_size->setSuffix($this->lng->txt("thumb_size_unit_pixel"));
+            $thumb_size->setSuffix($this->lng->txt('thumb_size_unit_pixel'));
             $thumb_size->setInfo($this->lng->txt('thumb_size_info'));
             $thumb_size->setDecimals(false);
-            $thumb_size->setMinValue(20);
+            $thumb_size->setMinValue($this->object->getMinimumThumbSize());
+            $thumb_size->setMaxValue($this->object->getMaximumThumbSize());
             $thumb_size->setSize(6);
             $thumb_size->setValue($this->object->getThumbSize());
         } else {
@@ -249,8 +248,6 @@ class assKprimChoiceGUI extends assQuestionGUI implements ilGuiQuestionScoringAd
 
         if (!$this->object->getSelfAssessmentEditingMode()) {
             $this->object->setAnswerType($form->getItemByPostVar('answer_type')->getValue());
-        } else {
-            $this->object->setAnswerType(assKprimChoice::ANSWER_TYPE_MULTI_LINE);
         }
 
         if (!$this->object->getSelfAssessmentEditingMode() && $this->object->isSingleLineAnswerType($old_answer_type)) {
@@ -277,26 +274,19 @@ class assKprimChoiceGUI extends assQuestionGUI implements ilGuiQuestionScoringAd
         $this->object->setScorePartialSolutionEnabled($form->getItemByPostVar('score_partsol_enabled')->getChecked());
     }
 
-    /**
-     * @param ilPropertyFormGUI $form
-     * @return ilPropertyFormGUI
-     */
-    public function populateAnswerSpecificFormPart(ilPropertyFormGUI $form): ilPropertyFormGUI
+    public function populateAnswerSpecificFormPart(ilPropertyFormGUI $form, ?string $answer_type = null): ilPropertyFormGUI
     {
-        $kprimAnswers = new ilKprimChoiceWizardInputGUI($this->lng->txt('answers'), 'kprimanswers');
-        $kprimAnswers->setInfo($this->lng->txt('kprim_answers_info'));
-        $kprimAnswers->setSize(64);
-        $kprimAnswers->setMaxLength(1000);
-        $kprimAnswers->setRequired(true);
-        $kprimAnswers->setAllowMove(true);
-        $kprimAnswers->setQuestionObject($this->object);
-        if (!$this->object->getSelfAssessmentEditingMode()) {
-            $kprimAnswers->setSingleline($this->object->isSingleLineAnswerType($this->object->getAnswerType()));
-        } else {
-            $kprimAnswers->setSingleline(false);
-        }
-        $kprimAnswers->setValues($this->object->getAnswers());
-        $form->addItem($kprimAnswers);
+        $answer_type ??= $this->object->getAnswerType();
+
+        $answers = new ilKprimChoiceWizardInputGUI($this->lng->txt('answers'), 'kprimanswers');
+        $answers->setInfo($this->lng->txt('kprim_answers_info'));
+        $answers->setSize(64);
+        $answers->setRequired(true);
+        $answers->setAllowMove(true);
+        $answers->setQuestionObject($this->object);
+        $answers->setSingleline($this->object->isSingleLineAnswerType($answer_type));
+        $answers->setValues($this->object->getAnswers());
+        $form->addItem($answers);
 
         return $form;
     }
@@ -551,7 +541,7 @@ class assKprimChoiceGUI extends assQuestionGUI implements ilGuiQuestionScoringAd
     /**
      * @param $active_id
      * @param null $pass
-     * @param bool $graphicalOutput
+     * @param bool $graphical_output
      * @param bool $result_output
      * @param bool $show_question_only
      * @param bool $show_feedback
@@ -570,32 +560,70 @@ class assKprimChoiceGUI extends assQuestionGUI implements ilGuiQuestionScoringAd
         $show_manual_scoring = false,
         $show_question_text = true
     ): string {
-        // shuffle output
-        $keys = $this->getParticipantsAnswerKeySequence();
-
-        // get the solution of the user for the active pass or from the last pass if allowed
         $user_solution = [];
+
         if (($active_id > 0) && (!$show_correct_solution)) {
             $solutions = $this->object->getSolutionValues($active_id, $pass);
             foreach ($solutions as $idx => $solution_value) {
-                $user_solution[$solution_value['value1']] = $solution_value['value2'];
+                $user_solution[] = [
+                    'value1' => $solution_value['value1'],
+                    'value2' => $solution_value['value2']
+                ];
             }
         } else {
             // take the correct solution instead of the user solution
             foreach ($this->object->getAnswers() as $answer) {
-                $user_solution[$answer->getPosition()] = $answer->getCorrectness();
+                $user_solution[] = [
+                    'value1' => $answer->getPosition(),
+                    'value2' => $answer->getCorrectness()
+                ];
             }
         }
 
-        // generate the question output
-        $template = new ilTemplate("tpl.il_as_qpl_mc_kprim_output_solution.html", true, true, "Modules/TestQuestionPool");
+        return $this->renderSolutionOutput(
+            $user_solution,
+            $active_id,
+            $pass,
+            $graphicalOutput,
+            $result_output,
+            $show_question_only,
+            $show_feedback,
+            $show_correct_solution,
+            $show_manual_scoring,
+            $show_question_text,
+            false,
+            false
+        );
+    }
 
+    public function renderSolutionOutput(
+        mixed $user_solutions,
+        int $active_id,
+        ?int $pass,
+        bool $graphical_output = false,
+        bool $result_output = false,
+        bool $show_question_only = true,
+        bool $show_feedback = false,
+        bool $show_correct_solution = false,
+        bool $show_manual_scoring = false,
+        bool $show_question_text = true,
+        bool $show_autosave_title = false,
+        bool $show_inline_feedback = false,
+    ): ?string {
+
+        $user_solution = [];
+        foreach ($user_solutions as $idx => $solution_value) {
+            $user_solution[$solution_value['value1']] = $solution_value['value2'];
+        }
+
+        $template = new ilTemplate("tpl.il_as_qpl_mc_kprim_output_solution.html", true, true, "Modules/TestQuestionPool");
+        $keys = $this->getParticipantsAnswerKeySequence();
         foreach ($keys as $answer_id) {
             $answer = $this->object->getAnswer($answer_id);
 
             if (($active_id > 0) &&
                 !$show_correct_solution &&
-                $graphicalOutput) {
+                $graphical_output) {
                 $correctness_icon = $this->generateCorrectnessIconsForCorrectness(self::CORRECTNESS_NOT_OK);
                 if (isset($user_solution[$answer->getPosition()]) && $user_solution[$answer->getPosition()] == $answer->getCorrectness()) {
                     $correctness_icon = $this->generateCorrectnessIconsForCorrectness(self::CORRECTNESS_OK);

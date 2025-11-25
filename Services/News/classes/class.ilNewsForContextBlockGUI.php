@@ -38,7 +38,6 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
     protected bool $dynamic = false;
     protected ilNewsCache $acache;
     protected bool $show_view_selection;
-    protected bool $new_rendering = true;
 
     /**
      * @var false|mixed|string|null
@@ -97,10 +96,7 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
             self::$st_data = ilNewsItem::prepareNewsDataFromCache($cres);
             $this->cache_hit = true;
         }
-        if ($this->getDynamic() && !$this->cache_hit) {
-            $this->dynamic = true;
-            $data = [];
-        } elseif (!empty(self::$st_data)) {
+        if (!empty(self::$st_data)) {
             $data = self::$st_data;
         } else {
             $data = $this->getNewsData();
@@ -179,7 +175,7 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
 
         $ilCtrl = $DIC->ctrl();
 
-        if (strtolower($ilCtrl->getCmdClass()) === "ilnewsitemgui") {
+        if (strcasecmp($ilCtrl->getCmdClass(), ilNewsItemGUI::class) === 0) {
             return IL_SCREEN_FULL;
         }
 
@@ -199,32 +195,14 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
 
     public function executeCommand()
     {
-        $ilCtrl = $this->ctrl;
-
-        $next_class = $ilCtrl->getNextClass();
-        $cmd = $ilCtrl->getCmd("getHTML");
-
-        switch ($next_class) {
-            case "ilnewsitemgui":
-                $news_item_gui = new ilNewsItemGUI();
-                $news_item_gui->setEnableEdit($this->getEnableEdit());
-                $html = $ilCtrl->forwardCommand($news_item_gui);
-                return $html;
-
-            default:
-                return $this->$cmd();
+        if (strcasecmp($this->ctrl->getNextClass(), ilNewsItemGUI::class) === 0) {
+            $news_item_gui = new ilNewsItemGUI();
+            $news_item_gui->setEnableEdit($this->getEnableEdit());
+            return $this->ctrl->forwardCommand($news_item_gui);
         }
-    }
 
-    public function fillDataSection(): void
-    {
-        if ($this->dynamic) {
-            $this->setDataSection($this->getDynamicReload());
-        } elseif (count($this->getData()) > 0) {
-            parent::fillDataSection();
-        } else {
-            $this->setDataSection($this->getOverview());
-        }
+        $cmd = $this->ctrl->getCmd("getHTML");
+        return $this->$cmd();
     }
 
     public function getHTML(): string
@@ -267,13 +245,13 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
         // add edit commands
         if ($this->news_access->canAdd()) {
             $this->addBlockCommand(
-                $ilCtrl->getLinkTargetByClass("ilnewsitemgui", "editNews"),
+                $ilCtrl->getLinkTargetByClass(ilNewsItemGUI::class, "editNews"),
                 $lng->txt("edit")
             );
 
             $ilCtrl->setParameter($this, "add_mode", "block");
             $this->addBlockCommand(
-                $ilCtrl->getLinkTargetByClass("ilnewsitemgui", "createNewsItem"),
+                $ilCtrl->getLinkTargetByClass(ilNewsItemGUI::class, "createNewsItem"),
                 $lng->txt("add")
             );
             $ilCtrl->setParameter($this, "add_mode", "");
@@ -287,11 +265,11 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
             $obj_class = strtolower($obj_def->getClassName($obj_type));
             $parent_gui = "ilobj" . $obj_class . "gui";
 
-            $ilCtrl->setParameterByClass("ilcontainernewssettingsgui", "ref_id", $ref_id);
+            $ilCtrl->setParameterByClass(ilContainerNewsSettingsGUI::class, "ref_id", $ref_id);
 
             if (in_array($obj_class, self::OBJECTS_WITH_NEWS_SUBTAB)) {
                 $this->addBlockCommand(
-                    $ilCtrl->getLinkTargetByClass(["ilrepositorygui", $parent_gui, "ilcontainernewssettingsgui"], "show"),
+                    $ilCtrl->getLinkTargetByClass([ilRepositoryGUI::class, $parent_gui, ilContainerNewsSettingsGUI::class], "show"),
                     $lng->txt("settings")
                 );
             } else {
@@ -370,39 +348,6 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
         } elseif ($got_notices) {
             $this->view = "";
         }
-    }
-
-    /**
-     * get flat list for dashboard
-     */
-    public function fillRow(array $a_set): void
-    {
-        $info = $this->getInfoForData($a_set);
-
-        $this->tpl->setCurrentBlock("long");
-        $this->tpl->setVariable("VAL_CREATION_DATE", $info["creation_date"]);
-        $this->tpl->parseCurrentBlock();
-
-        if ($info["ref_id"] > 0) {
-            $this->tpl->setCurrentBlock("news_context");
-            $this->tpl->setVariable("TYPE", $info["type_txt"]);
-            $this->tpl->setVariable("IMG_TYPE", $info["type_icon"]);
-            $this->tpl->setVariable("TITLE", $info["obj_title"]);
-            if ($info["user_read"] > 0) {
-                $this->tpl->setVariable("TITLE_CLASS", 'class="light"');
-            }
-
-            $this->tpl->parseCurrentBlock();
-        }
-
-        // title
-        $this->tpl->setVariable("VAL_TITLE", $info["news_title"]);
-
-        if ($info["user_read"] > 0) {
-            $this->tpl->setVariable("A_CLASS", 'class="light"');
-        }
-
-        $this->tpl->setVariable("HREF_SHOW", $info["url"]);
     }
 
     public function getInfoForData(array $news): array
@@ -721,9 +666,9 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
 
                 // file hack, not nice
                 if ($obj_type === "file") {
-                    $ilCtrl->setParameterByClass("ilrepositorygui", "ref_id", $item["ref_id"]);
-                    $url = $ilCtrl->getLinkTargetByClass("ilrepositorygui", "sendfile");
-                    $ilCtrl->setParameterByClass("ilrepositorygui", "ref_id", $this->std_request->getRefId());
+                    $ilCtrl->setParameterByClass(ilRepositoryGUI::class, "ref_id", $item["ref_id"]);
+                    $url = $ilCtrl->getLinkTargetByClass(ilRepositoryGUI::class, "sendfile");
+                    $ilCtrl->setParameterByClass(ilRepositoryGUI::class, "ref_id", $this->std_request->getRefId());
 
                     $button = $this->gui->button(
                         $this->lng->txt("download"),
@@ -1249,47 +1194,13 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
         return $this->ui->renderer()->render($panel);
     }
 
-    public function getDynamic(): bool
-    {
-        $ilCtrl = $this->ctrl;
-        $ilUser = $this->user;
-
-        // @todo: enable js loading
-        if ($this->new_rendering) {
-            return false;
-        }
-
-        if ($ilCtrl->getCmd() === "hideNotifications" ||
-            $ilCtrl->getCmd() === "showNotifications") {
-            return false;
-        }
-
-        if ($ilCtrl->getCmdClass() !== "ilcolumngui" && $ilCtrl->getCmd() !== "enableJS") {
-            $sess_feed_js = "";
-            if (ilSession::get("il_feed_js") != "") {
-                $sess_feed_js = ilSession::get("il_feed_js");
-            }
-
-            if ($sess_feed_js !== "n" &&
-                ($ilUser->getPref("il_feed_js") !== "n" || $sess_feed_js === "y")) {
-                // do not get feed dynamically, if cache hit is given.
-                //				if (!$this->feed->checkCacheHit())
-                //				{
-                return true;
-                //				}
-            }
-        }
-
-        return false;
-    }
-
     public function getDynamicReload(): string
     {
         $ilCtrl = $this->ctrl;
         $lng = $this->lng;
 
         $ilCtrl->setParameterByClass(
-            "ilcolumngui",
+            ilColumnGUI::class,
             "block_id",
             "block_" . $this->getBlockType() . "_" . $this->getBlockId()
         );
@@ -1299,14 +1210,14 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
         $rel_tpl->setVariable("BLOCK_ID", "block_" . $this->getBlockType() . "_" . $this->getBlockId());
         $rel_tpl->setVariable(
             "TARGET",
-            $ilCtrl->getLinkTargetByClass("ilcolumngui", "updateBlock", "", true)
+            $ilCtrl->getLinkTargetByClass(ilColumnGUI::class, "updateBlock", "", true)
         );
 
         // no JS
         $rel_tpl->setVariable("TXT_NEWS_CLICK_HERE", $lng->txt("news_no_js_click_here"));
         $rel_tpl->setVariable(
             "TARGET_NO_JS",
-            $ilCtrl->getLinkTargetByClass(strtolower(get_class($this)), "disableJS")
+            $ilCtrl->getLinkTarget($this, "disableJS")
         );
 
         return $rel_tpl->get();
@@ -1317,7 +1228,7 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
         $ilCtrl = $this->ctrl;
 
         $ilCtrl->setParameterByClass(
-            "ilcolumngui",
+            ilColumnGUI::class,
             "block_id",
             "block_" . $this->getBlockType() . "_" . $this->getBlockId()
         );
@@ -1326,7 +1237,7 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
         $rel_tpl->setVariable("BLOCK_ID", "block_" . $this->getBlockType() . "_" . $this->getBlockId());
         $rel_tpl->setVariable(
             "TARGET",
-            $ilCtrl->getLinkTargetByClass(strtolower(get_class($this)), "enableJS", "", true, false)
+            $ilCtrl->getLinkTarget($this, "enableJS", "", true, false)
         );
 
         return $rel_tpl->get();
@@ -1350,12 +1261,6 @@ class ilNewsForContextBlockGUI extends ilBlockGUI
         $ilUser->writePref("il_feed_js", "y");
         $this->send($this->getHTML());
     }
-
-    //
-    // New rendering
-    //
-
-
 
     protected function getListItemForData(array $data): ?\ILIAS\UI\Component\Item\Item
     {

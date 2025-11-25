@@ -57,6 +57,8 @@ class ilDclFieldFactory
 
                 return $instance;
             }
+
+            throw new RuntimeException("instance is no base field " . $instance->getField()->getTitle());
         }
 
         throw new RuntimeException("file not found " . $path);
@@ -199,6 +201,7 @@ class ilDclFieldFactory
         if ($instance == null) {
             throw new ilDclException("Could not create FieldModel of " . $class);
         }
+        $instance->setDatatypeId($field->getDatatypeId());
 
         if ($field->getId() != null) {
             self::$field_model_cache[$field->getId()] = $instance;

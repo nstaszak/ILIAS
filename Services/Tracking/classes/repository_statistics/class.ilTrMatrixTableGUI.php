@@ -481,6 +481,21 @@ class ilTrMatrixTableGUI extends ilLPTableBaseGUI
                 }
             }
 
+            /*
+             * ilTrQuery does not read out any information about org units
+             * (nor should it), so it needs to be added here.
+             */
+            if (in_array('org_units', $a_user_fields)) {
+                foreach (($data['set'] ?? []) as $key => $usr_data) {
+                    if (!isset($usr_data['usr_id'])) {
+                        continue;
+                    }
+                    $usr_id = (int) $usr_data['usr_id'];
+                    $org_units = ilOrgUnitPathStorage::getTextRepresentationOfUsersOrgUnits($usr_id);
+                    $data["set"][$key]['org_units'] = $org_units;
+                }
+            }
+
             $this->setMaxCount($data["cnt"] ?? 0);
             $this->setData($data["set"] ?? []);
             return $collection["object_ids"] ?? [];
@@ -690,7 +705,7 @@ class ilTrMatrixTableGUI extends ilLPTableBaseGUI
                 case (substr($c, 0, 4) == "obj_"):
                     $obj_id = substr($c, 4);
                     $val = ilLearningProgressBaseGUI::_getStatusText(
-                        (int) $a_set[$c]
+                        (int) ($a_set[$c] ?? ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM)
                     );
                     $a_excel->setCell($a_row, $cnt, $val);
 
@@ -708,7 +723,7 @@ class ilTrMatrixTableGUI extends ilLPTableBaseGUI
                 case (substr($c, 0, 7) == "objsco_"):
                 case (substr($c, 0, 7) == "objsub_"):
                     $val = ilLearningProgressBaseGUI::_getStatusText(
-                        (int) $a_set[$c]
+                        (int) ($a_set[$c] ?? ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM)
                     );
                     $a_excel->setCell($a_row, $cnt, $val);
                     break;
@@ -774,14 +789,14 @@ class ilTrMatrixTableGUI extends ilLPTableBaseGUI
                 case (substr($c, 0, 4) == "obj_"):
                     $obj_id = substr($c, 4);
                     $val = ilLearningProgressBaseGUI::_getStatusText(
-                        (int) $a_set[$c]
+                        (int) ($a_set[$c] ?? ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM)
                     );
                     $a_csv->addColumn($val);
 
                     if (isset($this->perc_map) && ($this->perc_map[$obj_id] ?? false)) {
-                        $perc = (int) $a_set[$c . "_perc"];
-                        if (!$perc) {
-                            $perc = null;
+                        $perc = null;
+                        if (isset($a_set[$c . "_perc"])) {
+                            $perc = (int) $a_set[$c . "_perc"];
                         }
                         $a_csv->addColumn((string) $perc);
                     }
@@ -791,7 +806,7 @@ class ilTrMatrixTableGUI extends ilLPTableBaseGUI
                 case (substr($c, 0, 7) == "objsco_"):
                 case (substr($c, 0, 7) == "objsub_"):
                     $val = ilLearningProgressBaseGUI::_getStatusText(
-                        (int) $a_set[$c]
+                        (int) ($a_set[$c] ?? ilLPStatus::LP_STATUS_NOT_ATTEMPTED_NUM)
                     );
                     $a_csv->addColumn($val);
                     break;

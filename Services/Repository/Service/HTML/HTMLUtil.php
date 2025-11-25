@@ -32,7 +32,16 @@ class HTMLUtil
 
     public function escape(string $input): string
     {
-        return htmlentities($input);
+        return htmlspecialchars(
+            $input,
+            ENT_QUOTES | ENT_SUBSTITUTE,
+            'utf-8'
+        );
+    }
+
+    public function escapeCurly(string $input): string
+    {
+        return str_replace(["{", "}"], ["&#123;", "&#125;"], $input);
     }
 
     public function strip(string $input): string

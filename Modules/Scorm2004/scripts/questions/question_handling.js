@@ -662,7 +662,7 @@ ilias.questions.initClozeTest = function(a_id) {
 			input = jQuery.create('select', {'id': a_id+"_"+closecounter, 'class': 'ilc_qinput_ClozeGapSelect'});
 
             let items = questions[a_id].gaps[closecounter].item;
-            if (questions[a_id].shuffle === true) {
+            if (questions[a_id].gaps[closecounter].shuffle === true) {
                 items = shuffleItems(items);
             }
 			for (var i=0;i<items.length;i++) {
@@ -673,7 +673,7 @@ ilias.questions.initClozeTest = function(a_id) {
 		closecounter++;
 		return input.outerHTML();
 	 };
-	var parsed=jQuery("div#"+a_id).get(0).innerHTML.replace(/\[gap\][^\[]+\[\/gap\]/g,
+	var parsed=jQuery("div#"+a_id).get(0).innerHTML.replace(/\[gap[\s\S\d]*?\](.*?)\[\/gap\]/g,
         () => {return _initClozeTestCallBack();});
 	jQuery("div#"+a_id).html(parsed);
 };
@@ -766,7 +766,7 @@ ilias.questions.selectErrorText = function(a_id, node) {
 };
 
 ilias.questions.assErrorText = function(a_id) {
-    answers[a_id].wrong = 0;
+  answers[a_id].wrong = 0;
 	answers[a_id].passed = true;
 
 	if (questions[a_id].selected === undefined) {
@@ -816,7 +816,8 @@ ilias.questions.assErrorText = function(a_id) {
             }
             if (correct_answers[i].length === l+1) {
                 found++;
-                l = void 0;
+                l = 0;
+                i = void 0;
                 return;
             }
             if (correct_answers[i].length > ++l) {

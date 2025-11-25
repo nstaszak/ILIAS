@@ -429,7 +429,7 @@ class ilObjStudyProgramme extends ilContainer
     {
         $global_settings = new ilSetting('certificate');
         $global_active = (bool) $global_settings->get('active', '0');
-        if(!$global_active) {
+        if (!$global_active) {
             return false;
         }
         $certificate_template_repository = new ilCertificateTemplateDatabaseRepository($this->db);
@@ -517,7 +517,7 @@ class ilObjStudyProgramme extends ilContainer
                 array_unique(
                     array_map(
                         static function ($data) {
-                            return (int)$data['child'];
+                            return (int) $data['child'];
                         },
                         array_filter($ref_child_ref_ids, static function ($data) {
                             return $data["deleted"] === null;
@@ -753,8 +753,6 @@ class ilObjStudyProgramme extends ilContainer
 
     /**
      * Get courses in this program that the given user already completed.
-     *
-     * @return int[]
      */
     public function getCompletedCourses(int $usr_id): array
     {
@@ -780,6 +778,9 @@ class ilObjStudyProgramme extends ilContainer
                         , "prg_obj_id" => $containing_prg->getId()
                         , "crsr_ref_id" => (int) $ref["child"]
                         , "crsr_id" => (int) $ref["obj_id"]
+                        , "crs_ref_id" => (int) $crs_ref_id
+                        , "crs_id" => (int) $crs_id
+
                         , "title" => ilContainerReference::_lookupTitle((int) $ref["obj_id"])
                     ];
                 }
@@ -1150,6 +1151,14 @@ class ilObjStudyProgramme extends ilContainer
         return count($this->getAssignmentsOfSingleProgramForUser($usr_id)) > 0;
     }
 
+    public function getCertificateRelevantAssignmentIds(int ...$usr_ids): array
+    {
+        return $this->assignment_repository->getCertificateRelevantAssignmentIds(
+            $this->getId(),
+            ...$usr_ids
+        );
+    }
+
 
     ////////////////////////////////////
     // USER PROGRESS
@@ -1460,7 +1469,11 @@ class ilObjStudyProgramme extends ilContainer
                     continue;
                 }
 
-                if (!is_null($next_membership_source) && $next_membership_source->isEnabled()) {
+                if (
+                    $next_membership_source !== null
+                    && $next_membership_source?->isEnabled()
+                    && $next_membership_source->getSourceId() !== $src_id
+                ) {
                     $new_src_type = $next_membership_source->getSourceType();
                     $assigned_by = ilStudyProgrammeAutoMembershipSource::SOURCE_MAPPING[$new_src_type];
                     $assignment = $assignment->withLastChange($assigned_by, $now);
@@ -1562,9 +1575,9 @@ class ilObjStudyProgramme extends ilContainer
         $customIcon = $this->custom_icon_factory->getByObjId($this->getId(), $this->getType());
         $subtype = $this->getSubType();
 
-        if ($subtype && $subtype->getIconIdentifier()) {
-            $src = $this->type_repository->getIconPathFS($subtype);
-
+        if ($subtype && $subtype->getIconIdentifier()
+            && $src = $this->type_repository->getIconPathFS($subtype)
+        ) {
             //This is a horrible hack to allow Flysystem/LocalFilesystem to read the file.
             $tmp = 'ico_' . $this->getId();
             copy($src, \ilFileUtils::getDataDir() . '/temp/' . $tmp);
@@ -1806,12 +1819,13 @@ class ilObjStudyProgramme extends ilContainer
     ): void {
         $acting_usr_id = $this->getLoggedInUserId();
         $assignment = $this->assignment_repository->get($assignment_id);
-        foreach($nodes as $nodeinfo) {
-            [$node_obj_id, $courseref_obj_id] = $nodeinfo;
+        foreach ($nodes as $nodeinfo) {
+            [$node_obj_id, $course_obj_id] = $nodeinfo;
+
             $assignment = $assignment->succeed(
                 $this->settings_repository,
                 $node_obj_id,
-                $courseref_obj_id
+                $course_obj_id
             );
 
             $msg = sprintf(

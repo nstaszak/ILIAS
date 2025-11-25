@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -27,6 +28,7 @@ class ilRoleAssignmentTableGUI extends ilTable2GUI
     protected \ILIAS\UI\Renderer $renderer;
 
     protected ilObjectDefinition $objectDefinition;
+    protected bool $edit_access;
 
     public function __construct(
         object $a_parent_obj,
@@ -56,12 +58,13 @@ class ilRoleAssignmentTableGUI extends ilTable2GUI
         $this->addColumn($this->lng->txt("description"), "description");
         $this->addColumn($this->lng->txt("context"), "context");
         $this->addColumn($this->lng->txt('path'), 'path');
+        $this->edit_access = $rbacsystem->checkAccess("edit_roleassignment", USER_FOLDER_ID);
         $this->initFilter();
         $this->setEnableHeader(true);
         $this->setRowTemplate("tpl.role_assignment_row.html", "Services/User");
         $this->setEnableTitle(true);
 
-        if ($rbacsystem->checkAccess("edit_roleassignment", USER_FOLDER_ID)) {
+        if ($this->edit_access) {
             $this->setSelectAllCheckbox("role_id[]");
             $this->setFormAction($ilCtrl->getFormAction($a_parent_obj));
             $this->addMultiCommand("assignSave", $lng->txt("change_assignment"));
@@ -91,22 +94,28 @@ class ilRoleAssignmentTableGUI extends ilTable2GUI
         $option[4] = $lng->txt('internal_local_roles_only');
         $option[5] = $lng->txt('non_internal_local_roles_only');
 
-        $si = new ilSelectInputGUI($lng->txt("roles"), "role_filter");
-        $si->setOptions($option);
-        $this->addFilterItem($si);
-        $si->readFromSession();
-        $this->filter["role_filter"] = $si->getValue();
+        if ($this->edit_access) {
+            $si = new ilSelectInputGUI($lng->txt("roles"), "role_filter");
+            $si->setOptions($option);
+            $this->addFilterItem($si);
+            $si->readFromSession();
+            $this->filter["role_filter"] = $si->getValue();
+        } else {
+            $this->filter["role_filter"] = 0;
+        }
     }
 
     protected function fillRow(array $a_set): void // Missing array type.
     {
-        if (isset($a_set['checkbox']['id'])) {
-            $this->tpl->setVariable('VAL_ID', $a_set['checkbox']['id']);
-            if ($a_set['checkbox']['disabled']) {
-                $this->tpl->setVariable('VAL_DISABLED', 'disabled="disabled"');
-            }
-            if ($a_set['checkbox']['checked']) {
-                $this->tpl->setVariable('VAL_CHECKED', 'checked="checked"');
+        if ($this->edit_access) {
+            if (isset($a_set['checkbox']['id'])) {
+                $this->tpl->setVariable('VAL_ID', $a_set['checkbox']['id']);
+                if ($a_set['checkbox']['disabled']) {
+                    $this->tpl->setVariable('VAL_DISABLED', 'disabled="disabled"');
+                }
+                if ($a_set['checkbox']['checked']) {
+                    $this->tpl->setVariable('VAL_CHECKED', 'checked="checked"');
+                }
             }
         }
 
@@ -143,21 +152,17 @@ class ilRoleAssignmentTableGUI extends ilTable2GUI
     public function parse(int $usr_id): void
     {
         global $DIC;
-
         $rbacreview = $DIC->rbac()->review();
         $tree = $DIC->repositoryTree();
         $ilUser = $DIC->user();
         $assignable = false;        // @todo: check this
 
-
-        // now get roles depending on filter settings
-        $role_list = $rbacreview->getRolesByFilter((int) $this->filter["role_filter"], $usr_id);
         $assigned_roles = $rbacreview->assignedRoles($usr_id);
 
         $counter = 0;
 
         $records = [];
-        foreach ($role_list as $role) {
+        foreach ($rbacreview->getRolesByFilter((int) $this->filter['role_filter'], $usr_id) as $role) {
             // fetch context path of role
             $rolf = $rbacreview->getFoldersAssignedToRole($role["obj_id"], true);
             $ref_id = $rbacreview->getObjectReferenceOfRole($role['rol_id']);
@@ -204,8 +209,10 @@ class ilRoleAssignmentTableGUI extends ilTable2GUI
                 }
 
                 $parent_node = $tree->getNodeData($rolf2);
-
-                $role["description"] = $this->lng->txt("obj_" . $parent_node["type"]) . "&nbsp;(#" . $parent_node["obj_id"] . ")";
+                if (!isset($parent_node['type']) || !isset($parent_node['obj_id'])) {
+                    continue;
+                }
+                $role['description'] = "{$this->lng->txt("obj_{$parent_node['type']}")}&nbsp;(#{$parent_node['obj_id']})";
             }
 
             $role_ids[$counter] = $role["obj_id"];

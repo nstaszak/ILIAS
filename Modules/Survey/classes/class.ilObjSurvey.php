@@ -993,7 +993,7 @@ class ilObjSurvey extends ilObject
             $this->setSurveyId($data["survey_id"]);
             $this->setAuthor($data["author"] ?? "");
             $this->setIntroduction(ilRTE::_replaceMediaObjectImageSrc((string) $data["introduction"], 1));
-            if (strcmp($data["outro"], "survey_finished") === 0) {
+            if ($data["outro"] === "survey_finished") {
                 $this->setOutro($this->lng->txt("survey_finished"));
             } else {
                 $this->setOutro(ilRTE::_replaceMediaObjectImageSrc((string) $data["outro"], 1));
@@ -2461,11 +2461,13 @@ class ilObjSurvey extends ilObject
             }
 
             $active_id = $this->getActiveID($a_user_id, $a_anonymize_id, $a_appr_id);
-            $ntf->addAdditionalInfo(
-                'results',
-                $this->getParticipantTextResults($active_id),
-                true
-            );
+            if ($active_id) {   // 43908
+                $ntf->addAdditionalInfo(
+                    'results',
+                    $this->getParticipantTextResults($active_id),
+                    true
+                );
+            }
 
             $ntf->setGotoLangId('survey_notification_tutor_link');
             $ntf->setReasonLangId('survey_notification_finished_reason');
@@ -2537,7 +2539,6 @@ class ilObjSurvey extends ilObject
         int $appr_id
     ): ?int {
         $ilDB = $this->db;
-
         // #15031 - should not matter if code was used by registered or anonymous (each code must be unique)
         if ($anonymize_id) {
             $result = $ilDB->queryF(
@@ -2547,6 +2548,9 @@ class ilObjSurvey extends ilObject
                 array($this->getSurveyId(), $anonymize_id, $appr_id)
             );
         } else {
+            if ($user_id == ANONYMOUS_USER_ID) {
+                return null;
+            }
             $result = $ilDB->queryF(
                 "SELECT finished_id FROM svy_finished" .
                 " WHERE survey_fi = %s AND user_fi = %s AND appr_id = %s",
@@ -3725,9 +3729,9 @@ class ilObjSurvey extends ilObject
 
                 if ($row["externaldata"]) {
                     $ext = unserialize((string) $row["externaldata"], ['allowed_classes' => false]);
-                    $item['email'] = $ext['email'];
-                    $item['last_name'] = $ext['lastname'];
-                    $item['first_name'] = $ext['firstname'];
+                    $item['email'] = $ext['email'] ?? "";
+                    $item['last_name'] = $ext['lastname'] ?? "";
+                    $item['first_name'] = $ext['firstname'] ?? "";
                 }
 
                 $codes[] = $item;
@@ -3915,7 +3919,7 @@ class ilObjSurvey extends ilObject
 
         $row = $this->db->fetchAssoc($result);
 
-        return $row['state'];
+        return $row['state'] ?? false;
     }
 
     /**

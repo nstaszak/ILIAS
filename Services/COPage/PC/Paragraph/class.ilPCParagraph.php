@@ -1372,8 +1372,11 @@ class ilPCParagraph extends ilPageContent
                 } else {
                     $this->inserted_pc_id = $pc_id[1];
                 }*/
-
-        $par->setLanguage($ilUser->getLanguage());
+        $lang = (string) $ilUser->getLanguage();
+        if ($lang === "") {
+            $lang = "de";
+        }
+        $par->setLanguage($lang);
         $par->setCharacteristic($t["class"]);
 
         $t2 = $par->input2xml($t["text"], true, false);
@@ -1716,7 +1719,7 @@ class ilPCParagraph extends ilPageContent
                                     ? ilStr::subStr($node_val, $pos - 1, 1)
                                     : "";
                                 $a = ilStr::subStr($node_val, $pos + ilStr::strLen($t["term"]), 1);
-                                if ((in_array($b, $valid_limiters) || htmlentities($b, null, 'utf-8') == "&nbsp;") && in_array($a, $valid_limiters)) {
+                                if ((in_array($b, $valid_limiters) || htmlentities($b, 0, 'utf-8') == "&nbsp;") && in_array($a, $valid_limiters)) {
                                     $mid = '[iln term="' . $t["id"] . '"]' .
                                         ilStr::subStr($node_val, $pos, ilStr::strLen($t["term"])) .
                                         "[/iln]";

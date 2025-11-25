@@ -43,7 +43,7 @@ class ilStudyProgrammeDIC
                 ilOrgUnitGlobalSettings::getInstance(),
                 $DIC['ilObjDataCache'],
                 new ilOrgUnitPositionAccess($DIC['ilAccess']),
-                (int)$prg->getRefid()
+                (int) $prg->getRefid()
             );
         };
 
@@ -53,7 +53,8 @@ class ilStudyProgrammeDIC
                 ilExportFieldsInfo::_getInstanceByType('prg'),
                 $dic['repo.assignment'],
                 $DIC['lng'],
-                $dic['permissionhelper']
+                $dic['permissionhelper'],
+                new ilCertificateDownloadValidator()
             );
         };
 
@@ -228,6 +229,8 @@ class ilStudyProgrammeDIC
                 $DIC->http()->wrapper(),
                 $DIC->refinery(),
                 $DIC['ui.factory'],
+                $DIC['ui.renderer'],
+                $DIC->http()->request(),
             );
         $dic['ilObjStudyProgrammeAutoMembershipsGUI'] = static fn($dic) =>
             new ilObjStudyProgrammeAutoMembershipsGUI(
@@ -358,7 +361,8 @@ class ilStudyProgrammeDIC
                 ilExportFieldsInfo::_getInstanceByType('prg'),
                 $dic['repo.assignment'],
                 $DIC['lng'],
-                $dic['permissionhelper']
+                $dic['permissionhelper'],
+                new ilCertificateDownloadValidator()
             );
         };
 

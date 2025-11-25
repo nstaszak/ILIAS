@@ -34,9 +34,6 @@ class ilDclFieldListGUI
     protected ilDclTableListGUI $parent_obj;
     protected int $obj_id;
 
-    /**
-     * Constructor
-     */
     public function __construct(ilDclTableListGUI $a_parent_obj)
     {
         global $DIC;
@@ -54,6 +51,8 @@ class ilDclFieldListGUI
         $this->toolbar = $DIC->toolbar();
         $this->ui_factory = $DIC->ui()->factory();
         $this->renderer = $DIC->ui()->renderer();
+
+        $DIC->help()->setScreenId('dcl_fields');
 
         $this->ctrl->saveParameterByClass(ilDclTableEditGUI::class, 'table_id');
         $locator->addItem(

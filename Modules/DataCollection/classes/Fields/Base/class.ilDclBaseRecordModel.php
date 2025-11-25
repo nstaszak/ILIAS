@@ -102,7 +102,7 @@ class ilDclBaseRecordModel
         if (!$omit_notification) {
             $ref_id = $this->http->wrapper()->query()->retrieve('ref_id', $this->refinery->kindlyTo()->int());
             $objDataCollection = new ilObjDataCollection($ref_id);
-            $objDataCollection->sendNotification("update_record", $this->getTableId(), $this->id);
+            $objDataCollection->sendRecordNotification(ilDataCollectionMailNotification::TYPE_RECORD_UPDATE, $this);
         }
     }
 
@@ -120,6 +120,7 @@ class ilDclBaseRecordModel
         }
 
         $this->setTableId((int) $rec["table_id"]);
+        $this->loadTable();
         if (null !== $rec["create_date"]) {
             $this->setCreateDate(new ilDateTime($rec["create_date"], IL_CAL_DATETIME));
         }
@@ -324,69 +325,21 @@ class ilDclBaseRecordModel
     }
 
     /**
-     * Get Field Value for Representation in a Form
-     * @param ?int|string $field_id
-     * @return array|int|null|string
-     */
-    public function getRecordFieldRepresentationValue($field_id)
-    {
-        if ($field_id === null) {
-            return null;
-        }
-        $this->loadRecordFields();
-        if (ilDclStandardField::_isStandardField($field_id)) {
-            return $this->getStandardField($field_id);
-        } else {
-            return $this->recordfields[$field_id]->getValueForRepresentation();
-        }
-    }
-
-    /**
-     * Get Field Export Value
-     * @param ?int|string $field_id
-     * @return int|string
-     */
-    public function getRecordFieldExportValue($field_id)
-    {
-        $this->loadRecordFields();
-        if (ilDclStandardField::_isStandardField($field_id)) {
-            return $this->getStandardFieldHTML($field_id);
-        } else {
-            return $this->recordfields[$field_id]->getExportValue();
-        }
-    }
-
-    /**
-     * Get Field Export Value
-     * @param int|string $field_id
-     * @return int|string
-     */
-    public function getRecordFieldPlainText($field_id)
-    {
-        $this->loadRecordFields();
-        if (ilDclStandardField::_isStandardField($field_id)) {
-            return $this->getStandardFieldHTML($field_id);
-        } else {
-            return $this->recordfields[$field_id]->getPlainText();
-        }
-    }
-
-    /**
      * @param int|string $field_id
      */
     public function fillRecordFieldExcelExport(ilExcel $worksheet, int &$row, int &$col, $field_id): void
     {
         $this->loadRecordFields();
         if (ilDclStandardField::_isStandardField($field_id)) {
-            if ($field_id == 'owner') {
+            if ($field_id === 'owner') {
                 $worksheet->setCell($row, $col, ilObjUser::_lookupLogin($this->getOwner()));
                 $col++;
                 $name_array = ilObjUser::_lookupName($this->getOwner());
                 $worksheet->setCell($row, $col, $name_array['lastname'] . ', ' . $name_array['firstname']);
-            } elseif ('last_update') {
+            } elseif ($field_id === 'last_update') {
                 $date_time = $this->getLastUpdate()->get(IL_CAL_DATETIME, '', $this->user->getTimeZone());
                 $worksheet->setCell($row, $col, $date_time);
-            } elseif ('create_date') {
+            } elseif ($field_id === 'create_date') {
                 $date_time = $this->getCreateDate()->get(IL_CAL_DATETIME, '', $this->user->getTimeZone());
                 $worksheet->setCell($row, $col, $date_time);
             } else {
@@ -439,25 +392,6 @@ class ilDclBaseRecordModel
     /**
      * @param int|string $field_id
      */
-    public function getRecordFieldSortingValue($field_id, array $options = []): string
-    {
-        $this->loadRecordFields();
-        if (ilDclStandardField::_isStandardField($field_id)) {
-            $html = $this->getStandardFieldHTML($field_id, $options);
-        } else {
-            if (is_object($this->recordfields[$field_id])) {
-                $html = $this->recordfields[$field_id]->getSortingValue();
-            } else {
-                $html = '';
-            }
-        }
-
-        return $html;
-    }
-
-    /**
-     * @param int|string $field_id
-     */
     public function getRecordFieldSingleHTML($field_id, array $options = []): string
     {
         $this->loadRecordFields();
@@ -470,7 +404,7 @@ class ilDclBaseRecordModel
              * @var $field ilDclBaseRecordFieldModel
              */
 
-            $html = $field->getRecordRepresentation()->getSingleHTML($options, false);
+            $html = $field->getRecordRepresentation()->getSingleHTML($options);
         }
 
         return $html;
@@ -633,10 +567,6 @@ class ilDclBaseRecordModel
     {
         $this->loadRecordFields();
         foreach ($this->recordfields as $recordfield) {
-            if ($recordfield->getField()->getDatatypeId() == ilDclDatatype::INPUTFORMAT_MOB) {
-                $this->deleteMob((int) $recordfield->getValue());
-            }
-
             $recordfield->delete();
         }
 
@@ -648,7 +578,7 @@ class ilDclBaseRecordModel
         if (!$omit_notification) {
             $ref_id = $this->http->wrapper()->query()->retrieve('ref_id', $this->refinery->kindlyTo()->int());
             $objDataCollection = new ilObjDataCollection($ref_id);
-            $objDataCollection->sendNotification("delete_record", $this->getTableId(), $this->getId());
+            $objDataCollection->sendRecordNotification(ilDataCollectionMailNotification::TYPE_RECORD_DELETE, $this);
 
             $this->event->raise(
                 'Modules/DataCollection',
@@ -688,14 +618,6 @@ class ilDclBaseRecordModel
         if (ilObject2::_exists($obj_id, false)) {
             $file = new ilObjFile($obj_id, false);
             $file->delete();
-        }
-    }
-
-    public function deleteMob(int $obj_id): void
-    {
-        if (ilObject2::_lookupObjId($obj_id)) {
-            $mob = new ilObjMediaObject($obj_id);
-            $mob->delete();
         }
     }
 

@@ -31,10 +31,15 @@ class ilTestResultsToXMLTest extends ilTestBaseTestCase
         global $DIC;
         parent::setUp();
 
+        $this->addGlobal_ilUser();
+
         $this->testObj = new ilTestResultsToXML(
-            0,
+            $this->createMock(ilObjTest::class),
             $DIC['ilDB'],
-            false
+            $DIC['resource_storage'],
+            $DIC['ilUser'],
+            $DIC['lng'],
+            ''
         );
     }
 

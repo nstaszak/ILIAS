@@ -178,6 +178,7 @@ administration#:#auth_auth_mode_determination#:#Determinación del método de au
 administration#:#auth_automatic#:#Secuencia prefijada
 administration#:#auth_by_user#:#Por usuario
 administration#:#auth_kind_determination#:#Tipo de determinación
+administration#:#auth_mode_default_change_info#:#Changing the default authentication method affects all user accounts configured to use the default authentication method. If the selected default method (e.g., Shibboleth, SAML, SOAP, ...) does not support or is not configured to allow fallback to local ILIAS authentication, affected users may no longer be able to log in. To avoid this, please ensure that local fallback authentication is activated in the configuration of the selected method, or that the authentication method stored for affected user accounts is manually changed.###20 05 2025 new variable
 administration#:#auth_mode_determination_info#:#Escoger si los usuarios tienen que seleccionar su método de autenticación en la pantalla de entrada o si es gestionado por una secuencia prefijada de métodos de autenticación
 administration#:#clean#:#Limpiar
 administration#:#clean_desc#:#Eliminar referencias inválidas y nodos del árbol. Eliminar huecos de la estructura en árbol
@@ -650,6 +651,7 @@ assessment#:#errFormulaQuestion#:#¡Una fórmula de pregunta  contiene informaci
 assessment#:#errRecursionInResult#:#La fórmula contiene una recursividad infinita.
 assessment#:#err_category_in_use#:#Al menos una categoría no se puede eliminar. Una o más unidades de la categoría ya están en uso.
 assessment#:#err_divider_too_big#:#The divider of one of the variables in this question is too big.###09 03 2022 new variable
+assessment#:#err_divider_too_big_specific#:#The divider of this variable is too big.###04 11 2025 new variable
 assessment#:#err_division#:#This value has to be smaller than the maximum range.###09 03 2022 new variable
 assessment#:#err_duplicate_results#:#Ha utilizado una variable de resultado más de una vez. Esto no está permitido en el texto de la pregunta.
 assessment#:#err_no_formula#:#Debe introducir introducir una formula
@@ -1117,7 +1119,10 @@ assessment#:#redirect_after_finishing_rule#:#Redirigir
 assessment#:#redirect_after_finishing_tst#:#Redirigir después de finalizar el test (sólo si no se muestran los resultados del test)
 assessment#:#redirect_after_finishing_tst_desc#:#Los participantes serán redirigidos al terminar la prueba de forma automática a un sitio web determinado. Esto sólo ocurre cuando la prueba se ha configurado para que los participantes no puedan ver los resultados de la prueba después de completarla.
 assessment#:#redirect_always#:#siempre hacia la página definida
+assessment#:#redirect_always_to_logout#:#Always to the logout screen###04 11 2025 new variable
 assessment#:#redirect_in_kiosk_mode#:#Redirigir solo en el modo kiosko
+assessment#:#redirect_url_invalid#:#Please enter a valid url of the target webpage.###04 11 2025 new variable
+assessment#:#redirect_url_required_for_rule#:#The url of the webpage is required when "%s" is selected.###04 11 2025 new variable
 assessment#:#redirection_url#:#Destino de redirección
 assessment#:#region#:#Región
 assessment#:#remove_as_participant#:#Eliminar como participante fijo
@@ -1260,6 +1265,7 @@ assessment#:#toplist_col_percentage#:#Porcentaje
 assessment#:#toplist_col_rank#:#Clasificación
 assessment#:#toplist_col_score#:#Puntuación
 assessment#:#toplist_col_wtime#:#Tiempo trabajo
+assessment#:#total_max_points_cannot_be_negative#:#The maximum amount of reachable points cannot be negative.###01 04 2025 new variable
 assessment#:#true#:#Verdadero
 assessment#:#tst_access_code_created#:#Para proporcionarle acceso permanente a sus resultados de test y ofrecerle la posibilidad de retomar este test, un código de acceso único fue creado. Por favor, anote este código y úselo en acciones posteriores.
 assessment#:#tst_activate_skill_service#:#Activar servicio de Competencias
@@ -1271,6 +1277,8 @@ assessment#:#tst_add_quest_cont_edit_mode_IPE#:#Modo de edición simple (sin for
 assessment#:#tst_add_quest_cont_edit_mode_IPE_info#:#No formatting of text in question and answers. No use of LaTex either. But feedback and hints can be reused when question is embedded in ILIAS learning module.###30 04 2021 new variable
 assessment#:#tst_add_quest_cont_edit_mode_RTE#:#Modo de edición avanzado (con formato de texto) para el contenido de las preguntas
 assessment#:#tst_add_quest_cont_edit_mode_RTE_info#:#Allows text formatting of questions, answers, feedbacks and hints. But feedback and hints cannot be reused when question is embedded in ILIAS learning module.###30 04 2021 new variable
+assessment#:#tst_add_quest_cont_edit_mode_plain#:#Use plain text###10 12 2024 new variable
+assessment#:#tst_add_quest_cont_edit_mode_plain_info#:#No formatting of text in question, answers, feedback, and hints.###10 12 2024 new variable
 assessment#:#tst_addit_passes_blocked_after_passed_msg#:#You have passed the test. The test cannot be started again.###07 02 2020 new variable
 assessment#:#tst_all_test_competences#:#Competencias de todos los Tests
 assessment#:#tst_all_user_data_deleted#:#Todos los datos de usuario de este test han sido eliminados!
@@ -1493,7 +1501,6 @@ assessment#:#tst_instant_feedback_answer_specific#:#Mostrar comentarios del tuto
 assessment#:#tst_instant_feedback_answer_specific_desc#:#Si se activa esta opción se mostrarán los comentarios del tutor particulares para cada respuesta dada por el alumno (si se han configurado en la pregunta). Sólo en posible en estos tipos de preguntas: Opción múltiple, Mapa de imagen, Respuesta Corta, Detectar errores en texto y Relleno de huecos.
 assessment#:#tst_instant_feedback_contents#:#Included Contents
 assessment#:#tst_instant_feedback_desc#:#When questions are configured with feedback it is provided to participants during the test pass.
-assessment#:#tst_instant_feedback_forced#:#Forzar comentario instantáneo
 assessment#:#tst_instant_feedback_results#:#Mostrar resultados (sólo puntuación)
 assessment#:#tst_instant_feedback_results_desc#:#Si se seleccion "resultados (en puntos)", se mostrará la puntuación alcanzada.
 assessment#:#tst_instant_feedback_solution#:#Mostrar soluciones
@@ -1606,7 +1613,6 @@ assessment#:#tst_objective_oriented_test_pass_without_questions#:#La realizació
 assessment#:#tst_objective_progress_header#:#Progreso de objetivo de aprendizaje
 assessment#:#tst_objectives_progress_header#:#Progreso de objetivos de aprendizaje
 assessment#:#tst_old_style_rnd_quest_set_broken#:#Este test aleatorio está en un estado irreparable, debido a que uno o varios bancos de preguntas enlazados se han eliminado. Por lo tanto, los participantes no pueden volver a realizar este test.
-assessment#:#tst_optional_questions_confirmation_fixed_test#:#<b>Una pregunta relacionada a objetivos de aprendizaje superados  fue conestada en intentos anteriores.</b><br /><br />Tu quieres navegar a una pregunta relacionada con un objetivo de aprendizaje ya superado.<br />Puedes escoger:<br /><br />Si continuas, puedes trabajar en ellas o simplemente revisar esas preguntas. Si cambias tus respuestas que fueron copiadas de intentos anteriores, es posible que disminuyas el resultado del resultado de tu objetivo de aprendizaje.<br /><br />Si dedices no continuar o revisar esas preguntas, puedes volver atrás. Las preguntas serán consideradas en la evaluación en cualquier caso.
 assessment#:#tst_optional_questions_confirmation_non_fixed_test#:#<b>Question related to allready passed learning objectives are optional.</b><br /><br />You want to navigate to a question, that relates to an allready passed learning objective.<br />You can choose:<br /><br />I you proceed, you can work on these questions. Your answers from previous attempts were not adopted, since new random questions were selected for this attempt. With working on this questions you can also degrade your learning objective result.<br /><br />If you decide to not work on these questions, you can go back. In this case these questions won't be considered in the evaluation.
 assessment#:#tst_out_of_time_message#:#You have reached the maximum allowed processing time of the test!###30 04 2024 new variable
 assessment#:#tst_participant#:#Participante
@@ -1763,6 +1769,7 @@ assessment#:#tst_res_jump_to_participant_hint_opt#:#--Saltar a participante--
 assessment#:#tst_res_lo_objectives_header#:#Objetivos de aprendizaje relevantes
 assessment#:#tst_res_lo_try_header#:#Intento
 assessment#:#tst_res_lo_try_n#:#Intento %s
+assessment#:#tst_res_tab_msg_no_lp_access#:#You are currently not allowed to access your Learning Progress, as you are not allowed to see your test results.###01 04 2025 new variable
 assessment#:#tst_res_tab_msg_res_after_date#:#You test results will be offered here on the following date: %s
 assessment#:#tst_res_tab_msg_res_after_date_no_res#:#When you take the test your results will be offered here on the following date: %s
 assessment#:#tst_res_tab_msg_res_after_finish_test#:#After finishing the test your results will be offered here.
@@ -1837,6 +1844,7 @@ assessment#:#tst_setting_offer_hints_label#:#Sugerencias específicas para pregu
 assessment#:#tst_settings_conflict_compulsory_and_lock#:#"Compulsory Questions" cannot be used together with "Answer Lock".###30 04 2024 new variable
 assessment#:#tst_settings_conflict_postpone_and_lock#:#"Unanswered questions will be enqueued" cannot be used together with "Lock Answers After Moving to Next Question".###30 04 2024 new variable
 assessment#:#tst_settings_conflict_shuffle_and_lock#:#"Shuffle Questions" cannot be used together with "Lock Answers After Moving to Next Question".###30 04 2024 new variable
+assessment#:#tst_settings_form_reload_needed#:#The form needed to be reloaded to avoid data loss as the available settings have changed due to the removal of all results of participants.###23 09 2025 new variable
 assessment#:#tst_settings_header_additional#:#Additional Features###30 04 2024 new variable
 assessment#:#tst_settings_header_execution#:#Administración del Test: Acceso
 assessment#:#tst_settings_header_intro#:#Información Antes de Comenzar el Test
@@ -1845,8 +1853,6 @@ assessment#:#tst_show_answer_sheet#:#mostrar respuestas
 assessment#:#tst_show_cancel#:#Mostrar la opción de suspender el test
 assessment#:#tst_show_cancel_description#:#Si se activa, se mostrará un botón para suspender el test durante la ejecución del mismo
 assessment#:#tst_show_comp_results#:#Mostrar resultados de competencias
-assessment#:#tst_show_pass_details#:#Mostrar detalles para los tests en ejecución
-assessment#:#tst_show_pass_details_desc#:#Si se selecciona esta opción los títulos de las preguntas y los resultados alcanzados en cada pregunta en la ejecución del test estarán disponibles aunque el test no haya finalizado
 assessment#:#tst_show_results#:#Mostrar resultados del test
 assessment#:#tst_show_side_list#:#Mostrar lista de preguntas en el lateral
 assessment#:#tst_show_solution_answers_only#:#Vista de impresión de resultados (respuestas sólo)
@@ -2019,7 +2025,6 @@ auth#:#auth_cron_destroy_expired_sessions_desc#:#This job deletes expires sessio
 auth#:#auth_err_expired#:#Se ha desactivado su sesión debido a la inactividad.
 auth#:#auth_err_invalid_user_account#:#No se pudo autenticar a causa de un error interno.
 auth#:#auth_err_ldap_exception#:#No se pudo autenticar a causa de un error de autenticación interno (LDAP).
-auth#:#auth_err_login_attempts_deactivation#:#Se ha desactivado la cuenta de usuario a causa de los intentos de inicio de sesión erróneos.
 auth#:#auth_info_add#:#Escoja esta opción si nunca se registró antes en ILIAS. Un nueva cuenta será creada.
 auth#:#auth_info_migrate#:#Si ya tiene una cuenta ILIAS introduzca nombre de usuario y contraseña para migrar sus datos personales (Correos, Resultados de Tests...)
 auth#:#auth_ldap_server_ds#:#Sevidor LDAP
@@ -2075,6 +2080,8 @@ auth#:#auth_oidc_update_field_info#:#Automatisch aktualisieren
 auth#:#auth_oidc_update_role_info#:#Nur bei Erstanmeldung (automatische Synchronisierung) anwenden
 auth#:#auth_oidconnect#:#OpenID Connect
 auth#:#auth_page_type_auth#:#Login Page###30 04 2021 new variable
+auth#:#auth_required_password#:#Please enter a password.###10 12 2024 new variable
+auth#:#auth_required_username#:#Please enter a username.###10 12 2024 new variable
 auth#:#auth_saml#:#SAML
 auth#:#auth_saml_add_idp_btn#:#Añadir nuevo proveedor de identidades
 auth#:#auth_saml_add_idp_md_error#:#El valor dado no era un documento XML válido. Asegúrese de que el XML contiene un proveedor de identidades válido.
@@ -2532,6 +2539,7 @@ book#:#book_new#:#Nuevo banco de reservas
 book#:#book_no_bookings_for_you#:#No reservations have been performed for you.###07 02 2020 new variable
 book#:#book_no_objects#:#No Assignment###07 02 2020 new variable
 book#:#book_no_of_objects#:#Número de recursos
+book#:#book_no_pools_selected#:#No booking pools have been assigned to this course. Booking pools can be assigned via the course's 'Resources' tab.###23 09 2025 new variable
 book#:#book_no_preferences_for_you#:#No preferences have been stored for you.###07 02 2020 new variable
 book#:#book_no_recurrence#:#Book only this date###30 04 2024 new variable
 book#:#book_not#:#No
@@ -2889,8 +2897,6 @@ chatroom#:#chat_osc_accepts_messages_yes#:#Recibe mensajes de chat
 chatroom#:#chat_osc_add_user#:#Añadir más usuarios
 chatroom#:#chat_osc_conversations#:#Conversaciones
 chatroom#:#chat_osc_doesnt_accept_msg#:#Las conversaciones no son posibles
-chatroom#:#chat_osc_dont_accept_msg#:#Actualmente no se le puede invitar a conversaciones. Si lo desea, puede cambiar este ajuste en su <a href="%s">"Configuración personal"</a>.
-chatroom#:#chat_osc_dont_accept_msg_link_txt#:#'Personal Settings'###07 02 2020 new variable
 chatroom#:#chat_osc_head_grp_x_persons#:#%s Users
 chatroom#:#chat_osc_invite_to_conversation#:#Añadir a conversación
 chatroom#:#chat_osc_leave_grp_conv#:#Dejar conversación
@@ -3530,7 +3536,7 @@ common#:#auth_allow_local#:#Permitir Autenticación Local
 common#:#auth_cas#:#CAS
 common#:#auth_cas_allow_local_desc#:#Esto le permite a los usuarios CAS autenticarse con su usuario local ILIAS y una contraseña local
 common#:#auth_cas_auth#:#Configurar autenticación CAS
-common#:#auth_cas_auth_desc#:#CAS requiere PHP 4.3.1 o superior con soporte CURL (7.5 o superior)
+common#:#auth_cas_auth_desc#:#Para que la autenticación CAS funcione, debe establecerse la configuración del servidor prevent_super_global_replacement en client.ini.php.
 common#:#auth_cas_port_desc#:#Ej. 443 si la URI del servidor CAS es https://auth.yourserver.com:443/cas/
 common#:#auth_cas_server_desc#:#Ej. auth.yourserver.com si la URI del servidor CAS es https://auth.yourserver.com:443/cas/
 common#:#auth_cas_uri_desc#:#Local URI, e.g. cas si la URI del servidor CAS https://auth.yourserver.com:443/cas/
@@ -3770,6 +3776,7 @@ common#:#copy_all#:#Copiar todos
 common#:#copy_n_of_suffix#:#- Copiar (%1$s)
 common#:#copy_of#:#Copia de
 common#:#copy_of_suffix#:#- Copiar
+common#:#copy_perma_link#:#Copy link to clipboard###10 12 2024 new variable
 common#:#copy_selected_items#:#Copiar
 common#:#count#:#Cuenta
 common#:#counter_novelty#:#News###30 04 2024 new variable
@@ -3917,6 +3924,7 @@ common#:#download_selected_items#:#Descargar
 common#:#downloading_settings#:#Opciones de Descarga
 common#:#dpro_accept_usr_agreement#:#Accept Declaration of Data Protection?###30 04 2024 new variable
 common#:#dpro_accept_usr_agreement_intro#:#There is a new Declaration of Data Protection. You need to accept it before proceeding with the use of ILIAS. Read the following document carefully and give your consent or dissent at the bottom of the page.###30 04 2024 new variable
+common#:#dpro_agreed_on#:#DoDP agreed to on###01 04 2025 new variable
 common#:#dpro_force_accept_usr_agreement#:#You must accept the Declaration of Data Protection!###30 04 2024 new variable
 common#:#dpro_no_agreement_description#:#There is currently no Declaration of Data Protection document available for this installation. Please contact the <a href="%1$s">system administrator</a>.###30 04 2024 new variable
 common#:#dpro_refuse_acceptance#:#Refuse to Accept the Declaration of Data Protection###30 04 2024 new variable
@@ -4527,6 +4535,7 @@ common#:#login_information_settings_saved#:#La información de entrada se almace
 common#:#login_invalid#:#El login escogido es inválido! Sólo los siguientes caracteres están permitidos (mínimo 4 caracteres): A-Z a-z 0-9 _.-+*@!$%~
 common#:#login_to_ilias#:#entrada a ILIAS
 common#:#login_to_ilias_via_cas#:#Entrar a ILIAS a través de un Servicio de Autenticación Centralizado
+common#:#login_to_ilias_via_login_form#:#Login to ILIAS###20 05 2025 new variable
 common#:#login_to_ilias_via_saml#:#Iniciar sesión en ILIAS mediante autenticación SAML
 common#:#login_to_ilias_via_shibboleth#:#Entrar a ILIAS vía
 common#:#loginname_already_exists#:#Este nombre de usuario ya existe
@@ -4744,6 +4753,7 @@ common#:#msg_no_perm_perm#:#No tiene permiso para editar la configuración de pe
 common#:#msg_no_perm_read#:#No tiene permiso para acceder a este item.
 common#:#msg_no_perm_read_item#:#No tiene permisos para acceder al item '%s'.
 common#:#msg_no_perm_read_lm#:#No tiene permisos para leer este módulo de aprendizaje
+common#:#msg_no_perm_view_roles_of_user#:#You have no permission to view the role assignment of this user###26 08 2025 new variable
 common#:#msg_no_perm_write#:#No tiene permiso para escribir
 common#:#msg_no_search_result#:#No se encontraron resultados
 common#:#msg_no_search_string#:#Por favor introduzca su consulta
@@ -5252,6 +5262,7 @@ common#:#pd_items_news#:#Incluir Novedades de items personales
 common#:#pdf_export#:#Exportar a PDF
 common#:#perm_settings#:#Permisos
 common#:#perma_link#:#Enlace permanente
+common#:#perma_link_copied#:#Link to this page has been copied to the clipboard.###10 12 2024 new variable
 common#:#permission#:#permiso
 common#:#permission_denied#:#permiso denegado
 common#:#permission_settings#:#Configuración de permisos
@@ -5631,7 +5642,6 @@ common#:#show_users_online#:#Mostrar usuarios on-line
 common#:#show_who_is_online#:#Show who is online###30 04 2021 new variable
 common#:#side_frame#:#Marco lateral
 common#:#signature#:#firma
-common#:#simultaneous_login_detected#:#Su acceso es denegado debido a una sesión simultánea con la misma cuenta.
 common#:#size#:#Tamaño
 common#:#skills#:#Competencias
 common#:#skin_style#:#Tema / estilo por defecto
@@ -6008,7 +6018,6 @@ common#:#withdrawal_sure_account_no_consent_yet#:#Are you sure you do not want t
 common#:#wizard_search_list#:#Su búsqueda produjo los siguientes resultados. Por favor seleccione uno.
 common#:#wizard_title_info#:#Por favor introduzca el título del objeto que quiere duplicar.
 common#:#write#:#Configurar
-common#:#wrong_ip_detected#:#Su acceso ha sido denegado por una IP cliente incorrecta.<br>Por favor contacte al administrador del sistema.
 common#:#year#:#Año
 common#:#yearly#:#Anualmente
 common#:#years#:#Años
@@ -7253,8 +7262,6 @@ content#:#glo_online_info#:#Los usuarios pueden utilizar el glosario sólo si es
 content#:#glo_presentation_mode#:#Modo de presentación
 content#:#glo_presentation_view#:#Vista de presentación
 content#:#glo_quick_navigation#:#Navegación Rápida
-content#:#glo_show_taxonomy#:#Mostrar taxonomía
-content#:#glo_show_taxonomy_info#:#La taxonomía será visible en la vista de presentación del glosario y puede ser utilizada para seleccionar los términos referenciados
 content#:#glo_style#:#Estilo de glosario
 content#:#glo_table_form#:#En forma de tabla
 content#:#glo_table_form_info#:#Los términos y su definición serán mostrados primero en una vista a dos columnas. Haciendo Click en el termino se abrirá el contenido completo del mismo en una ventana nueva.
@@ -7370,6 +7377,8 @@ copg#:#copg_page_element_not_found#:#Page element not found.###30 04 2021 new va
 copg#:#copg_page_type_stys#:#Layout Page###30 04 2021 new variable
 copg#:#copg_par_format_selection#:#Paragraph Format Selection###17 01 2024 new variable
 copg#:#copg_pc_mob_does_not_exist#:#This media object does not exist.###28 11 2023 new variable
+copg#:#copg_plugin#:#Plugin###23 09 2025 new variable
+copg#:#copg_plugin_not_avail#:#Plugin %s not available.###10 12 2024 new variable
 copg#:#copg_questions_not_supported_here#:#En este contexto no se admiten preguntas.
 copg#:#copg_reload_page#:#Reload Page###29 06 2022 new variable
 copg#:#copg_remove_formats#:#Remove Formatting###17 01 2024 new variable
@@ -8542,7 +8551,6 @@ dcl#:#dcl_change_notification_dcl_new_record#:#el siguiente registro ha sido cre
 dcl#:#dcl_change_notification_dcl_update_record#:#el siguiente registro ha sido actualizado
 dcl#:#dcl_change_notification_link#:#URL
 dcl#:#dcl_change_notification_subject#:#La colección de datos "%s" ha sido modificada
-dcl#:#dcl_change_why_you_receive_this_email#:#Has recibido este mensaje porque has activado la notificación para esta colección de datos
 dcl#:#dcl_changed_by#:#Modificado por
 dcl#:#dcl_checked#:#Comprobado.
 dcl#:#dcl_comments#:#Comentarios
@@ -8557,6 +8565,9 @@ dcl#:#dcl_confirm_delete_table#:#¿Está seguro de que quiere eliminar esta tabl
 dcl#:#dcl_confirm_storing_records#:#Valide y confirme su entrada.
 dcl#:#dcl_confirm_storing_records_no_permission#:#No tiene permiso para cambiar el registro después.
 dcl#:#dcl_copy#:#Copiar colección de datos
+dcl#:#dcl_copy_field#:#Copy###10 12 2024 new variable
+dcl#:#dcl_copy_field_desc#:#Field to copy options stored in a different field of a table.###10 12 2024 new variable
+dcl#:#dcl_copy_title#:#Copy of table and field###10 12 2024 new variable
 dcl#:#dcl_create_date#:#Fecha de creación
 dcl#:#dcl_create_entry_rules#:#Entry Creation###30 04 2021 new variable
 dcl#:#dcl_create_field#:#Crear campo
@@ -8564,10 +8575,10 @@ dcl#:#dcl_create_fields#:#Por favor, crea al menos un campo en la pestaña "List
 dcl#:#dcl_creation_date#:#Fecha de creación
 dcl#:#dcl_creation_date_description#:#La fecha en que la entrada fue creada
 dcl#:#dcl_datatype#:#Tipo de dato
+dcl#:#dcl_date#:#Date Entry###20 05 2025 new variable
+dcl#:#dcl_date_desc#:#Field for a date.###20 05 2025 new variable
 dcl#:#dcl_date_selection#:#Selección de fecha
 dcl#:#dcl_date_selection_desc#:#Ofrecer opciones de selección de fecha.
-dcl#:#dcl_datetime#:#Fecha
-dcl#:#dcl_datetime_desc#:#Entrada de fecha con menú o calendario
 dcl#:#dcl_deactivate_view#:#Desactivar esta vista
 dcl#:#dcl_default_sort_field#:#Campo de ordenación por defecto
 dcl#:#dcl_default_sort_field_desc#:#La tabla se ordena por defecto por el campo seleccionado
@@ -8581,6 +8592,7 @@ dcl#:#dcl_delete_tables_no_selection#:#Please select at least one table to delet
 dcl#:#dcl_delete_views#:#Eliminar vistas
 dcl#:#dcl_delete_views_no_selection#:#Please select at least one view to delete###31 03 2023 new variable
 dcl#:#dcl_deleted_records#:#Borrados correctamente %s registros.
+dcl#:#dcl_deprecated_copy#:#(Deprecated)###10 12 2024 new variable
 dcl#:#dcl_desc#:#Orden descendente (DESC)
 dcl#:#dcl_description#:#Descripción del campo
 dcl#:#dcl_detailed_view#:#Vista detallada
@@ -8618,7 +8630,6 @@ dcl#:#dcl_formula#:#Fórmula
 dcl#:#dcl_formula_desc#:#Los campos pueden conectarse o calcularse con una fórmula al igual que en una hoja de cálculo
 dcl#:#dcl_formula_detail_desc#:#Las entradas son generadas automáticamente y no puedes editarlas.
 dcl#:#dcl_height#:#Alto
-dcl#:#dcl_hello#:#Estimado/a
 dcl#:#dcl_id#:#ID
 dcl#:#dcl_id_description#:#El ID interno.
 dcl#:#dcl_ilias_reference#:#Enlace a un módulo ILIAS
@@ -8676,16 +8687,14 @@ dcl#:#dcl_new#:#Crear nueva colección de datos
 dcl#:#dcl_new_field#:#Nuevo Campo
 dcl#:#dcl_new_table#:#Nueva Tabla
 dcl#:#dcl_next_record#:#Siguiente registro
-dcl#:#dcl_no_content_warning#:#Atención, la colección de datos está activa pero no tiene contenido todavía!
 dcl#:#dcl_no_entry#:#No entry###07 02 2020 new variable
-dcl#:#dcl_no_export_content_available#:#No hay datos disponibles para su exportación.
+dcl#:#dcl_no_export_async_config#:#No SOAP Configuration for asyncronous exports available.###20 05 2025 new variable
 dcl#:#dcl_no_export_data_available#:#No hay datos ni campos disponibles para su exportación.
-dcl#:#dcl_no_export_fields_available#:#No hay campos activados para su exportación. Marque al menos un campo como exportable en la <a href="%s">configuración de la tabla</a>.
 dcl#:#dcl_no_fields_yet#:#No puedes crear entradas todavía puesto que hay campos definidos para esta tabla
 dcl#:#dcl_no_read_access_on_any_standard_view#:#No tiene acceso de lectura en ninguna vista estándar de una tabla.
 dcl#:#dcl_no_search_results_found_for#:#No se han encontrado módulos
 dcl#:#dcl_no_such_reference#:#El siguiente valor no está disponible en la tabla de referencia:
-dcl#:#dcl_no_warnings#:#La importación ha terminado sin advertencias.
+dcl#:#dcl_no_tableview_found#:#No visible tableview found!###08 07 2025 new variable
 dcl#:#dcl_not_checked#:#No comprobado.
 dcl#:#dcl_not_supported_in_import#:#Este tipo de campo no se admite en la importación.
 dcl#:#dcl_notification_activate_dcl#:#Activar notificación para colecciones de datos
@@ -8698,7 +8707,10 @@ dcl#:#dcl_noturl_exception#:#Usted tiene que introducir una dirección web (come
 dcl#:#dcl_number#:#Entero
 dcl#:#dcl_number_desc#:#Campo para valores enteros (máximo de 9 dígitos) Sin decimales ni fracciones.
 dcl#:#dcl_online_info#:#Los usuarios pueden usar la colección de datos sólo si está activa.
+dcl#:#dcl_open_detail_view#:#Open detail view###26 08 2025 new variable
+dcl#:#dcl_open_url#:#Open link###26 08 2025 new variable
 dcl#:#dcl_order#:#Orden
+dcl#:#dcl_origin_not_found#:#Origin field was not found!###10 12 2024 new variable
 dcl#:#dcl_own_entries#:#Solo entradas propias
 dcl#:#dcl_owner#:#Propietario
 dcl#:#dcl_owner_description#:#Propietario de la entrada
@@ -8708,7 +8720,6 @@ dcl#:#dcl_permissions_form#:#Derechos de usuario
 dcl#:#dcl_please_select#:#--- Por favor seleccionar ---
 dcl#:#dcl_plugin#:#Complemento
 dcl#:#dcl_plugin_desc#:#Complementos de campo de DataCollection
-dcl#:#dcl_plugin_hooks#:#Complementos disponibles
 dcl#:#dcl_plugin_no_hooks_available#:#No se han encontrado complementos de tipo de campo activos
 dcl#:#dcl_prev_record#:#Registro previo
 dcl#:#dcl_prop_expression#:#Expresión
@@ -8752,8 +8763,6 @@ dcl#:#dcl_supported_filetypes_desc#:#Puede indicar las extensiones permitidas se
 dcl#:#dcl_switch_table#:#Switch Table###30 04 2024 new variable
 dcl#:#dcl_switch_view#:#Change View###30 04 2024 new variable
 dcl#:#dcl_table#:#Tabla
-dcl#:#dcl_table_create#:#Crear Tabla
-dcl#:#dcl_table_edit#:#Actualizar Tabla
 dcl#:#dcl_table_id#:#ID de Tabla
 dcl#:#dcl_table_info#:#Los usuarios con los permisos "Cambiar Configuración" (ver pestaña "Permisos") tienen permiso para añadir/editar/eliminar entradas. Los usuarios con permiso "Añadir/editar Entrada" (ver pestaña "Permisos") sólo tienen permisos dependiendo de los ajustes especificados en el siguiente formulario.
 dcl#:#dcl_table_info_title#:#Información
@@ -8794,7 +8803,9 @@ dcl#:#dcl_title_standardview#:#Standard Views
 dcl#:#dcl_unique#:#Único
 dcl#:#dcl_unique_desc#:#En este campo sólo pueden introducirse valore únicos
 dcl#:#dcl_unique_exception#:#El valor introducido ya se ha seleccionado en otro registro
+dcl#:#dcl_unknown#:#Unkown###20 05 2025 new variable
 dcl#:#dcl_unknown_exception#:#EL valor introducido no es válido.
+dcl#:#dcl_unknown_plugin#:#Unknown plugin type###20 05 2025 new variable
 dcl#:#dcl_update_field#:#Actualizar campo
 dcl#:#dcl_update_record#:#Actualizar registro
 dcl#:#dcl_url#:#URL
@@ -8808,7 +8819,7 @@ dcl#:#dcl_width#:#Ancho
 dcl#:#dcl_wrong_input_type#:#El valor introducido no tiene el tipo adecuado
 dcl#:#dcl_wrong_length#:#El texto introducido es demasiado largo
 dcl#:#dcl_wrong_regex#:#El texto introducido no tiene el formato adecuado para este campo
-dcl#:#dlc_xls_async_export#:#Asynchronous XLSX-Export
+dcl#:#dcl_xls_async_export#:#as XLSX (asynchronous)###20 05 2025 new variable
 dcl#:#fieldtitle_allow_chars#:#Caracteres permitidos
 dcl#:#fileupload_not_migrated#:#File has not yet been migration and cannot be displayed. Please contact your System-Administrator.###30 04 2024 new variable
 didactic#:#activate_exclusive_template#:#Opción no habilitada de manera predeterminada
@@ -9093,6 +9104,7 @@ ecs#:#ecs_protocol#:#Protocolo
 ecs#:#ecs_publish_as#:#Publicado por:
 ecs#:#ecs_publish_for#:#Release:
 ecs#:#ecs_published_for#:#Publicado para
+ecs#:#ecs_rcat_created_body_a#:#A new ECS Category has been created:###10 12 2024 new variable
 ecs#:#ecs_rcrs_created_body_a#:#Un nuevo curso remoto ha sido creado:
 ecs#:#ecs_read_remote_links#:#Actualizar cursos remotos
 ecs#:#ecs_refresh_participants#:#Actualizar Participantes ECS
@@ -9155,8 +9167,10 @@ etal#:#etal_date_series_edit#:#Date of Talk Series###31 03 2023 new variable
 etal#:#etal_delete_confirmation_msg#:#Are you sure that you want to delete the following talk?###30 04 2024 new variable
 etal#:#etal_edit#:#General###31 03 2023 new variable
 etal#:#etal_invalid_user#:#This user either does not exist or can't be invited.###31 03 2023 new variable
+etal#:#etal_location#:#Location###04 11 2025 new variable
 etal#:#etal_new#:#New Talk###31 03 2023 new variable
 etal#:#etal_open#:#Open Employee Talk###31 03 2023 new variable
+etal#:#etal_recurrence#:#Recurrence###04 11 2025 new variable
 etal#:#etal_status_all#:#All###31 03 2023 new variable
 etal#:#etal_status_completed#:#Completed###31 03 2023 new variable
 etal#:#etal_status_pending#:#Pending###31 03 2023 new variable
@@ -9172,6 +9186,7 @@ etal#:#notification_talks_subject#:#Invitation: %s###31 03 2023 new variable
 etal#:#notification_talks_subject_update#:#Update: %s###31 03 2023 new variable
 etal#:#notification_talks_updated#:#The following talk appointments have been changed.###31 03 2023 new variable
 etal#:#pending_talks_warning#:#The following pending talk appointments will be replaced:###28 11 2023 new variable
+etal#:#tala_no_content_without_admin_info#:#The Administrator role is required for access to Talk Templates.###08 07 2025 new variable
 etal#:#talk_serial#:#Talk Serial###31 03 2023 new variable
 etal#:#tals_add#:#Add Talks###31 03 2023 new variable
 etal#:#tals_new#:#New Talks###31 03 2023 new variable
@@ -9774,6 +9789,8 @@ file#:#preview_caption#:#Preview %sof %s###30 04 2024 new variable
 file#:#preview_image_size_info#:#The preview versions of images will be downscaled or upscaled as appropriate, so that their longest side is the length (in px) entered here.###30 04 2024 new variable
 file#:#preview_persisting#:#Persistent Preview Images###30 04 2024 new variable
 file#:#preview_persisting_info#:#Generated preview images will be stored by ILIAS and used from then on each time the preview icon for that file is clicked on. If deactivated, previews will be generated anew each time.###30 04 2024 new variable
+file#:#previews_for_tiles#:#Tiles###01 04 2025 new variable
+file#:#previews_for_tiles_info#:#Use Preview for Tiles where possible.###01 04 2025 new variable
 file#:#publish_before_delete#:#Version(s) could not be deleted because an unpublished draft exists.###30 04 2024 new variable
 file#:#replace_file_info#:#Todas las versiones del Archivo serán borradas
 file#:#resource_id#:#Resource ID###24 09 2021 new variable
@@ -10761,6 +10778,7 @@ ldoc#:#ldoc_form_edit_doc_head#:#Edit Document###30 04 2024 new variable
 ldoc#:#ldoc_form_new_doc_head#:#Create Document###30 04 2024 new variable
 ldoc#:#ldoc_last_modified#:#Last Change###30 04 2024 new variable
 ldoc#:#ldoc_ldoc_settings#:#Settings###30 04 2024 new variable
+ldoc#:#ldoc_order_invalid#:#Please enter a number for the order###14 01 2025 new variable
 ldoc#:#ldoc_period#:#Period###30 04 2024 new variable
 ldoc#:#ldoc_period_from#:#From###30 04 2024 new variable
 ldoc#:#ldoc_period_until#:#Until###30 04 2024 new variable
@@ -10928,6 +10946,7 @@ lso#:#lso_player_abstract#:#Show Abstract Info
 lso#:#lso_player_extro#:#Show Final Page
 lso#:#lso_player_finish#:#Finish
 lso#:#lso_player_next#:#Next
+lso#:#lso_player_noitems#:#There are no available items in this Learning Sequence.###08 07 2025 new variable
 lso#:#lso_player_previous#:#Previous
 lso#:#lso_player_resume#:#Resume Learning Sequence
 lso#:#lso_player_review#:#Review Learning Sequence
@@ -10938,7 +10957,6 @@ lso#:#lso_print_list#:#Print list
 lso#:#lso_read#:#User has read access to Learning Sequence
 lso#:#lso_search_users#:#Search user
 lso#:#lso_settings_availability#:#availability
-lso#:#lso_settings_availability_error#:#The end date can not be earlier than the start date###30 04 2024 new variable
 lso#:#lso_settings_extro#:#Exitpage Settings
 lso#:#lso_settings_intro#:#Intropage Settings
 lso#:#lso_settings_old_extro#:#View Old Exit Page###31 03 2023 new variable
@@ -11191,6 +11209,7 @@ lti#:#lti_object_consumer#:#Consumidores de LTI
 lti#:#lti_object_release_settings_form#:#editar recursos compartidos de LTI
 lti#:#lti_provider#:#Recursos compartidos de LTI
 lti#:#lti_provider_not_avail_msg#:#LTI Provider is set to 'Not Available'###07 02 2020 new variable
+lti#:#lti_provider_not_set_msg#:#Configuration of LTI Provider / tool is not completely finished.###08 07 2025 new variable
 lti#:#lti_providing_tab#:#ILIAS as LTI Provider###07 02 2020 new variable
 lti#:#lti_released_objects#:#Objetos compartidos
 lti#:#lti_select_provider#:#Select Provider###07 02 2020 new variable
@@ -12783,18 +12802,12 @@ noti#:#noti_notification_deactivated#:#Notification Deactivated
 notifications_adm#:#enable_osd#:#Enable On-Screen Notifications###31 03 2023 new variable
 notifications_adm#:#enable_osd_desc#:#If enabled, users are notified by a popup about new notifications.###31 03 2023 new variable
 notifications_adm#:#notification_settings#:#Notification Settings###31 03 2023 new variable
-notifications_adm#:#osd_delay#:#Presentation Delay###31 03 2023 new variable
-notifications_adm#:#osd_delay_desc#:#Delay of the visible presentation in milliseconds.###31 03 2023 new variable
-notifications_adm#:#osd_error_presentation_time_too_small#:#The Presentation Time has to be at least than 1000 miliseconds.###31 03 2023 new variable
-notifications_adm#:#osd_error_refresh_interval_smaller_than_delay_and_vanish_combined#:#The Refresh Interval has to be greater than the Presentation Time and the Presentation Delay combined.###31 03 2023 new variable
 notifications_adm#:#osd_error_refresh_interval_too_small#:#The Refresh Interval has to be at least than 3000 miliseconds.###31 03 2023 new variable
 notifications_adm#:#osd_interval#:#Refreshinterval###31 03 2023 new variable
 notifications_adm#:#osd_interval_desc#:#Polling interval for checking of new notifications in miliseconds. A lower number will notify the user more quickly but increases the number of requests the web server must handle.###31 03 2023 new variable
 notifications_adm#:#osd_play_sound#:#Play a Sound###31 03 2023 new variable
 notifications_adm#:#osd_play_sound_desc#:#Play a sound when receiving a new notficiation.###31 03 2023 new variable
 notifications_adm#:#osd_settings#:#On-Screen Notifications###31 03 2023 new variable
-notifications_adm#:#osd_vanish#:#Presentation Time###31 03 2023 new variable
-notifications_adm#:#osd_vanish_desc#:#Visible time of a notification on the screen in miliseconds.###31 03 2023 new variable
 obj#:#activation_visible_when_disabled#:#Visibility###30 04 2024 new variable
 obj#:#activation_visible_when_disabled_info#:#The item is visible outside of the selected availability period, but it cannot be opened.###30 04 2024 new variable
 obj#:#availability_period_changed#:#The availability period for the selected objects has been changed successfully.###30 04 2024 new variable
@@ -12807,6 +12820,7 @@ obj#:#copy_container_page_yes_label#:#Copy Content Page###30 04 2024 new variabl
 obj#:#custom_icon#:#Custom Icon###30 04 2024 new variable
 obj#:#edit_availability_period#:#Availability Period###30 04 2024 new variable
 obj#:#edit_questions#:#Editar preguntas
+obj#:#multiple_reference_deletion_info#:#Further references exist for the following objects.###01 04 2025 new variable
 obj#:#no_objects_selected#:#At least one object needs to be selected.###30 04 2024 new variable
 obj#:#obj_activate_content_lang#:#Activar traducción para Edición de Página
 obj#:#obj_activate_multilang#:#Activar soporte para múltiples idiomas
@@ -12862,6 +12876,7 @@ obj#:#obj_tool_setting_skills_info#:#Activa la gestión de competencias y la asi
 obj#:#obj_tool_setting_tag_cloud#:#Nube de etiquetas
 obj#:#obj_tool_setting_tag_cloud_info#:#Se mostrará el bloque "Nube de etiquetas" en la parte derecha de la pestaña "Contenido".
 obj#:#obj_tool_setting_taxonomies#:#Taxonomías
+obj#:#obj_tool_setting_taxonomies_info#:#Taxonomies allow the filtering of objects. They are created in the "Taxonomy" sub-tab in the "Settings" tab.###10 12 2024 new variable
 obj#:#obj_tool_setting_use_news#:#Noticias
 obj#:#obj_tool_setting_use_news_info#:#Active el bloque de noticias y/o la vista de calendario.
 obj#:#obj_tool_setting_use_news_open_settings#:#Abrir configuración
@@ -13120,6 +13135,7 @@ prg#:#auto_membership_src_type#:#Type###07 02 2020 new variable
 prg#:#auto_membership_title#:#Sources for Membership Automation###07 02 2020 new variable
 prg#:#auto_memberships#:#Membership Automation###07 02 2020 new variable
 prg#:#category#:#Category###07 02 2020 new variable
+prg#:#cert_relevance#:#Certificate###08 07 2025 new variable
 prg#:#completion_date#:#Completion Date###07 02 2020 new variable
 prg#:#confirm_to_remove_selected_assignments#:#Do you really want to remove the user assignment(s)?###24 09 2021 new variable
 prg#:#cont_ed_insert_prgactionnote#:#Insert Study Programme Action Note###30 04 2024 new variable
@@ -13204,6 +13220,7 @@ prg#:#pc_prgstatus_unlimited_validation#:#Unlimited validity###30 04 2024 new va
 prg#:#percentage#:#%###07 02 2020 new variable
 prg#:#prg_access_by_orgu#:#Access Control by Organisation Unit Positions###30 04 2021 new variable
 prg#:#prg_access_by_orgu_byline#:#If enabled, additional access control rules can be defined by positions in organisational units.###30 04 2021 new variable
+prg#:#prg_acknowledge_all_completed_courses#:#Acknowledge All Completed Courses###10 12 2024 new variable
 prg#:#prg_acknowledge_completed_courses#:#Reconocimiento de cursos completados
 prg#:#prg_add#:#Añadir programa de estudio
 prg#:#prg_added_course_ref_successful#:#Se a añadido una nueva referencia al curso correctamente
@@ -13689,6 +13706,7 @@ pwsp#:#pwsp_enable_personal_resources#:#Enable personal resources###07 02 2020 n
 pwsp#:#pwsp_enable_wsp_blogs#:#Enable Blogs###07 02 2020 new variable
 pwsp#:#pwsp_enable_wsp_files#:#Enable Files###07 02 2020 new variable
 pwsp#:#pwsp_enable_wsp_links#:#Enable Links###07 02 2020 new variable
+pwsp#:#pwsp_type_cannot_be_copied#:#Objects of type '%s' cannot be copied.###23 09 2025 new variable
 qpl#:#qpl_filter_commented_exclude#:#Questions without comments###30 04 2024 new variable
 qpl#:#qpl_filter_commented_only#:#Questions with comments###30 04 2024 new variable
 qpl#:#qpl_page_type_qfbg#:#General Feedback###30 04 2021 new variable
@@ -13837,7 +13855,7 @@ rbac#:#chtr_moderate#:#Moderar sala del chat
 rbac#:#chtr_read#:#Lectura
 rbac#:#chtr_visible#:#Visible
 rbac#:#chtr_write#:#Escritura
-rbac#:#cmis_edit_permissions#:#User can change permission settings of xAPI/cmi5 administration.###30 04 2021 new variable
+rbac#:#cmis_edit_permission#:#User can change permission settings of xAPI/cmi5 administration.###01 04 2025 new variable
 rbac#:#cmis_read#:#User has read access to xAPI/cmi5 administration.###30 04 2021 new variable
 rbac#:#cmis_visible#:#Administration of xAPI/cmi5 is visible.###30 04 2021 new variable
 rbac#:#cmis_write#:#User can edit settings of xAPI/cmi5 administration.###30 04 2021 new variable
@@ -13909,6 +13927,10 @@ rbac#:#dcl_write#:#El usuario puede editar la configuración y contenido de la c
 rbac#:#delete_files#:#Eliminar archivos
 rbac#:#delete_folders#:#Eliminar carpetas
 rbac#:#delete_wiki_pages#:#Borrar páginas
+rbac#:#dpro_edit_permission#:#User can change permission settings in the Declaration of Data Protected administration###01 04 2025 new variable
+rbac#:#dpro_read#:#User has read access to the Declaration of Data Protection administration###01 04 2025 new variable
+rbac#:#dpro_visible#:#Declaration of Data Protection administration is visible###01 04 2025 new variable
+rbac#:#dpro_write#:#Edit settings in the Declaration of Data Protection###01 04 2025 new variable
 rbac#:#dshs_change_presentation#:#Change presentation of dashboard view###07 02 2020 new variable
 rbac#:#dshs_edit_permission#:#User can change permission settings of Dashboard administration###07 02 2020 new variable
 rbac#:#dshs_read#:#User has read access to Dashboard administration###07 02 2020 new variable
@@ -13990,9 +14012,11 @@ rbac#:#frm_add_reply#:#Los usuarios pueden responder a un mensaje
 rbac#:#frm_add_thread#:#Añadir nuevo tema
 rbac#:#frm_copy#:#Copiar Foro
 rbac#:#frm_delete#:#Eliminar Foro
+rbac#:#frm_edit_learning_progress#:#User can edit learning progress settings###14 01 2025 new variable
 rbac#:#frm_edit_permission#:#Modificar configuración de permisos
 rbac#:#frm_moderate_frm#:#Eliminar y borrar mensajes
 rbac#:#frm_read#:#Acceso de Lectura al Foro
+rbac#:#frm_read_learning_progress#:#User can view learning progress of other users###14 01 2025 new variable
 rbac#:#frm_visible#:#El foro es visible
 rbac#:#frm_write#:#Editar foro
 rbac#:#frma_edit_permission#:#Cambiar configuración de permisos
@@ -14055,6 +14079,10 @@ rbac#:#il_lti_global_role#:#LTI User###24 09 2021 new variable
 rbac#:#il_sess_participant#:#Participante en la sesión
 rbac#:#il_sess_status_closed#:#Sesión cerrada de no participante
 rbac#:#ilias_id#:#ID de ILIAS
+rbac#:#impr_edit_permission#:#User can change permission settings of Legal Notice administration###01 04 2025 new variable
+rbac#:#impr_read#:#User can read in Legal Notice administration###01 04 2025 new variable
+rbac#:#impr_visible#:#Administration of Legal Notice is visible###01 04 2025 new variable
+rbac#:#impr_write#:#User can edit content and settings of Legal Notice###01 04 2025 new variable
 rbac#:#info_user_view_changed#:#Vista de usuario modificada
 rbac#:#internal_mail#:#Correo interno
 rbac#:#invite#:#Invitar a encuesta
@@ -14102,7 +14130,7 @@ rbac#:#lso_read_learning_progress#:#User can view learning progress of other use
 rbac#:#lso_unparticipate#:#User can unsubscribe from a Learning Sequence###07 02 2020 new variable
 rbac#:#lso_visible#:#Learning Sequence is visible
 rbac#:#lso_write#:#User can edit settings of Learning Sequence
-rbac#:#lsos_edit_permissions#:#User can change permission settings of Learning Sequences administration.###30 04 2021 new variable
+rbac#:#lsos_edit_permission#:#User can change permission settings of Learning Sequences administration.###01 04 2025 new variable
 rbac#:#lsos_read#:#User has read access to Learning Sequences administration.###30 04 2021 new variable
 rbac#:#lsos_visible#:#Administration of Learning Sequences is visible.###30 04 2021 new variable
 rbac#:#lsos_write#:#User can edit settings of Learning Sequences administration.###30 04 2021 new variable
@@ -14167,7 +14195,8 @@ rbac#:#moderate_frm#:#Moderar
 rbac#:#msg_anonymous_cannot_be_assigned#:#Anonymous cannot be assigned to a role.###19 03 2024 new variable
 rbac#:#msg_no_roles_of_type#:#No hay roles disponibles para el filtro seleccionado
 rbac#:#news_add_news#:#Añadir noticias
-rbac#:#nots_edit_permissions#:#User can change permission settings of Notes administration.###30 04 2021 new variable
+rbac#:#no_corresponding_roles#:#No corresponding roles could be found.###01 04 2025 new variable
+rbac#:#nots_edit_permission#:#User can change permission settings of Notes administration.###01 04 2025 new variable
 rbac#:#nots_read#:#User has read access to Notes administration.###30 04 2021 new variable
 rbac#:#nots_visible#:#Administration of Notes is visible.###30 04 2021 new variable
 rbac#:#nots_write#:#User can edit settings of Notes administration.###30 04 2021 new variable
@@ -14244,7 +14273,7 @@ rbac#:#prgs_edit_permission#:#Cambiar configuración de permisos en administraci
 rbac#:#prgs_read#:#El usuario tiene acceso de lectura a la administración del programa de estudio
 rbac#:#prgs_visible#:#La administración del programa de estudio está visible
 rbac#:#prgs_write#:#Editar configuración en administración de programa de estudio
-rbac#:#prss_edit_permissions#:#User can change permission settings of Personal Resources administration.###30 04 2021 new variable
+rbac#:#prss_edit_permission#:#User can change permission settings of Personal Resources administration.###01 04 2025 new variable
 rbac#:#prss_read#:#User has read access to Personal Resources administration.###30 04 2021 new variable
 rbac#:#prss_visible#:#Administration of Personal Resources is visible.###30 04 2021 new variable
 rbac#:#prss_write#:#User can edit settings of Personal Resources administration.###30 04 2021 new variable
@@ -14282,7 +14311,10 @@ rbac#:#rbac_choose_copy_targets#:#Por favor introduzca una consulta para selecci
 rbac#:#rbac_condition_delete_sure#:#¿Estás seguro que quieres borrar las siguientes precondiciones?
 rbac#:#rbac_context_global#:#Global
 rbac#:#rbac_copy_behaviour#:#Copiar configuración de rol
+rbac#:#rbac_copy_behaviour_info#:#Transfer Permissions from: %s to: %s###20 05 2025 new variable
 rbac#:#rbac_copy_finished#:#Copia finalizada
+rbac#:#rbac_copy_multi_targets#:#%s, %s and %s further Roles selected%s###20 05 2025 new variable
+rbac#:#rbac_copy_no_targets#:#At least one Role must be selected as Target###20 05 2025 new variable
 rbac#:#rbac_copy_role#:#Copiar rol
 rbac#:#rbac_copy_role_add_perm#:#Añadir permisos
 rbac#:#rbac_copy_role_copy#:#Copiar permisos
@@ -14403,6 +14435,7 @@ rbac#:#rbac_role_rights_copy_empty#:#Ninguno
 rbac#:#rbac_role_selection#:#Tipo de rol
 rbac#:#rbac_role_title#:#Título de rol
 rbac#:#rbac_select_copy_targets#:#Seleccione un nuevo rol
+rbac#:#rbac_select_roles#:#Role Selection
 rbac#:#rbac_ud_global#:#Rol local definido por usuario
 rbac#:#rbac_ud_local#:#Rol local definido por usuario
 rbac#:#rbac_ud_rolt#:#Plantilla de rol definida por el usuario
@@ -14593,7 +14626,7 @@ rbac#:#usrf_read#:#Acceso de lectura a las cuentas de usuario
 rbac#:#usrf_read_users#:#Asignación de rol para administradores locales
 rbac#:#usrf_visible#:#Cuentas de usuario visibles
 rbac#:#usrf_write#:#Editar cuentas de usuario
-rbac#:#wbdv_edit_permissions#:#User can change permission settings of WebDAV administration.###30 04 2021 new variable
+rbac#:#wbdv_edit_permission#:#User can change permission settings of WebDAV administration.###01 04 2025 new variable
 rbac#:#wbdv_read#:#User has read access to WebDAV administration.###30 04 2021 new variable
 rbac#:#wbdv_visible#:#Administration of WebDAV is visible.###30 04 2021 new variable
 rbac#:#wbdv_write#:#User can edit settings of WebDAV administration.###30 04 2021 new variable
@@ -14777,6 +14810,7 @@ rep#:#rep_fav_intro2#:#Klicken Sie auf '%s' und wählen Sie aus dem verfügbaren
 rep#:#rep_fav_intro3#:#Wenn Sie etwas gefunden haben, das Sie interessiert, können Sie es ganz einfach zu Ihren Favoriten hinzufügen. Wählen Sie beim gewünschten Objekt im <i>Aktionen</i>-Menü die Option "<i>Zu Favoriten hinzufügen</i>".###07 02 2020 new variable
 rep#:#rep_favourites#:#Favourites###09 03 2022 new variable
 rep#:#rep_favourites_info#:#Users can mark single repository items as favourites. Favourites lists can be activated and configured in the dashboard and menu settings.###09 03 2022 new variable
+rep#:#rep_input_not_empty#:#This field must not be empty, please provide a value.###01 04 2025 new variable
 rep#:#rep_intro#:#¡Bienvenido al Repositorio!
 rep#:#rep_intro1#:#En este área puede crear recursos de aprendizaje y trabajo para todos los usuarios. Todos los recursos están organizados en categorías. Las Categorías pueden reflejar la estructura de su organización (ej. departamentos), una jerarquía de disciplinas, o grupos de una escuela.
 rep#:#rep_intro2#:#Se necesitan tres pasos para montar una estructura inicial:
@@ -15714,6 +15748,7 @@ style#:#sty_ca_cntr_class#:#Contenedor de carrusel
 style#:#sty_ca_icntr_class#:#Contenedor de elementos de carrusel
 style#:#sty_ca_icont_class#:#Elemento de contenido de carrusel
 style#:#sty_ca_ihead_class#:#Elemento de encabezado de carrusel
+style#:#sty_cannot_be_copied#:#The following style types cannot be copied###20 05 2025 new variable
 style#:#sty_caption#:#Leyenda
 style#:#sty_caption_class#:#Leyenda
 style#:#sty_carousel_templates#:#Plantillas de carrusel
@@ -15814,6 +15849,7 @@ style#:#sty_media_queries#:#Consultas de soporte
 style#:#sty_media_query_info#:#Después del bloque CSS por defecto (sin consulta de soporte especial) se añade un bloque CSS para cada consulta de soporte.
 style#:#sty_min_height#:#Altura mínima
 style#:#sty_move_lm_styles#:#Modificar Estilo de los Módulos de Aprendizaje
+style#:#sty_move_obj_styles#:#Change Style of Objects###23 09 2025 new variable
 style#:#sty_move_style#:#Modificar Estilo
 style#:#sty_move_user_styles#:#Cambiar estilo de usuarios
 style#:#sty_msg_characteristic_must_only_include#:#El nombre de clases de estilo sólo puede incluir los siguientes caracteres:
@@ -15821,6 +15857,7 @@ style#:#sty_msg_color_must_only_include#:#El nombre de color sólo puede incluir
 style#:#sty_msg_input_must_be_numeric#:#La entrada debe ser numérica
 style#:#sty_name#:#Nombre
 style#:#sty_nr_learning_modules#:#Número de Módulos de Aprendizaje
+style#:#sty_nr_objects#:#Number of Objects###23 09 2025 new variable
 style#:#sty_odd_col_class#:#Columnas impares
 style#:#sty_odd_row_class#:#Filas impares
 style#:#sty_ol#:#Ordered List###30 04 2024 new variable
@@ -16824,6 +16861,7 @@ tagging#:#tagging_enable_all_users_info#:#Agrega una sección "Todos los usuario
 tagging#:#tagging_enable_tagging#:#Habilitar Etiquetas
 tagging#:#tagging_forbidden_tags#:#Etiquetas Prohibidas
 tagging#:#tagging_no_obj_for_tag#:#No Resources tagged with %s.###09 03 2022 new variable
+tagging#:#tagging_no_perm_write#:#You have no permission to change this data.###10 12 2024 new variable
 tagging#:#tagging_other_users#:#Other Users
 tagging#:#tagging_resources_for_tag#:#Recursos etiquetados con %s
 tagging#:#tagging_search_users#:#Buscar usuarios
@@ -17178,6 +17216,7 @@ ui#:#order_option_numerical_ascending#:#0 to 9###30 04 2024 new variable
 ui#:#order_option_numerical_descending#:#9 to 0###30 04 2024 new variable
 ui#:#presentation_table_collapse#:#collapse all###30 04 2024 new variable
 ui#:#presentation_table_expand#:#expand all###30 04 2024 new variable
+ui#:#table_posinput_col_title#:#Position###01 04 2025 new variable
 ui#:#ui_chars_max#:#Maximum:
 ui#:#ui_chars_min#:#Minimum:
 ui#:#ui_chars_remaining#:#Characters remaining:
@@ -17355,6 +17394,7 @@ validation#:#not_min_length#:#Your input has a length of %d and falls below the 
 validation#:#not_numeric#:#'%s' is not numeric.
 validation#:#not_numeric_empty_string#:#Your input is not numeric.###07 02 2020 new variable
 validation#:#numeric_only#:#Please insert a whole number.###30 04 2024 new variable
+validation#:#required#:#This input is required.###08 07 2025 new variable
 validation#:#tag_required#:#Please insert at least one tag.###30 04 2024 new variable
 violation#:#not_a_string#:#Given value is not a String###31 03 2023 new variable
 webr#:#invalid_links_tbl#:#Enlaces inválidos

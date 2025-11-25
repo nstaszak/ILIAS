@@ -176,6 +176,7 @@ administration#:#auth_auth_mode_determination#:#Stanovení metody autentizace (p
 administration#:#auth_automatic#:#Pevná sekvence
 administration#:#auth_by_user#:#Podle uživatele
 administration#:#auth_kind_determination#:#Druh určení
+administration#:#auth_mode_default_change_info#:#Changing the default authentication method affects all user accounts configured to use the default authentication method. If the selected default method (e.g., Shibboleth, SAML, SOAP, ...) does not support or is not configured to allow fallback to local ILIAS authentication, affected users may no longer be able to log in. To avoid this, please ensure that local fallback authentication is activated in the configuration of the selected method, or that the authentication method stored for affected user accounts is manually changed.###20 05 2025 new variable
 administration#:#auth_mode_determination_info#:#Zvolte jestli uživatelé si mají vybrat metodu své autentizace v přihlašovacím okně, nebo autentizace je prováděna pevnou sekvencí autentizačních metod.
 administration#:#clean#:#Vyčistit
 administration#:#clean_desc#:#Odstranit neplatné odkazy a položky stromu. Inicializovat mezery ve stromové struktuře.
@@ -648,6 +649,7 @@ assessment#:#errFormulaQuestion#:#Otázka se vzorcem obsahuje nekorektní inform
 assessment#:#errRecursionInResult#:#Vzorec obsahuje neurčitou rekurzi.
 assessment#:#err_category_in_use#:#Nejméně jedna kategorie nemůže být smazána. Jedna nebo více jednotek je již v použití.
 assessment#:#err_divider_too_big#:#The divider of one of the variables in this question is too big.###09 03 2022 new variable
+assessment#:#err_divider_too_big_specific#:#The divider of this variable is too big.###04 11 2025 new variable
 assessment#:#err_division#:#This value has to be smaller than the maximum range.###09 03 2022 new variable
 assessment#:#err_duplicate_results#:#Použil(a) jste více než jednu proměnnou výsledku. To textu otázky není povoleno.
 assessment#:#err_no_formula#:#Musíte vložit vzorec
@@ -1115,7 +1117,10 @@ assessment#:#redirect_after_finishing_rule#:#Přesměrovat
 assessment#:#redirect_after_finishing_tst#:#Přesměrovat po ukončení testu
 assessment#:#redirect_after_finishing_tst_desc#:#Po ukončení testu je každý účastník automaticky přesměrován na definovanou webovou stránku. To platí pouze v případě, že účastníci nemají přístup k výsledkům svých testů.
 assessment#:#redirect_always#:#vždy na definovanou webovou stránku
+assessment#:#redirect_always_to_logout#:#Always to the logout screen###04 11 2025 new variable
 assessment#:#redirect_in_kiosk_mode#:#Přesměrovat jen v kioskovém módu
+assessment#:#redirect_url_invalid#:#Please enter a valid url of the target webpage.###04 11 2025 new variable
+assessment#:#redirect_url_required_for_rule#:#The url of the webpage is required when "%s" is selected.###04 11 2025 new variable
 assessment#:#redirection_url#:#Cíl přesměrování
 assessment#:#region#:#Oblast
 assessment#:#remove_as_participant#:#Odstranit jako fixního účastníka
@@ -1258,6 +1263,7 @@ assessment#:#toplist_col_percentage#:#Procenta
 assessment#:#toplist_col_rank#:#Umístění
 assessment#:#toplist_col_score#:#Hodnocení
 assessment#:#toplist_col_wtime#:#Pracovní čas
+assessment#:#total_max_points_cannot_be_negative#:#The maximum amount of reachable points cannot be negative.###01 04 2025 new variable
 assessment#:#true#:#Pravda
 assessment#:#tst_access_code_created#:#Byl vytvořen unikátní kód k Vašemu stálému přístupu k Vašim výsledkům testu, a který Vám umožňuje v testu pokračovat. Zapište si prosím tento kód pro další použití.
 assessment#:#tst_activate_skill_service#:#Aktivujte službu způsobilosti
@@ -1269,6 +1275,8 @@ assessment#:#tst_add_quest_cont_edit_mode_IPE#:#Editace dodatečného obsahu s E
 assessment#:#tst_add_quest_cont_edit_mode_IPE_info#:#No formatting of text in question and answers. No use of LaTex either. But feedback and hints can be reused when question is embedded in ILIAS learning module.###30 04 2021 new variable
 assessment#:#tst_add_quest_cont_edit_mode_RTE#:#Výchozí editační mód pro dodatečný obsah otázky
 assessment#:#tst_add_quest_cont_edit_mode_RTE_info#:#Allows text formatting of questions, answers, feedbacks and hints. But feedback and hints cannot be reused when question is embedded in ILIAS learning module.###30 04 2021 new variable
+assessment#:#tst_add_quest_cont_edit_mode_plain#:#Use plain text###10 12 2024 new variable
+assessment#:#tst_add_quest_cont_edit_mode_plain_info#:#No formatting of text in question, answers, feedback, and hints.###10 12 2024 new variable
 assessment#:#tst_addit_passes_blocked_after_passed_msg#:#You have passed the test. The test cannot be started again.###07 02 2020 new variable
 assessment#:#tst_all_test_competences#:#Způsobilost ve všech testech
 assessment#:#tst_all_user_data_deleted#:#Všechna uživatelská data tohoto testu byly smazány!
@@ -1491,7 +1499,6 @@ assessment#:#tst_instant_feedback_answer_specific#:#Zobrazit odpovědi specifick
 assessment#:#tst_instant_feedback_answer_specific_desc#:#Je-li zvolena zpětná vazba specifická pro odpověď, zobrazí se předem definovaná zpětná vazba v závislosti na odpovědích účastníka (pokud je podporován typem otázky).
 assessment#:#tst_instant_feedback_contents#:#Zahrnutý obsah
 assessment#:#tst_instant_feedback_desc#:#Když jsou otázky konfigurovány se zpětnou vazbou, je účastníkům poskytnuta během průchodu testem.
-assessment#:#tst_instant_feedback_forced#:#Vynutit okamžitou zpětnou vazbu
 assessment#:#tst_instant_feedback_results#:#Zobrazit výsledky (jen body)
 assessment#:#tst_instant_feedback_results_desc#:#Pokud jsou vybrány výsledky (v bodech), zobrazí se dosažené body.
 assessment#:#tst_instant_feedback_solution#:#Zobrazit řešení
@@ -1604,7 +1611,6 @@ assessment#:#tst_objective_oriented_test_pass_without_questions#:#Zahájený pr�
 assessment#:#tst_objective_progress_header#:#Postup cíle učení
 assessment#:#tst_objectives_progress_header#:#Postup cílů učení
 assessment#:#tst_old_style_rnd_quest_set_broken#:#Tento náhodný test je v nenapravitelném stavu, protože byl smazán jeden připojený zásobník otázek nebo více zásobníků. Proto již účastníci nemohou absolvovat test.
-assessment#:#tst_optional_questions_confirmation_fixed_test#:#<b>Otázky týkající se již splněných cílů učení byly zodpovězeny při předchozích průchodech.</b><br /><br />Chcete přejít na otázku, která se týká již splněného cíle učení.<br />Můžete si vybrat:<br /><br /> pokračujete, můžete pokračovat v práci nebo jednoduše zkontrolujete tyto otázky. Pokud změníte odpovědi, které byly převzaty z předchozích průchodů, můžete také zhoršit výsledek cíle učení.<br /><br />Pokud se rozhodnete nepokračovat v práci nebo zkontrolovat tyto otázky, můžete se vrátit zpět. Otázky budou v každém případě zohledněny při hodnocení.
 assessment#:#tst_optional_questions_confirmation_non_fixed_test#:#<b>Otázky týkající se již splněných cílů učení jsou volitelné.</b><br /><br />Chcete přejít na otázku, která se týká již splněného cíle učení.<br />Můžete si vybrat:<br /><br /> pokračujete, můžete pokračovat v práci na těchto otázkách. Nebyly převzaty vaše odpovědi z předchozích pokusů, protože pro tento pokus byly vybrány nové náhodné otázky. Při pokračování v práci na těchto otázkách můžete také zhoršit výsledek cíle učení.<br /><br />Pokud se rozhodnete nepokračovat v práci na těchto otázkách, můžete se vrátit zpět. V tomto případě nebudou tyto otázky zohledněny při hodnocení.
 assessment#:#tst_out_of_time_message#:#You have reached the maximum allowed processing time of the test!###30 04 2024 new variable
 assessment#:#tst_participant#:#Účastník
@@ -1761,6 +1767,7 @@ assessment#:#tst_res_jump_to_participant_hint_opt#:#--Skok na účastníka--
 assessment#:#tst_res_lo_objectives_header#:#Důležité cíle učení
 assessment#:#tst_res_lo_try_header#:#Pokus
 assessment#:#tst_res_lo_try_n#:#Pokus %s
+assessment#:#tst_res_tab_msg_no_lp_access#:#You are currently not allowed to access your Learning Progress, as you are not allowed to see your test results.###01 04 2025 new variable
 assessment#:#tst_res_tab_msg_res_after_date#:#Výsledky testů vám zde budou předloženy v následujícím termínu: %s
 assessment#:#tst_res_tab_msg_res_after_date_no_res#:#Když absolvujete test, výsledky testů vám zde budou předloženy v následujícím termínu: %s
 assessment#:#tst_res_tab_msg_res_after_finish_test#:#Po dokončení testu vám zde budou předloženy výsledky.
@@ -1835,6 +1842,7 @@ assessment#:#tst_setting_offer_hints_label#:#Nápovědy specifické odpovědi
 assessment#:#tst_settings_conflict_compulsory_and_lock#:#"Compulsory Questions" cannot be used together with "Answer Lock".###30 04 2024 new variable
 assessment#:#tst_settings_conflict_postpone_and_lock#:#"Unanswered questions will be enqueued" cannot be used together with "Lock Answers After Moving to Next Question".###30 04 2024 new variable
 assessment#:#tst_settings_conflict_shuffle_and_lock#:#"Shuffle Questions" cannot be used together with "Lock Answers After Moving to Next Question".###30 04 2024 new variable
+assessment#:#tst_settings_form_reload_needed#:#The form needed to be reloaded to avoid data loss as the available settings have changed due to the removal of all results of participants.###23 09 2025 new variable
 assessment#:#tst_settings_header_additional#:#Additional Features###30 04 2024 new variable
 assessment#:#tst_settings_header_execution#:#Správa testu: Přístup
 assessment#:#tst_settings_header_intro#:#Informace před zahájením testu
@@ -1843,8 +1851,6 @@ assessment#:#tst_show_answer_sheet#:#Zobrazit odpovědi
 assessment#:#tst_show_cancel#:#Zobrazit volbu přerušení testu
 assessment#:#tst_show_cancel_description#:#Je-li vybráno, pak tlačítko k přerušení testu bude zobrazeno v průběhu vykonávání testu
 assessment#:#tst_show_comp_results#:#Zobrazit výsledky způsobilosti
-assessment#:#tst_show_pass_details#:#Zobrazit výsledky v průběhu testu
-assessment#:#tst_show_pass_details_desc#:#Je-li vybráno, jsou k dispozici nadpisy otázek a dosažené body pro každou otázku v průchodu testem, pokud není test dokončen.
 assessment#:#tst_show_results#:#Zobrazit výsledky testu
 assessment#:#tst_show_side_list#:#Zobrazit boční seznam otázek
 assessment#:#tst_show_solution_answers_only#:#Přehled výsledků (jen odpovědi)
@@ -2017,7 +2023,6 @@ auth#:#auth_cron_destroy_expired_sessions_desc#:#This job deletes expires sessio
 auth#:#auth_err_expired#:#Vaše relace byla deaktivována z důvodu nečinnosti.
 auth#:#auth_err_invalid_user_account#:#Ověření se nezdařilo z důvodu interního selhání.
 auth#:#auth_err_ldap_exception#:#Ověření se nezdařilo z důvodu interního selhání ověřování (LDAP).
-auth#:#auth_err_login_attempts_deactivation#:#Uživatelský účet byl deaktivován z důvodu chybných pokusů o přihlášení.
 auth#:#auth_info_add#:#Tuto volbu použijte, pokud nejste doposud v systému ILIAS registrován. Bude vytvořen nový účet.
 auth#:#auth_info_migrate#:#Pokud máte již v ILIAS účet, vložte jméno uživatele a heslo k přenesení Vašich osobních údajů (E-mail, výsledky testů...).
 auth#:#auth_ldap_server_ds#:#LDAP-Server
@@ -2073,6 +2078,8 @@ auth#:#auth_oidc_update_field_info#:#Automatické aktualizace
 auth#:#auth_oidc_update_role_info#:#Použít jen při prvním přihlášení (automatická synchronizace)
 auth#:#auth_oidconnect#:#OpenID Connect
 auth#:#auth_page_type_auth#:#Login Page###30 04 2021 new variable
+auth#:#auth_required_password#:#Please enter a password.###10 12 2024 new variable
+auth#:#auth_required_username#:#Please enter a username.###10 12 2024 new variable
 auth#:#auth_saml#:#SAML
 auth#:#auth_saml_add_idp_btn#:#Přidat nového poskytovatele identity
 auth#:#auth_saml_add_idp_md_error#:#Uvedená hodnota nebyla platným dokumentem XML. Ujistěte se, že XML obsahuje platného poskytovatele identity.
@@ -2530,6 +2537,7 @@ book#:#book_new#:#Nový zásobník objednávek
 book#:#book_no_bookings_for_you#:#No reservations have been performed for you.###07 02 2020 new variable
 book#:#book_no_objects#:#No Assignment###07 02 2020 new variable
 book#:#book_no_of_objects#:#Číslo objektu
+book#:#book_no_pools_selected#:#No booking pools have been assigned to this course. Booking pools can be assigned via the course's 'Resources' tab.###23 09 2025 new variable
 book#:#book_no_preferences_for_you#:#No preferences have been stored for you.###07 02 2020 new variable
 book#:#book_no_recurrence#:#Book only this date###30 04 2024 new variable
 book#:#book_not#:#Žádný
@@ -2887,8 +2895,6 @@ chatroom#:#chat_osc_accepts_messages_yes#:#Dostává zprávy chatu
 chatroom#:#chat_osc_add_user#:#Přidat další uživatele
 chatroom#:#chat_osc_conversations#:#Konverzace
 chatroom#:#chat_osc_doesnt_accept_msg#:#Konverzace nejsou možné
-chatroom#:#chat_osc_dont_accept_msg#:#Momentálně nemůžete být pozváni do konverzací. Pokud si to přejete, můžete to změnit v <a href="%s">'Osobní nastavení'</a>.
-chatroom#:#chat_osc_dont_accept_msg_link_txt#:#'Personal Settings'###07 02 2020 new variable
 chatroom#:#chat_osc_head_grp_x_persons#:#%s Uživatelé
 chatroom#:#chat_osc_invite_to_conversation#:#Přidat do konverzace
 chatroom#:#chat_osc_leave_grp_conv#:#Opustit konverzaci
@@ -3768,6 +3774,7 @@ common#:#copy_all#:#Kopírovat vše
 common#:#copy_n_of_suffix#:#- Kopírovat (%1$s)
 common#:#copy_of#:#Kopie
 common#:#copy_of_suffix#:#
+common#:#copy_perma_link#:#Copy link to clipboard###10 12 2024 new variable
 common#:#copy_selected_items#:#Kopírovat
 common#:#count#:#Spočítat
 common#:#counter_novelty#:#News###30 04 2024 new variable
@@ -3915,6 +3922,7 @@ common#:#download_selected_items#:#Stáhnout
 common#:#downloading_settings#:#Nastavení stahování
 common#:#dpro_accept_usr_agreement#:#Accept Declaration of Data Protection?###30 04 2024 new variable
 common#:#dpro_accept_usr_agreement_intro#:#There is a new Declaration of Data Protection. You need to accept it before proceeding with the use of ILIAS. Read the following document carefully and give your consent or dissent at the bottom of the page.###30 04 2024 new variable
+common#:#dpro_agreed_on#:#DoDP agreed to on###01 04 2025 new variable
 common#:#dpro_force_accept_usr_agreement#:#You must accept the Declaration of Data Protection!###30 04 2024 new variable
 common#:#dpro_no_agreement_description#:#There is currently no Declaration of Data Protection document available for this installation. Please contact the <a href="%1$s">system administrator</a>.###30 04 2024 new variable
 common#:#dpro_refuse_acceptance#:#Refuse to Accept the Declaration of Data Protection###30 04 2024 new variable
@@ -4525,6 +4533,7 @@ common#:#login_information_settings_saved#:#Přihlašovací informace byly úsp�
 common#:#login_invalid#:#Zvolené přihlašovaní jméno není platné! Povoleny jsou pouze následující znaky (nejméně 3 znaky): A-Z a-z 0-9 _.-+*@!$%~
 common#:#login_to_ilias#:#Přihlášení do systému ILIAS
 common#:#login_to_ilias_via_cas#:#Přihlášení do ILIAS přes ústřední autentizační službu (Central Authentication Service = CAS)
+common#:#login_to_ilias_via_login_form#:#Login to ILIAS###20 05 2025 new variable
 common#:#login_to_ilias_via_saml#:#Login to ILIAS via SAML Authentification
 common#:#login_to_ilias_via_shibboleth#:#Přihlášení do ILIAS přes
 common#:#loginname_already_exists#:#Toto přihlašovací jméno již existuje.
@@ -4742,6 +4751,7 @@ common#:#msg_no_perm_perm#:#Nemáte oprávnění měnit nastavení přístupový
 common#:#msg_no_perm_read#:#Nemáte oprávnění přístupu k této položce.
 common#:#msg_no_perm_read_item#:#Nemáte oprávnění přístupu k položce '%s'.
 common#:#msg_no_perm_read_lm#:#Nemáte oprávnění číst tento výukový modul.
+common#:#msg_no_perm_view_roles_of_user#:#You have no permission to view the role assignment of this user###26 08 2025 new variable
 common#:#msg_no_perm_write#:#Nemáte oprávnění k zápisu
 common#:#msg_no_search_result#:#Žádné položky nenalezeny
 common#:#msg_no_search_string#:#Zadejte prosím dotaz
@@ -5250,6 +5260,7 @@ common#:#pd_items_news#:#Zahrnout zprávy odobních položek
 common#:#pdf_export#:#Export do PDF
 common#:#perm_settings#:#Přístupová práva
 common#:#perma_link#:#Pernamentní odkaz
+common#:#perma_link_copied#:#Link to this page has been copied to the clipboard.###10 12 2024 new variable
 common#:#permission#:#Oprávnění
 common#:#permission_denied#:#Přístup odepřen
 common#:#permission_settings#:#Nastavení oprávnění objektu
@@ -5629,7 +5640,6 @@ common#:#show_users_online#:#Zobrazit uživatele online
 common#:#show_who_is_online#:#Show who is online###30 04 2021 new variable
 common#:#side_frame#:#Boční rám
 common#:#signature#:#Podpis
-common#:#simultaneous_login_detected#:#Váš přístup byl zamítnut, protože jste přihlášen(a) simultánně se stejným účtem.
 common#:#size#:#Velikost
 common#:#skills#:#Moje kvalifikace
 common#:#skin_style#:#Výchozí vzhled/styl
@@ -6006,7 +6016,6 @@ common#:#withdrawal_sure_account_no_consent_yet#:#Are you sure you do not want t
 common#:#wizard_search_list#:#Vaše hledání nalezlo následující položky. Vyberte prosím jednu z nich.
 common#:#wizard_title_info#:#Vložte prosím název objektu, který chcete duplikovat.
 common#:#write#:#Zápis
-common#:#wrong_ip_detected#:#Vá přístup je zamítnut, protože máte chybnou IP.<br>Kontaktujte prosím systémového administrátora.
 common#:#year#:#Rok
 common#:#yearly#:#Ročně
 common#:#years#:#Roky
@@ -7251,8 +7260,6 @@ content#:#glo_online_info#:#Pouze pokud je glosář online, mohou uživatelé po
 content#:#glo_presentation_mode#:#Mód prezentace
 content#:#glo_presentation_view#:#Zobrazení prezentace
 content#:#glo_quick_navigation#:#Rychlá navigace
-content#:#glo_show_taxonomy#:#Zobrazit taxonomii
-content#:#glo_show_taxonomy_info#:#Taxonomie bude viditelná v zobrazení prezentace glosáře a může být použita k výběru odkazovaných výrazů.
 content#:#glo_style#:#Styl glosáře
 content#:#glo_table_form#:#V tabulkovém formuláři
 content#:#glo_table_form_info#:#Termíny a definice jsou nejprve zobrazeny ve dvou sloupcovém přehledu. Klepnutím na termín se otevře úplný obsah daného termínu v separátním okně.
@@ -7368,6 +7375,8 @@ copg#:#copg_page_element_not_found#:#Page element not found.###30 04 2021 new va
 copg#:#copg_page_type_stys#:#Layout Page###30 04 2021 new variable
 copg#:#copg_par_format_selection#:#Paragraph Format Selection###17 01 2024 new variable
 copg#:#copg_pc_mob_does_not_exist#:#This media object does not exist.###28 11 2023 new variable
+copg#:#copg_plugin#:#Plugin###23 09 2025 new variable
+copg#:#copg_plugin_not_avail#:#Plugin %s not available.###10 12 2024 new variable
 copg#:#copg_questions_not_supported_here#:#V tomto kontextu nejsou otázky podporovány.
 copg#:#copg_reload_page#:#Reload Page###29 06 2022 new variable
 copg#:#copg_remove_formats#:#Remove Formatting###17 01 2024 new variable
@@ -8540,7 +8549,6 @@ dcl#:#dcl_change_notification_dcl_new_record#:#následující záznam byl vytvo�
 dcl#:#dcl_change_notification_dcl_update_record#:#následující záznam byl aktualizován
 dcl#:#dcl_change_notification_link#:#URL
 dcl#:#dcl_change_notification_subject#:#Sbírka údajů "%s" byla změněna
-dcl#:#dcl_change_why_you_receive_this_email#:#Tuto zprávu jste přijal(a) protože máte aktivováno upozorňování o tomto souboru dat.
 dcl#:#dcl_changed_by#:#Změnil
 dcl#:#dcl_checked#:#Zkontrolován.
 dcl#:#dcl_comments#:#Komentáře
@@ -8555,6 +8563,9 @@ dcl#:#dcl_confirm_delete_table#:#Skutečně chcete smazat tuto tabulku, její ob
 dcl#:#dcl_confirm_storing_records#:#Ověřte a potvrďte svůj vstup.
 dcl#:#dcl_confirm_storing_records_no_permission#:#Nemáte oprávnění změnit potom záznam.
 dcl#:#dcl_copy#:#Kopírovat soubor údajů
+dcl#:#dcl_copy_field#:#Copy###10 12 2024 new variable
+dcl#:#dcl_copy_field_desc#:#Field to copy options stored in a different field of a table.###10 12 2024 new variable
+dcl#:#dcl_copy_title#:#Copy of table and field###10 12 2024 new variable
 dcl#:#dcl_create_date#:#Datum vytvoření
 dcl#:#dcl_create_entry_rules#:#Entry Creation###30 04 2021 new variable
 dcl#:#dcl_create_field#:#Vytvořit pole
@@ -8562,10 +8573,10 @@ dcl#:#dcl_create_fields#:#Vytvořte prosím nejméně jedno pole v tabulce "Pole
 dcl#:#dcl_creation_date#:#Datum vytvoření
 dcl#:#dcl_creation_date_description#:#Datum, kdy byl záznam vytvořen.
 dcl#:#dcl_datatype#:#Typ údajů
+dcl#:#dcl_date#:#Date Entry###20 05 2025 new variable
+dcl#:#dcl_date_desc#:#Field for a date.###20 05 2025 new variable
 dcl#:#dcl_date_selection#:#Výběr termínu
 dcl#:#dcl_date_selection_desc#:#Nabídka výběru možností termínů.
-dcl#:#dcl_datetime#:#Datum
-dcl#:#dcl_datetime_desc#:#Zadání data v nabídce nebo kalendáři
 dcl#:#dcl_deactivate_view#:#Deaktivovat toto zobrazení
 dcl#:#dcl_default_sort_field#:#Výchozí pole třídění
 dcl#:#dcl_default_sort_field_desc#:#Tabulka je standardně tříděna podle vybraného pole.
@@ -8579,6 +8590,7 @@ dcl#:#dcl_delete_tables_no_selection#:#Please select at least one table to delet
 dcl#:#dcl_delete_views#:#Vymazat zobrazení
 dcl#:#dcl_delete_views_no_selection#:#Please select at least one view to delete###31 03 2023 new variable
 dcl#:#dcl_deleted_records#:#Úspěšně smazáno %s záznamů
+dcl#:#dcl_deprecated_copy#:#(Deprecated)###10 12 2024 new variable
 dcl#:#dcl_desc#:#Sestupné pořadí (DESC)
 dcl#:#dcl_description#:#Popis pole
 dcl#:#dcl_detailed_view#:#Podrobné zobrazení
@@ -8616,7 +8628,6 @@ dcl#:#dcl_formula#:#Vzorec
 dcl#:#dcl_formula_desc#:#Podobně jako u tabulkového výpočtu mohou být spojeny nebo vypočítány záznamy pro vzorec.
 dcl#:#dcl_formula_detail_desc#:#Záznamy jsou generovány automaticky, záznam nemůžete upravovat.
 dcl#:#dcl_height#:#Výška
-dcl#:#dcl_hello#:#Vážený
 dcl#:#dcl_id#:#ID
 dcl#:#dcl_id_description#:#Interní ID.
 dcl#:#dcl_ilias_reference#:#Odkaz na modul ILIAS
@@ -8674,16 +8685,14 @@ dcl#:#dcl_new#:#Vytvořit novou sbírku údajů
 dcl#:#dcl_new_field#:#Nové pole
 dcl#:#dcl_new_table#:#Nová tabulka
 dcl#:#dcl_next_record#:#Další záznam
-dcl#:#dcl_no_content_warning#:#Pozor, soubor dat je online, ale nemá zatím žádný obsah!
 dcl#:#dcl_no_entry#:#No entry###07 02 2020 new variable
-dcl#:#dcl_no_export_content_available#:#Pro export nejsou k dispozici žádná data.
+dcl#:#dcl_no_export_async_config#:#No SOAP Configuration for asyncronous exports available.###20 05 2025 new variable
 dcl#:#dcl_no_export_data_available#:#Pro export nejsou k dispozici žádná data nebo pole.
-dcl#:#dcl_no_export_fields_available#:#Pro export nejsou aktivována žádná pole. Označte alespoň jedno pole jako exportovatelné v části <a href="%s">nastavení tabulky</a>.
 dcl#:#dcl_no_fields_yet#:#Zde není žádné pole definované pro tuto tabulku, takže zatím nemůžete vytvářet žádné položky.
 dcl#:#dcl_no_read_access_on_any_standard_view#:#Nemáte přístup pro čtení v žádném standardním zobrazení tabulky.
 dcl#:#dcl_no_search_results_found_for#:#Žádné moduly nenalezeny pro
 dcl#:#dcl_no_such_reference#:#Následující hodnoty nejsou dostupné tabulce odkazů:
-dcl#:#dcl_no_warnings#:#Import byl ukončen bez žádného varování.
+dcl#:#dcl_no_tableview_found#:#No visible tableview found!###08 07 2025 new variable
 dcl#:#dcl_not_checked#:#Nevybráno
 dcl#:#dcl_not_supported_in_import#:#Tento typ pole není v importu podporováno
 dcl#:#dcl_notification_activate_dcl#:#Aktivovat upozornění pro sběr dat
@@ -8696,7 +8705,10 @@ dcl#:#dcl_noturl_exception#:#Musíte vložit odkaz (začínající s http://)
 dcl#:#dcl_number#:#Celé číslo
 dcl#:#dcl_number_desc#:#Pole pro celočíselné hodnoty (max. 9 číslic). Žádná desetinná místa nebo zlomky.
 dcl#:#dcl_online_info#:#Pouze v případě, že je sběr dat online, mohou uživatelé používat sběr dat.
+dcl#:#dcl_open_detail_view#:#Open detail view###26 08 2025 new variable
+dcl#:#dcl_open_url#:#Open link###26 08 2025 new variable
 dcl#:#dcl_order#:#Třídění
+dcl#:#dcl_origin_not_found#:#Origin field was not found!###10 12 2024 new variable
 dcl#:#dcl_own_entries#:#Pouze vlastní vstupy
 dcl#:#dcl_owner#:#Vlastník
 dcl#:#dcl_owner_description#:#Vlastník záznamu.
@@ -8706,7 +8718,6 @@ dcl#:#dcl_permissions_form#:#Práva uživatele
 dcl#:#dcl_please_select#:#--- Vyberte ---
 dcl#:#dcl_plugin#:#Plugin
 dcl#:#dcl_plugin_desc#:#Pluginy pole sběru dat
-dcl#:#dcl_plugin_hooks#:#Dostupné pluginy
 dcl#:#dcl_plugin_no_hooks_available#:#Nebyly nalezeny žádné aktivní pluginy typu pole
 dcl#:#dcl_prev_record#:#Předchozí záznam
 dcl#:#dcl_prop_expression#:#Výraz
@@ -8750,8 +8761,6 @@ dcl#:#dcl_supported_filetypes_desc#:#Můžete nastavit povolené přípony s odd
 dcl#:#dcl_switch_table#:#Switch Table###30 04 2024 new variable
 dcl#:#dcl_switch_view#:#Change View###30 04 2024 new variable
 dcl#:#dcl_table#:#Tabulka
-dcl#:#dcl_table_create#:#Vytvořit tabulku
-dcl#:#dcl_table_edit#:#Aktualizovat tabulku
 dcl#:#dcl_table_id#:#ID tabulky
 dcl#:#dcl_table_info#:#Uživatelé s oprávněním "upravit nastavení" (viz tab "Oprávnění") vždy mají oprávnění přidat/upravit/smazat položky. Uživatelé s oprávněním "upravit položky" (viz tab "Oprávnění") mají jen oprávnění podle nastavení odpovídající ve formuláři níže.
 dcl#:#dcl_table_info_title#:#Informace
@@ -8792,7 +8801,9 @@ dcl#:#dcl_title_standardview#:#Standardní zobrazení
 dcl#:#dcl_unique#:#Unikátní
 dcl#:#dcl_unique_desc#:#V tomto poli může být stejný záznam vytvořen jen jednou.
 dcl#:#dcl_unique_exception#:#Hodnota Vámi vložená je již použita jiným záznamem.
+dcl#:#dcl_unknown#:#Unkown###20 05 2025 new variable
 dcl#:#dcl_unknown_exception#:#Hodnota Vámi vložená není platná.
+dcl#:#dcl_unknown_plugin#:#Unknown plugin type###20 05 2025 new variable
 dcl#:#dcl_update_field#:#Aktualizovat pole
 dcl#:#dcl_update_record#:#Aktualizovat záznam
 dcl#:#dcl_url#:#URL
@@ -8806,7 +8817,7 @@ dcl#:#dcl_width#:#Šířka
 dcl#:#dcl_wrong_input_type#:#Vámi vložená hodnota neodpovídá specifikaci (Špatný typ).
 dcl#:#dcl_wrong_length#:#Vámi vložený text je příliš dlouhý.
 dcl#:#dcl_wrong_regex#:#Vámi vložený text neodpovídá specifikaci pro toto pole (regulární výraz).
-dcl#:#dlc_xls_async_export#:#Asynchronní export XLSX
+dcl#:#dcl_xls_async_export#:#as XLSX (asynchronous)###20 05 2025 new variable
 dcl#:#fieldtitle_allow_chars#:#Povolené znaky: %s
 dcl#:#fileupload_not_migrated#:#File has not yet been migration and cannot be displayed. Please contact your System-Administrator.###30 04 2024 new variable
 didactic#:#activate_exclusive_template#:#Výchozí šedá
@@ -9091,6 +9102,7 @@ ecs#:#ecs_protocol#:#Protokol
 ecs#:#ecs_publish_as#:#Publikováno jako:
 ecs#:#ecs_publish_for#:#Uvolněno pro:
 ecs#:#ecs_published_for#:#Publikováno pro:
+ecs#:#ecs_rcat_created_body_a#:#A new ECS Category has been created:###10 12 2024 new variable
 ecs#:#ecs_rcrs_created_body_a#:#Nový dálkový kurz byl vytvořen:
 ecs#:#ecs_read_remote_links#:#Aktualizace dálkových kurzů
 ecs#:#ecs_refresh_participants#:#Obnovit účastníky ECS
@@ -9153,8 +9165,10 @@ etal#:#etal_date_series_edit#:#Date of Talk Series###31 03 2023 new variable
 etal#:#etal_delete_confirmation_msg#:#Are you sure that you want to delete the following talk?###30 04 2024 new variable
 etal#:#etal_edit#:#General###31 03 2023 new variable
 etal#:#etal_invalid_user#:#This user either does not exist or can't be invited.###31 03 2023 new variable
+etal#:#etal_location#:#Location###04 11 2025 new variable
 etal#:#etal_new#:#New Talk###31 03 2023 new variable
 etal#:#etal_open#:#Open Employee Talk###31 03 2023 new variable
+etal#:#etal_recurrence#:#Recurrence###04 11 2025 new variable
 etal#:#etal_status_all#:#All###31 03 2023 new variable
 etal#:#etal_status_completed#:#Completed###31 03 2023 new variable
 etal#:#etal_status_pending#:#Pending###31 03 2023 new variable
@@ -9170,6 +9184,7 @@ etal#:#notification_talks_subject#:#Invitation: %s###31 03 2023 new variable
 etal#:#notification_talks_subject_update#:#Update: %s###31 03 2023 new variable
 etal#:#notification_talks_updated#:#The following talk appointments have been changed.###31 03 2023 new variable
 etal#:#pending_talks_warning#:#The following pending talk appointments will be replaced:###28 11 2023 new variable
+etal#:#tala_no_content_without_admin_info#:#The Administrator role is required for access to Talk Templates.###08 07 2025 new variable
 etal#:#talk_serial#:#Talk Serial###31 03 2023 new variable
 etal#:#tals_add#:#Add Talks###31 03 2023 new variable
 etal#:#tals_new#:#New Talks###31 03 2023 new variable
@@ -9772,6 +9787,8 @@ file#:#preview_caption#:#Preview %sof %s###30 04 2024 new variable
 file#:#preview_image_size_info#:#The preview versions of images will be downscaled or upscaled as appropriate, so that their longest side is the length (in px) entered here.###30 04 2024 new variable
 file#:#preview_persisting#:#Persistent Preview Images###30 04 2024 new variable
 file#:#preview_persisting_info#:#Generated preview images will be stored by ILIAS and used from then on each time the preview icon for that file is clicked on. If deactivated, previews will be generated anew each time.###30 04 2024 new variable
+file#:#previews_for_tiles#:#Tiles###01 04 2025 new variable
+file#:#previews_for_tiles_info#:#Use Preview for Tiles where possible.###01 04 2025 new variable
 file#:#publish_before_delete#:#Version(s) could not be deleted because an unpublished draft exists.###30 04 2024 new variable
 file#:#replace_file_info#:#Všechny dřívější verze souboru budou smazány.
 file#:#resource_id#:#Resource ID###24 09 2021 new variable
@@ -10759,6 +10776,7 @@ ldoc#:#ldoc_form_edit_doc_head#:#Edit Document###30 04 2024 new variable
 ldoc#:#ldoc_form_new_doc_head#:#Create Document###30 04 2024 new variable
 ldoc#:#ldoc_last_modified#:#Last Change###30 04 2024 new variable
 ldoc#:#ldoc_ldoc_settings#:#Settings###30 04 2024 new variable
+ldoc#:#ldoc_order_invalid#:#Please enter a number for the order###14 01 2025 new variable
 ldoc#:#ldoc_period#:#Period###30 04 2024 new variable
 ldoc#:#ldoc_period_from#:#From###30 04 2024 new variable
 ldoc#:#ldoc_period_until#:#Until###30 04 2024 new variable
@@ -10926,6 +10944,7 @@ lso#:#lso_player_abstract#:#Zobrazit informace o abstraktu
 lso#:#lso_player_extro#:#Zobrazit poslední stránku
 lso#:#lso_player_finish#:#Dokončit
 lso#:#lso_player_next#:#Další
+lso#:#lso_player_noitems#:#There are no available items in this Learning Sequence.###08 07 2025 new variable
 lso#:#lso_player_previous#:#Předchozí
 lso#:#lso_player_resume#:#Obnovit sekvenci učení
 lso#:#lso_player_review#:#Vyhodnotit sekvenci učení
@@ -10936,7 +10955,6 @@ lso#:#lso_print_list#:#Vytisknout seznam
 lso#:#lso_read#:#Uživatel má přístup pro čtení k sekvenci učení
 lso#:#lso_search_users#:#Vyhledat uživatele
 lso#:#lso_settings_availability#:#dostupnost
-lso#:#lso_settings_availability_error#:#The end date can not be earlier than the start date###30 04 2024 new variable
 lso#:#lso_settings_extro#:#Nastavení Exitpage
 lso#:#lso_settings_intro#:#Nastavení Intropage
 lso#:#lso_settings_old_extro#:#View Old Exit Page###31 03 2023 new variable
@@ -11189,6 +11207,7 @@ lti#:#lti_object_consumer#:#Spotřebitelé LTI
 lti#:#lti_object_release_settings_form#:#Upravit sílené části LTI
 lti#:#lti_provider#:#Sdílené položky LTI
 lti#:#lti_provider_not_avail_msg#:#LTI Provider is set to 'Not Available'###07 02 2020 new variable
+lti#:#lti_provider_not_set_msg#:#Configuration of LTI Provider / tool is not completely finished.###08 07 2025 new variable
 lti#:#lti_providing_tab#:#ILIAS as LTI Provider###07 02 2020 new variable
 lti#:#lti_released_objects#:#Objekt-sdílené položky
 lti#:#lti_select_provider#:#Select Provider###07 02 2020 new variable
@@ -12781,18 +12800,12 @@ noti#:#noti_notification_deactivated#:#Oznámení deaktivováno
 notifications_adm#:#enable_osd#:#Enable On-Screen Notifications###31 03 2023 new variable
 notifications_adm#:#enable_osd_desc#:#If enabled, users are notified by a popup about new notifications.###31 03 2023 new variable
 notifications_adm#:#notification_settings#:#Notification Settings###31 03 2023 new variable
-notifications_adm#:#osd_delay#:#Presentation Delay###31 03 2023 new variable
-notifications_adm#:#osd_delay_desc#:#Delay of the visible presentation in milliseconds.###31 03 2023 new variable
-notifications_adm#:#osd_error_presentation_time_too_small#:#The Presentation Time has to be at least than 1000 miliseconds.###31 03 2023 new variable
-notifications_adm#:#osd_error_refresh_interval_smaller_than_delay_and_vanish_combined#:#The Refresh Interval has to be greater than the Presentation Time and the Presentation Delay combined.###31 03 2023 new variable
 notifications_adm#:#osd_error_refresh_interval_too_small#:#The Refresh Interval has to be at least than 3000 miliseconds.###31 03 2023 new variable
 notifications_adm#:#osd_interval#:#Refreshinterval###31 03 2023 new variable
 notifications_adm#:#osd_interval_desc#:#Polling interval for checking of new notifications in miliseconds. A lower number will notify the user more quickly but increases the number of requests the web server must handle.###31 03 2023 new variable
 notifications_adm#:#osd_play_sound#:#Play a Sound###31 03 2023 new variable
 notifications_adm#:#osd_play_sound_desc#:#Play a sound when receiving a new notficiation.###31 03 2023 new variable
 notifications_adm#:#osd_settings#:#On-Screen Notifications###31 03 2023 new variable
-notifications_adm#:#osd_vanish#:#Presentation Time###31 03 2023 new variable
-notifications_adm#:#osd_vanish_desc#:#Visible time of a notification on the screen in miliseconds.###31 03 2023 new variable
 obj#:#activation_visible_when_disabled#:#Visibility###30 04 2024 new variable
 obj#:#activation_visible_when_disabled_info#:#The item is visible outside of the selected availability period, but it cannot be opened.###30 04 2024 new variable
 obj#:#availability_period_changed#:#The availability period for the selected objects has been changed successfully.###30 04 2024 new variable
@@ -12805,6 +12818,7 @@ obj#:#copy_container_page_yes_label#:#Copy Content Page###30 04 2024 new variabl
 obj#:#custom_icon#:#Custom Icon###30 04 2024 new variable
 obj#:#edit_availability_period#:#Availability Period###30 04 2024 new variable
 obj#:#edit_questions#:#Upravit dotazy
+obj#:#multiple_reference_deletion_info#:#Further references exist for the following objects.###01 04 2025 new variable
 obj#:#no_objects_selected#:#At least one object needs to be selected.###30 04 2024 new variable
 obj#:#obj_activate_content_lang#:#Aktivovat překlad pro úpravy stránky
 obj#:#obj_activate_multilang#:#Aktivovat vícejazyčnost
@@ -12860,6 +12874,7 @@ obj#:#obj_tool_setting_skills_info#:#Aktivuje řízení a přiřazování způso
 obj#:#obj_tool_setting_tag_cloud#:#Tag Cloud
 obj#:#obj_tool_setting_tag_cloud_info#:#Na záložce „Obsah“ se zobrazí „tag cloud“.
 obj#:#obj_tool_setting_taxonomies#:#Taxonomie
+obj#:#obj_tool_setting_taxonomies_info#:#Taxonomies allow the filtering of objects. They are created in the "Taxonomy" sub-tab in the "Settings" tab.###10 12 2024 new variable
 obj#:#obj_tool_setting_use_news#:#Zprávy
 obj#:#obj_tool_setting_use_news_info#:#Aktivujte zobrazení bloku zpráv anebo časové osy.
 obj#:#obj_tool_setting_use_news_open_settings#:#Otevřete Nastavení
@@ -13118,6 +13133,7 @@ prg#:#auto_membership_src_type#:#Type###07 02 2020 new variable
 prg#:#auto_membership_title#:#Sources for Membership Automation###07 02 2020 new variable
 prg#:#auto_memberships#:#Membership Automation###07 02 2020 new variable
 prg#:#category#:#Category###07 02 2020 new variable
+prg#:#cert_relevance#:#Certificate###08 07 2025 new variable
 prg#:#completion_date#:#Completion Date###07 02 2020 new variable
 prg#:#confirm_to_remove_selected_assignments#:#Do you really want to remove the user assignment(s)?###24 09 2021 new variable
 prg#:#cont_ed_insert_prgactionnote#:#Insert Study Programme Action Note###30 04 2024 new variable
@@ -13202,6 +13218,7 @@ prg#:#pc_prgstatus_unlimited_validation#:#Unlimited validity###30 04 2024 new va
 prg#:#percentage#:#%###07 02 2020 new variable
 prg#:#prg_access_by_orgu#:#Access Control by Organisation Unit Positions###30 04 2021 new variable
 prg#:#prg_access_by_orgu_byline#:#If enabled, additional access control rules can be defined by positions in organisational units.###30 04 2021 new variable
+prg#:#prg_acknowledge_all_completed_courses#:#Acknowledge All Completed Courses###10 12 2024 new variable
 prg#:#prg_acknowledge_completed_courses#:#Potvrďte dokončené kurzy
 prg#:#prg_add#:#Přidejte studijní programy
 prg#:#prg_added_course_ref_successful#:#Úspěšně byl přidán nový odkaz na kurz
@@ -13687,6 +13704,7 @@ pwsp#:#pwsp_enable_personal_resources#:#Enable personal resources###07 02 2020 n
 pwsp#:#pwsp_enable_wsp_blogs#:#Enable Blogs###07 02 2020 new variable
 pwsp#:#pwsp_enable_wsp_files#:#Enable Files###07 02 2020 new variable
 pwsp#:#pwsp_enable_wsp_links#:#Enable Links###07 02 2020 new variable
+pwsp#:#pwsp_type_cannot_be_copied#:#Objects of type '%s' cannot be copied.###23 09 2025 new variable
 qpl#:#qpl_filter_commented_exclude#:#Questions without comments###30 04 2024 new variable
 qpl#:#qpl_filter_commented_only#:#Questions with comments###30 04 2024 new variable
 qpl#:#qpl_page_type_qfbg#:#General Feedback###30 04 2021 new variable
@@ -13835,7 +13853,7 @@ rbac#:#chtr_moderate#:#Moderovat Chatroom
 rbac#:#chtr_read#:#Číst
 rbac#:#chtr_visible#:#Viditelný
 rbac#:#chtr_write#:#Pro psaní
-rbac#:#cmis_edit_permissions#:#User can change permission settings of xAPI/cmi5 administration.###30 04 2021 new variable
+rbac#:#cmis_edit_permission#:#User can change permission settings of xAPI/cmi5 administration.###01 04 2025 new variable
 rbac#:#cmis_read#:#User has read access to xAPI/cmi5 administration.###30 04 2021 new variable
 rbac#:#cmis_visible#:#Administration of xAPI/cmi5 is visible.###30 04 2021 new variable
 rbac#:#cmis_write#:#User can edit settings of xAPI/cmi5 administration.###30 04 2021 new variable
@@ -13907,6 +13925,10 @@ rbac#:#dcl_write#:#Uživatel může upravovat nastavení a obsah shromážděný
 rbac#:#delete_files#:#Vymazat soubory
 rbac#:#delete_folders#:#Vymazat složky
 rbac#:#delete_wiki_pages#:#Vymazat stránky
+rbac#:#dpro_edit_permission#:#User can change permission settings in the Declaration of Data Protected administration###01 04 2025 new variable
+rbac#:#dpro_read#:#User has read access to the Declaration of Data Protection administration###01 04 2025 new variable
+rbac#:#dpro_visible#:#Declaration of Data Protection administration is visible###01 04 2025 new variable
+rbac#:#dpro_write#:#Edit settings in the Declaration of Data Protection###01 04 2025 new variable
 rbac#:#dshs_change_presentation#:#Change presentation of dashboard view###07 02 2020 new variable
 rbac#:#dshs_edit_permission#:#User can change permission settings of Dashboard administration###07 02 2020 new variable
 rbac#:#dshs_read#:#User has read access to Dashboard administration###07 02 2020 new variable
@@ -13988,9 +14010,11 @@ rbac#:#frm_add_reply#:#Uživatelé mohou odpovědět na příspěvek
 rbac#:#frm_add_thread#:#Přidat nové téma
 rbac#:#frm_copy#:#Kopírovat fórum
 rbac#:#frm_delete#:#Smazat fórum
+rbac#:#frm_edit_learning_progress#:#User can edit learning progress settings###14 01 2025 new variable
 rbac#:#frm_edit_permission#:#Změnit nastavení oprávnění
 rbac#:#frm_moderate_frm#:#Smazat poštu, cenzúra
 rbac#:#frm_read#:#Právo číst do fóra
+rbac#:#frm_read_learning_progress#:#User can view learning progress of other users###14 01 2025 new variable
 rbac#:#frm_visible#:#Fórum je viditelné
 rbac#:#frm_write#:#Upravit fórum
 rbac#:#frma_edit_permission#:#Změna nastavení oprávnění
@@ -14053,6 +14077,10 @@ rbac#:#il_lti_global_role#:#LTI User###24 09 2021 new variable
 rbac#:#il_sess_participant#:#Účastník relace
 rbac#:#il_sess_status_closed#:#Relace uzavřena pro ty, kteří nejsou účastníky
 rbac#:#ilias_id#:#ILIAS-ID
+rbac#:#impr_edit_permission#:#User can change permission settings of Legal Notice administration###01 04 2025 new variable
+rbac#:#impr_read#:#User can read in Legal Notice administration###01 04 2025 new variable
+rbac#:#impr_visible#:#Administration of Legal Notice is visible###01 04 2025 new variable
+rbac#:#impr_write#:#User can edit content and settings of Legal Notice###01 04 2025 new variable
 rbac#:#info_user_view_changed#:#Uživatelské zobrazení změněno
 rbac#:#internal_mail#:#Interní mail
 rbac#:#invite#:#Pozvat do ankety
@@ -14100,7 +14128,7 @@ rbac#:#lso_read_learning_progress#:#Uživatel si může prohlédnout postup výu
 rbac#:#lso_unparticipate#:#Uživatel může ukončit předplatné výukové sekvenci
 rbac#:#lso_visible#:#Výuková sekvence je viditelná
 rbac#:#lso_write#:#Uživatel může upravovat nastavení výukové sekvence
-rbac#:#lsos_edit_permissions#:#User can change permission settings of Learning Sequences administration.###30 04 2021 new variable
+rbac#:#lsos_edit_permission#:#User can change permission settings of Learning Sequences administration.###01 04 2025 new variable
 rbac#:#lsos_read#:#User has read access to Learning Sequences administration.###30 04 2021 new variable
 rbac#:#lsos_visible#:#Administration of Learning Sequences is visible.###30 04 2021 new variable
 rbac#:#lsos_write#:#User can edit settings of Learning Sequences administration.###30 04 2021 new variable
@@ -14165,7 +14193,8 @@ rbac#:#moderate_frm#:#Moderovat
 rbac#:#msg_anonymous_cannot_be_assigned#:#Anonymous cannot be assigned to a role.###19 03 2024 new variable
 rbac#:#msg_no_roles_of_type#:#Žádná role pro vybrané nastavení filtru nenalezena
 rbac#:#news_add_news#:#Přidat zprávy
-rbac#:#nots_edit_permissions#:#User can change permission settings of Notes administration.###30 04 2021 new variable
+rbac#:#no_corresponding_roles#:#No corresponding roles could be found.###01 04 2025 new variable
+rbac#:#nots_edit_permission#:#User can change permission settings of Notes administration.###01 04 2025 new variable
 rbac#:#nots_read#:#User has read access to Notes administration.###30 04 2021 new variable
 rbac#:#nots_visible#:#Administration of Notes is visible.###30 04 2021 new variable
 rbac#:#nots_write#:#User can edit settings of Notes administration.###30 04 2021 new variable
@@ -14242,7 +14271,7 @@ rbac#:#prgs_edit_permission#:#Změnit nastavení oprávnění ve správě studij
 rbac#:#prgs_read#:#Uživatel má přístup do sekce studijního programu jen pro čtení
 rbac#:#prgs_visible#:#Správa studijního programu je viditelná
 rbac#:#prgs_write#:#Upravit nastavení ve správě studijního programu
-rbac#:#prss_edit_permissions#:#User can change permission settings of Personal Resources administration.###30 04 2021 new variable
+rbac#:#prss_edit_permission#:#User can change permission settings of Personal Resources administration.###01 04 2025 new variable
 rbac#:#prss_read#:#User has read access to Personal Resources administration.###30 04 2021 new variable
 rbac#:#prss_visible#:#Administration of Personal Resources is visible.###30 04 2021 new variable
 rbac#:#prss_write#:#User can edit settings of Personal Resources administration.###30 04 2021 new variable
@@ -14280,7 +14309,10 @@ rbac#:#rbac_choose_copy_targets#:#Vložte prosím vyhledávaný výraz pro výb�
 rbac#:#rbac_condition_delete_sure#:#Určitě chcete smazat následující předpoklady?
 rbac#:#rbac_context_global#:#Globální
 rbac#:#rbac_copy_behaviour#:#Nastavení kopírování role
+rbac#:#rbac_copy_behaviour_info#:#Transfer Permissions from: %s to: %s###20 05 2025 new variable
 rbac#:#rbac_copy_finished#:#Kopírování ukončeno
+rbac#:#rbac_copy_multi_targets#:#%s, %s and %s further Roles selected%s###20 05 2025 new variable
+rbac#:#rbac_copy_no_targets#:#At least one Role must be selected as Target###20 05 2025 new variable
 rbac#:#rbac_copy_role#:#Kopírovat roli
 rbac#:#rbac_copy_role_add_perm#:#Přidat oprávnění
 rbac#:#rbac_copy_role_copy#:#Kopírovat oprávnění
@@ -14401,6 +14433,7 @@ rbac#:#rbac_role_rights_copy_empty#:#Žádný
 rbac#:#rbac_role_selection#:#Typ role
 rbac#:#rbac_role_title#:#Název role
 rbac#:#rbac_select_copy_targets#:#Vyberte prosím cílové role
+rbac#:#rbac_select_roles#:#Role Selection
 rbac#:#rbac_ud_global#:#Uživatelsky definovaná globální role
 rbac#:#rbac_ud_local#:#Uživatelsky definovaná lokální role
 rbac#:#rbac_ud_rolt#:#Uživatelsky definovaná šablona role
@@ -14591,7 +14624,7 @@ rbac#:#usrf_read#:#Přístup číst k účtům uživatelů
 rbac#:#usrf_read_users#:#Přiřazení role pro lokální administrátory
 rbac#:#usrf_visible#:#Účty uživatelů jsou viditelné
 rbac#:#usrf_write#:#Upravit účty uživatelů
-rbac#:#wbdv_edit_permissions#:#User can change permission settings of WebDAV administration.###30 04 2021 new variable
+rbac#:#wbdv_edit_permission#:#User can change permission settings of WebDAV administration.###01 04 2025 new variable
 rbac#:#wbdv_read#:#User has read access to WebDAV administration.###30 04 2021 new variable
 rbac#:#wbdv_visible#:#Administration of WebDAV is visible.###30 04 2021 new variable
 rbac#:#wbdv_write#:#User can edit settings of WebDAV administration.###30 04 2021 new variable
@@ -14775,6 +14808,7 @@ rep#:#rep_fav_intro2#:#Klicken Sie auf '%s' und wählen Sie aus dem verfügbaren
 rep#:#rep_fav_intro3#:#Wenn Sie etwas gefunden haben, das Sie interessiert, können Sie es ganz einfach zu Ihren Favoriten hinzufügen. Wählen Sie beim gewünschten Objekt im <i>Aktionen</i>-Menü die Option "<i>Zu Favoriten hinzufügen</i>".###07 02 2020 new variable
 rep#:#rep_favourites#:#Favourites###09 03 2022 new variable
 rep#:#rep_favourites_info#:#Users can mark single repository items as favourites. Favourites lists can be activated and configured in the dashboard and menu settings.###09 03 2022 new variable
+rep#:#rep_input_not_empty#:#This field must not be empty, please provide a value.###01 04 2025 new variable
 rep#:#rep_intro#:#Vítejte v úložišti!
 rep#:#rep_intro1#:#V této oblasti můžete vytvářet výukové a pracovní prostředky pro všechny uživatele. Všechny prostředky jsou organizovány do kategorií. Kategorie mohou zohledňovat strukturu Vaší organizace (např. katedry), hierarchii vědních oborů, nebo třídy školy.
 rep#:#rep_intro2#:#K vybudování počáteční struktury jsou potřebné tři kroky:
@@ -15712,6 +15746,7 @@ style#:#sty_ca_cntr_class#:#Kontejner Carousel
 style#:#sty_ca_icntr_class#:#Kontejner na položky Carousel
 style#:#sty_ca_icont_class#:#Obsah položky Carousel
 style#:#sty_ca_ihead_class#:#Záhlaví položky Carousel
+style#:#sty_cannot_be_copied#:#The following style types cannot be copied###20 05 2025 new variable
 style#:#sty_caption#:#Titulek
 style#:#sty_caption_class#:#Titulek
 style#:#sty_carousel_templates#:#Šablony Carousel
@@ -15812,6 +15847,7 @@ style#:#sty_media_queries#:#Dotazy na média
 style#:#sty_media_query_info#:#Oddělený blok CSS je přidán pro každý dotaz na média po výchozím bloku (bez speciálního dotazu na média).
 style#:#sty_min_height#:#Minimální výška
 style#:#sty_move_lm_styles#:#Změnit styl výukových modulů
+style#:#sty_move_obj_styles#:#Change Style of Objects###23 09 2025 new variable
 style#:#sty_move_style#:#Změnit styl
 style#:#sty_move_user_styles#:#Změnit styl uživatelů
 style#:#sty_msg_characteristic_must_only_include#:#Název třídy stylu může obsahovat pouze následující znaky:
@@ -15819,6 +15855,7 @@ style#:#sty_msg_color_must_only_include#:#Název barvy může obsahovat pouze n�
 style#:#sty_msg_input_must_be_numeric#:#Vstup musí být číselný.
 style#:#sty_name#:#Jméno
 style#:#sty_nr_learning_modules#:#Počet výukových modulů
+style#:#sty_nr_objects#:#Number of Objects###23 09 2025 new variable
 style#:#sty_odd_col_class#:#Liché sloupce
 style#:#sty_odd_row_class#:#Liché řádky
 style#:#sty_ol#:#Ordered List###30 04 2024 new variable
@@ -16822,6 +16859,7 @@ tagging#:#tagging_enable_all_users_info#:#Přidává sekci "Všichni uživatelé
 tagging#:#tagging_enable_tagging#:#Zapnout značkování
 tagging#:#tagging_forbidden_tags#:#Zakázané značky
 tagging#:#tagging_no_obj_for_tag#:#No Resources tagged with %s.###09 03 2022 new variable
+tagging#:#tagging_no_perm_write#:#You have no permission to change this data.###10 12 2024 new variable
 tagging#:#tagging_other_users#:#Ostatní uživatelé
 tagging#:#tagging_resources_for_tag#:#Zdroje označeny s %s
 tagging#:#tagging_search_users#:#Hledat uživatele
@@ -17176,6 +17214,7 @@ ui#:#order_option_numerical_ascending#:#0 to 9###30 04 2024 new variable
 ui#:#order_option_numerical_descending#:#9 to 0###30 04 2024 new variable
 ui#:#presentation_table_collapse#:#collapse all###30 04 2024 new variable
 ui#:#presentation_table_expand#:#expand all###30 04 2024 new variable
+ui#:#table_posinput_col_title#:#Position###01 04 2025 new variable
 ui#:#ui_chars_max#:#Maximum:
 ui#:#ui_chars_min#:#Minimum:
 ui#:#ui_chars_remaining#:#Zbývající znaky:
@@ -17353,6 +17392,7 @@ validation#:#not_min_length#:#Váš vstup má délku %d a je tedy kratší než 
 validation#:#not_numeric#:#'%s' není číselná hodnota.
 validation#:#not_numeric_empty_string#:#Your input is not numeric.###07 02 2020 new variable
 validation#:#numeric_only#:#Please insert a whole number.###30 04 2024 new variable
+validation#:#required#:#This input is required.###08 07 2025 new variable
 validation#:#tag_required#:#Please insert at least one tag.###30 04 2024 new variable
 violation#:#not_a_string#:#Given value is not a String###31 03 2023 new variable
 webr#:#invalid_links_tbl#:#Neplatné odkazy

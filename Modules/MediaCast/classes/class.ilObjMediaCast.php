@@ -444,6 +444,7 @@ class ilObjMediaCast extends ilObject
 
         // copy items
         $mapping = $this->copyItems($new_obj);
+
         $this->copyOrder($new_obj, $mapping);
 
         // clone LP settings
@@ -451,12 +452,12 @@ class ilObjMediaCast extends ilObject
         $obj_settings->cloneSettings($new_obj->getId());
         unset($obj_settings);
 
-        /** @var ilScormLP $olp */
-
+        /** @var ilMediaCastLP $olp */
         $olp = ilObjectLP::getInstance($this->getId());
+        /** @var ilLPCollectionOfMediaObjects $collection */
         $collection = $olp->getCollectionInstance();
         if ($collection) {
-            $collection->cloneCollection($new_obj->getRefId(), $cp_options->getCopyId());
+            $collection->cloneCollection($new_obj->getRefId(), $cp_options->getCopyId(), $this->mob_mapping);
         }
 
         return $new_obj;
@@ -481,10 +482,10 @@ class ilObjMediaCast extends ilObject
             $mc_item->setContextObjId($a_new_obj->getId());
             $mc_item->setContextObjType($a_new_obj->getType());
             $mc_item->setUserId($ilUser->getId());
-            $mc_item->setPlaytime($item["playtime"]);
-            $mc_item->setTitle($item["title"]);
-            $mc_item->setContent($item["content"]);
-            $mc_item->setVisibility($item["visibility"]);
+            $mc_item->setPlaytime($item["playtime"] ?? "");
+            $mc_item->setTitle($item["title"] ?? "");
+            $mc_item->setContent($item["content"] ?? "");
+            $mc_item->setVisibility($item["visibility"] ?? "users");
             $mc_item->create();
             $this->mob_mapping[$mob_id] = $new_mob->getId();
             $item_mapping[$item["id"]] = $mc_item->getId();

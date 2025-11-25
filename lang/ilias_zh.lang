@@ -20,7 +20,7 @@
 * @module		    language file simplied Chinese
 * @modulegroup		language
 * @author 			李翔 (Shine Li) <shinesoft@163.com>
-* @version
+* @version          $Id$
 */
 // The language file starts beyond the HTML-comment below. DO NOT modify this line!
 // To edit your language file with a spreadsheet (i.e. Excel or StarCalc) remove all lines
@@ -175,6 +175,7 @@ administration#:#auth_auth_mode_determination#:#验证方法测定(为登录)
 administration#:#auth_automatic#:#固定次序
 administration#:#auth_by_user#:#由用户
 administration#:#auth_kind_determination#:#测定的种类
+administration#:#auth_mode_default_change_info#:#Changing the default authentication method affects all user accounts configured to use the default authentication method. If the selected default method (e.g., Shibboleth, SAML, SOAP, ...) does not support or is not configured to allow fallback to local ILIAS authentication, affected users may no longer be able to log in. To avoid this, please ensure that local fallback authentication is activated in the configuration of the selected method, or that the authentication method stored for affected user accounts is manually changed.###20 05 2025 new variable
 administration#:#auth_mode_determination_info#:#如果用户在登录屏幕上选择自己的身份验证方法或如果这是由一个固定的身份验证方法序列所管理
 administration#:#clean#:#清理
 administration#:#clean_desc#:#清除无效的引用与目录树入口。关闭目录树结构缺口
@@ -647,6 +648,7 @@ assessment#:#errFormulaQuestion#:#A Formula Question contains incorrect informat
 assessment#:#errRecursionInResult#:#The formula contains an infinite recursion.###24 10 2013 new variable
 assessment#:#err_category_in_use#:#At least one category cannot be deleted. One or more units of the category are already in use.###24 10 2013 new variable
 assessment#:#err_divider_too_big#:#The divider of one of the variables in this question is too big.###09 03 2022 new variable
+assessment#:#err_divider_too_big_specific#:#The divider of this variable is too big.###04 11 2025 new variable
 assessment#:#err_division#:#This value has to be smaller than the maximum range.###09 03 2022 new variable
 assessment#:#err_duplicate_results#:#You used a result variable more than once. This is not allowed in the question text.###24 10 2013 new variable
 assessment#:#err_no_formula#:#You must enter a formula###24 10 2013 new variable
@@ -1114,7 +1116,10 @@ assessment#:#redirect_after_finishing_rule#:#Redirect###27 01 2015 new variable
 assessment#:#redirect_after_finishing_tst#:#Redirect after finishing the test###24 10 2013 new variable
 assessment#:#redirect_after_finishing_tst_desc#:#After completion of test each participant is automatically redirected to a defined webpage. This is only valid if the participants have no access to their test results.###27 01 2015 new variable
 assessment#:#redirect_always#:#always to defined webpage###27 01 2015 new variable
+assessment#:#redirect_always_to_logout#:#Always to the logout screen###04 11 2025 new variable
 assessment#:#redirect_in_kiosk_mode#:#Redirect only in kiosk mode###24 10 2013 new variable
+assessment#:#redirect_url_invalid#:#Please enter a valid url of the target webpage.###04 11 2025 new variable
+assessment#:#redirect_url_required_for_rule#:#The url of the webpage is required when "%s" is selected.###04 11 2025 new variable
 assessment#:#redirection_url#:#Redirection target###24 10 2013 new variable
 assessment#:#region#:#Region区域
 assessment#:#remove_as_participant#:#Remove as Fixed Participant
@@ -1257,6 +1262,7 @@ assessment#:#toplist_col_percentage#:#百分比
 assessment#:#toplist_col_rank#:#排名
 assessment#:#toplist_col_score#:#得分
 assessment#:#toplist_col_wtime#:#工作时间
+assessment#:#total_max_points_cannot_be_negative#:#The maximum amount of reachable points cannot be negative.###01 04 2025 new variable
 assessment#:#true#:#是
 assessment#:#tst_access_code_created#:#为您提供永久访问您的测试结果并提供一种恢复这个测试的可能性，一个唯一性的测试访问码将被创建。请抄下这个访问码以备用。
 assessment#:#tst_activate_skill_service#:#Activate Competence Service###26 09 2014 new variable
@@ -1268,6 +1274,8 @@ assessment#:#tst_add_quest_cont_edit_mode_IPE#:#Additional Content Editing with 
 assessment#:#tst_add_quest_cont_edit_mode_IPE_info#:#No formatting of text in question and answers. No use of LaTex either. But feedback and hints can be reused when question is embedded in ILIAS learning module.###30 04 2021 new variable
 assessment#:#tst_add_quest_cont_edit_mode_RTE#:#Default Editing Mode for Additional Question Content###24 10 2013 new variable
 assessment#:#tst_add_quest_cont_edit_mode_RTE_info#:#Allows text formatting of questions, answers, feedbacks and hints. But feedback and hints cannot be reused when question is embedded in ILIAS learning module.###30 04 2021 new variable
+assessment#:#tst_add_quest_cont_edit_mode_plain#:#Use plain text###10 12 2024 new variable
+assessment#:#tst_add_quest_cont_edit_mode_plain_info#:#No formatting of text in question, answers, feedback, and hints.###10 12 2024 new variable
 assessment#:#tst_addit_passes_blocked_after_passed_msg#:#You have passed the test. The test cannot be started again.###07 02 2020 new variable
 assessment#:#tst_all_test_competences#:#All Test Competence###26 09 2014 new variable
 assessment#:#tst_all_user_data_deleted#:#此次测试的所有用户数据已全部删除！
@@ -1490,7 +1498,6 @@ assessment#:#tst_instant_feedback_answer_specific#:#展示特定答案的反馈�
 assessment#:#tst_instant_feedback_answer_specific_desc#:#If answer-specific feedback is selected, the predefined feedback will be shown, depending on the answers of the participant (if supported by the question type).###26 09 2014 new variable
 assessment#:#tst_instant_feedback_contents#:#Included Contents###10 11 2018 new variable
 assessment#:#tst_instant_feedback_desc#:#When questions are configured with feedback it is provided to participants during the test pass.###10 11 2018 new variable
-assessment#:#tst_instant_feedback_forced#:#Force Instant Feedback###30 08 2015 new variable
 assessment#:#tst_instant_feedback_results#:#显示结果(仅分数)
 assessment#:#tst_instant_feedback_results_desc#:#If results (in points) are selected, the reached points will be shown.###26 09 2014 new variable
 assessment#:#tst_instant_feedback_solution#:#显示方案
@@ -1603,7 +1610,6 @@ assessment#:#tst_objective_oriented_test_pass_without_questions#:#The started pa
 assessment#:#tst_objective_progress_header#:#Learning Objective Progress###25 10 2016 new variable
 assessment#:#tst_objectives_progress_header#:#Learning Objectives Progress###25 10 2016 new variable
 assessment#:#tst_old_style_rnd_quest_set_broken#:#This random test is in a irreparable state, because one or more connected question pools have been deleted. Therefor participants cannot take the test any longer.###30 08 2015 new variable
-assessment#:#tst_optional_questions_confirmation_fixed_test#:#<b>Question related to allready passed learning objectives were answered in previous passes.</b><br /><br />You want to navigate to a question, that relates to an allready passed learning objective.<br />You can choose:<br /><br />I you proceed, you can work on or simply review these questions. If you change your answers that were adopted from previous passes, you can also degrade your learning objective result.<br /><br />If you decide to not work on or review these questions, you can go back. The questions will be considered in the evaluation in every case.###30 08 2015 new variable
 assessment#:#tst_optional_questions_confirmation_non_fixed_test#:#<b>Question related to allready passed learning objectives are optional.</b><br /><br />You want to navigate to a question, that relates to an allready passed learning objective.<br />You can choose:<br /><br />I you proceed, you can work on these questions. Your answers from previous attempts were not adopted, since new random questions were selected for this attempt. With working on this questions you can also degrade your learning objective result.<br /><br />If you decide to not work on these questions, you can go back. In this case these questions won't be considered in the evaluation.###30 08 2015 new variable
 assessment#:#tst_out_of_time_message#:#You have reached the maximum allowed processing time of the test!###30 04 2024 new variable
 assessment#:#tst_participant#:#参与者
@@ -1760,6 +1766,7 @@ assessment#:#tst_res_jump_to_participant_hint_opt#:#--Jump to Participant--###26
 assessment#:#tst_res_lo_objectives_header#:#Relevant Learning Objectives###30 08 2015 new variable
 assessment#:#tst_res_lo_try_header#:#Attempt###30 08 2015 new variable
 assessment#:#tst_res_lo_try_n#:#Attempt %s###30 08 2015 new variable
+assessment#:#tst_res_tab_msg_no_lp_access#:#You are currently not allowed to access your Learning Progress, as you are not allowed to see your test results.###01 04 2025 new variable
 assessment#:#tst_res_tab_msg_res_after_date#:#You test results will be offered here on the following date: %s###10 11 2018 new variable
 assessment#:#tst_res_tab_msg_res_after_date_no_res#:#When you take the test your results will be offered here on the following date: %s###10 11 2018 new variable
 assessment#:#tst_res_tab_msg_res_after_finish_test#:#After finishing the test your results will be offered here.###10 11 2018 new variable
@@ -1834,6 +1841,7 @@ assessment#:#tst_setting_offer_hints_label#:#题目指定提示
 assessment#:#tst_settings_conflict_compulsory_and_lock#:#"Compulsory Questions" cannot be used together with "Answer Lock".###30 04 2024 new variable
 assessment#:#tst_settings_conflict_postpone_and_lock#:#"Unanswered questions will be enqueued" cannot be used together with "Lock Answers After Moving to Next Question".###30 04 2024 new variable
 assessment#:#tst_settings_conflict_shuffle_and_lock#:#"Shuffle Questions" cannot be used together with "Lock Answers After Moving to Next Question".###30 04 2024 new variable
+assessment#:#tst_settings_form_reload_needed#:#The form needed to be reloaded to avoid data loss as the available settings have changed due to the removal of all results of participants.###23 09 2025 new variable
 assessment#:#tst_settings_header_additional#:#Additional Features###30 04 2024 new variable
 assessment#:#tst_settings_header_execution#:#Administering the Test: Access###07 11 2014 new variable
 assessment#:#tst_settings_header_intro#:#Information Before Start of Test###07 11 2014 new variable
@@ -1842,8 +1850,6 @@ assessment#:#tst_show_answer_sheet#:#展示答案
 assessment#:#tst_show_cancel#:#展示暂停测试选项
 assessment#:#tst_show_cancel_description#:#如果勾选，将在测试过程中显示一个暂停测试的按钮
 assessment#:#tst_show_comp_results#:#Show Competence Results###26 09 2014 new variable
-assessment#:#tst_show_pass_details#:#显示正在进行的测试过程细节
-assessment#:#tst_show_pass_details_desc#:#If selected, the question titles and the reached points for every question in the test pass are available if the test is not finished.###07 11 2014 new variable
 assessment#:#tst_show_results#:#显示测试成绩
 assessment#:#tst_show_side_list#:#在旁边显示题目列表
 assessment#:#tst_show_solution_answers_only#:#成绩打印视图(仅答案)
@@ -2016,7 +2022,6 @@ auth#:#auth_cron_destroy_expired_sessions_desc#:#This job deletes expires sessio
 auth#:#auth_err_expired#:#Your session has been deactivated due to inactivity.###25 10 2016 new variable
 auth#:#auth_err_invalid_user_account#:#Authentication failed due to an internal failure.###25 10 2016 new variable
 auth#:#auth_err_ldap_exception#:#Authentication failed due to an internal authentication failure (LDAP).###25 10 2016 new variable
-auth#:#auth_err_login_attempts_deactivation#:#The user account has been deactivated due wrong login attempts.###07 02 2017 new variable
 auth#:#auth_info_add#:#如果您从未在ILIAS注册，请选择这个选项。一个新的账号将被创建
 auth#:#auth_info_migrate#:#如果您已经有一个ILIAS账号，输入用户名和密码去迁移您的个人数据（邮件、测试成绩...）。
 auth#:#auth_ldap_server_ds#:#LDAP-Server###25 10 2016 new variable
@@ -2072,6 +2077,8 @@ auth#:#auth_oidc_update_field_info#:#Automatisch aktualisieren###10 11 2018 new 
 auth#:#auth_oidc_update_role_info#:#Nur bei Erstanmeldung (automatische Synchronisierung) anwenden###10 11 2018 new variable
 auth#:#auth_oidconnect#:#OpenID Connect###10 11 2018 new variable
 auth#:#auth_page_type_auth#:#Login Page###30 04 2021 new variable
+auth#:#auth_required_password#:#Please enter a password.###10 12 2024 new variable
+auth#:#auth_required_username#:#Please enter a username.###10 12 2024 new variable
 auth#:#auth_saml#:#SAML###31 08 2017 new variable
 auth#:#auth_saml_add_idp_btn#:#Add new Identity Provider###31 08 2017 new variable
 auth#:#auth_saml_add_idp_md_error#:#The given value was not a valid XML document. Ensure the XML contains a valid Identity Provider.###31 08 2017 new variable
@@ -2529,6 +2536,7 @@ book#:#book_new#:#新的预订池
 book#:#book_no_bookings_for_you#:#No reservations have been performed for you.###07 02 2020 new variable
 book#:#book_no_objects#:#No Assignment###07 02 2020 new variable
 book#:#book_no_of_objects#:#对象的编号
+book#:#book_no_pools_selected#:#No booking pools have been assigned to this course. Booking pools can be assigned via the course's 'Resources' tab.###23 09 2025 new variable
 book#:#book_no_preferences_for_you#:#No preferences have been stored for you.###07 02 2020 new variable
 book#:#book_no_recurrence#:#Book only this date###30 04 2024 new variable
 book#:#book_not#:#No
@@ -2886,8 +2894,6 @@ chatroom#:#chat_osc_accepts_messages_yes#:#Receives Chat Messages###25 10 2016 n
 chatroom#:#chat_osc_add_user#:#Add Further Users###25 10 2016 new variable
 chatroom#:#chat_osc_conversations#:#Conversations###25 10 2016 new variable
 chatroom#:#chat_osc_doesnt_accept_msg#:#Conversations not possible###25 10 2016 new variable
-chatroom#:#chat_osc_dont_accept_msg#:#You currently cannot be invited to conversations. If desired you can change this in your <a href="%s">'Personal Settings'</a>.###25 10 2016 new variable
-chatroom#:#chat_osc_dont_accept_msg_link_txt#:#'Personal Settings'###07 02 2020 new variable
 chatroom#:#chat_osc_head_grp_x_persons#:#%s Users###10 11 2018 new variable
 chatroom#:#chat_osc_invite_to_conversation#:#Add to Conversation###25 10 2016 new variable
 chatroom#:#chat_osc_leave_grp_conv#:#Leave Conversation###25 10 2016 new variable
@@ -3767,6 +3773,7 @@ common#:#copy_all#:#复制所有
 common#:#copy_n_of_suffix#:#- Copy (%1$s)
 common#:#copy_of#:#的副本
 common#:#copy_of_suffix#:#- Copy
+common#:#copy_perma_link#:#Copy link to clipboard###10 12 2024 new variable
 common#:#copy_selected_items#:#Copy
 common#:#count#:#数目
 common#:#counter_novelty#:#News###30 04 2024 new variable
@@ -3914,6 +3921,7 @@ common#:#download_selected_items#:#Download###24 10 2013 new variable
 common#:#downloading_settings#:#下载设置
 common#:#dpro_accept_usr_agreement#:#Accept Declaration of Data Protection?###30 04 2024 new variable
 common#:#dpro_accept_usr_agreement_intro#:#There is a new Declaration of Data Protection. You need to accept it before proceeding with the use of ILIAS. Read the following document carefully and give your consent or dissent at the bottom of the page.###30 04 2024 new variable
+common#:#dpro_agreed_on#:#DoDP agreed to on###01 04 2025 new variable
 common#:#dpro_force_accept_usr_agreement#:#You must accept the Declaration of Data Protection!###30 04 2024 new variable
 common#:#dpro_no_agreement_description#:#There is currently no Declaration of Data Protection document available for this installation. Please contact the <a href="%1$s">system administrator</a>.###30 04 2024 new variable
 common#:#dpro_refuse_acceptance#:#Refuse to Accept the Declaration of Data Protection###30 04 2024 new variable
@@ -4524,6 +4532,7 @@ common#:#login_information_settings_saved#:#登录信息已成功保存
 common#:#login_invalid#:#选定的登录无效！仅允许以下字符(最少4个字符)：A-Z a-z 0-9 _.-+*@!$%~
 common#:#login_to_ilias#:#登录到ILIAS
 common#:#login_to_ilias_via_cas#:#通过中心身份验证服务登录到 ILIAS
+common#:#login_to_ilias_via_login_form#:#Login to ILIAS###20 05 2025 new variable
 common#:#login_to_ilias_via_saml#:#Login to ILIAS via SAML Authentification###31 08 2017 new variable
 common#:#login_to_ilias_via_shibboleth#:#通过Shibboleth登录到 ILIAS
 common#:#loginname_already_exists#:#此登录名已存在。
@@ -4741,6 +4750,7 @@ common#:#msg_no_perm_perm#:#您无权限编辑权限设置
 common#:#msg_no_perm_read#:#您没有权限访问这个项目。
 common#:#msg_no_perm_read_item#:#您没有权限访问条目 '%s'。
 common#:#msg_no_perm_read_lm#:#您没有权限读取这个学习模块。
+common#:#msg_no_perm_view_roles_of_user#:#You have no permission to view the role assignment of this user###26 08 2025 new variable
 common#:#msg_no_perm_write#:#您无写权限
 common#:#msg_no_search_result#:#未找到条目
 common#:#msg_no_search_string#:#请输入您的问题
@@ -5249,6 +5259,7 @@ common#:#pd_items_news#:#包括新闻和个人条目
 common#:#pdf_export#:#导出
 common#:#perm_settings#:#权限
 common#:#perma_link#:#永久链接
+common#:#perma_link_copied#:#Link to this page has been copied to the clipboard.###10 12 2024 new variable
 common#:#permission#:#权限
 common#:#permission_denied#:#权限被拒绝
 common#:#permission_settings#:#许可设置
@@ -5628,7 +5639,6 @@ common#:#show_users_online#:#显示用户在线
 common#:#show_who_is_online#:#Show who is online###30 04 2021 new variable
 common#:#side_frame#:#边框(side frame)
 common#:#signature#:#签名
-common#:#simultaneous_login_detected#:#您的访问被拒绝，因为同时登录了一个相同的账号。
 common#:#size#:#Size
 common#:#skills#:#技能
 common#:#skin_style#:#默认皮肤/风格
@@ -6005,7 +6015,6 @@ common#:#withdrawal_sure_account_no_consent_yet#:#Are you sure you do not want t
 common#:#wizard_search_list#:#您搜索到了以下相关内容。请选择其中之一。
 common#:#wizard_title_info#:#请输入您想要复制的对象的标题。
 common#:#write#:#白色
-common#:#wrong_ip_detected#:#您的访问被拒绝，因为客户端IP错误。<br>请联系系统管理员。
 common#:#year#:#Year年
 common#:#yearly#:#每年
 common#:#years#:#Years年
@@ -7250,8 +7259,6 @@ content#:#glo_online_info#:#Only if the glossary is online, users are able to us
 content#:#glo_presentation_mode#:#展示模式
 content#:#glo_presentation_view#:#展示视图
 content#:#glo_quick_navigation#:#快速导航
-content#:#glo_show_taxonomy#:#显示分类
-content#:#glo_show_taxonomy_info#:#The taxonomy will be visible in the presentation view of the glossary and can be used to select referenced terms.###11 03 2014 new variable
 content#:#glo_style#:#词汇表样式
 content#:#glo_table_form#:#In Table Form
 content#:#glo_table_form_info#:#术语和定义首先显示在一个两列的概览中。点击术语在一个单独的屏幕中打开一个术语的完整内容。
@@ -7367,6 +7374,8 @@ copg#:#copg_page_element_not_found#:#Page element not found.###30 04 2021 new va
 copg#:#copg_page_type_stys#:#Layout Page###30 04 2021 new variable
 copg#:#copg_par_format_selection#:#Paragraph Format Selection###17 01 2024 new variable
 copg#:#copg_pc_mob_does_not_exist#:#This media object does not exist.###28 11 2023 new variable
+copg#:#copg_plugin#:#Plugin###23 09 2025 new variable
+copg#:#copg_plugin_not_avail#:#Plugin %s not available.###10 12 2024 new variable
 copg#:#copg_questions_not_supported_here#:#Questions are not supported in this context.###07 02 2017 new variable
 copg#:#copg_reload_page#:#Reload Page###29 06 2022 new variable
 copg#:#copg_remove_formats#:#Remove Formatting###17 01 2024 new variable
@@ -8539,7 +8548,6 @@ dcl#:#dcl_change_notification_dcl_new_record#:#以下记录被创建
 dcl#:#dcl_change_notification_dcl_update_record#:#以下记录被更新
 dcl#:#dcl_change_notification_link#:#URL
 dcl#:#dcl_change_notification_subject#:#数据收集 "%s" 已更改
-dcl#:#dcl_change_why_you_receive_this_email#:#You receive this message because you have activated the notification about this datacollection.###10 07 2013 new variable
 dcl#:#dcl_changed_by#:#更改者
 dcl#:#dcl_checked#:#已勾选的
 dcl#:#dcl_comments#:#Comments###26 09 2014 new variable
@@ -8554,6 +8562,9 @@ dcl#:#dcl_confirm_delete_table#:#您真的想删除这个表的内容和结构�
 dcl#:#dcl_confirm_storing_records#:#Please validate and confirm your input.###25 10 2016 new variable
 dcl#:#dcl_confirm_storing_records_no_permission#:#You have no permission to change the record afterwards.###25 10 2016 new variable
 dcl#:#dcl_copy#:#复制数据采集
+dcl#:#dcl_copy_field#:#Copy###10 12 2024 new variable
+dcl#:#dcl_copy_field_desc#:#Field to copy options stored in a different field of a table.###10 12 2024 new variable
+dcl#:#dcl_copy_title#:#Copy of table and field###10 12 2024 new variable
 dcl#:#dcl_create_date#:#Creation Date###25 10 2016 new variable
 dcl#:#dcl_create_entry_rules#:#Entry Creation###30 04 2021 new variable
 dcl#:#dcl_create_field#:#创建字段
@@ -8561,10 +8572,10 @@ dcl#:#dcl_create_fields#:#请在选项卡“字段列表”中创建至少一个
 dcl#:#dcl_creation_date#:#Creation Date###20 07 2014 new variable
 dcl#:#dcl_creation_date_description#:#The date on which the entry was created.###20 07 2014 new variable
 dcl#:#dcl_datatype#:#数据类型
+dcl#:#dcl_date#:#Date Entry###20 05 2025 new variable
+dcl#:#dcl_date_desc#:#Field for a date.###20 05 2025 new variable
 dcl#:#dcl_date_selection#:#Date Selection###31 08 2017 new variable
 dcl#:#dcl_date_selection_desc#:#Offer selection of date options.###31 08 2017 new variable
-dcl#:#dcl_datetime#:#日期时间
-dcl#:#dcl_datetime_desc#:#Datumseingabe per Auswahlmenü oder Kalender###30 08 2015 new variable
 dcl#:#dcl_deactivate_view#:#Deactivate this view###27 01 2015 new variable
 dcl#:#dcl_default_sort_field#:#Default sort field###26 09 2014 new variable
 dcl#:#dcl_default_sort_field_desc#:#Tabelle wird standardmässig nach dem ausgewählten Feld sortiert.###30 08 2015 new variable
@@ -8578,6 +8589,7 @@ dcl#:#dcl_delete_tables_no_selection#:#Please select at least one table to delet
 dcl#:#dcl_delete_views#:#Delete Views###25 10 2016 new variable
 dcl#:#dcl_delete_views_no_selection#:#Please select at least one view to delete###31 03 2023 new variable
 dcl#:#dcl_deleted_records#:#Successfully deleted %s records###26 09 2014 new variable
+dcl#:#dcl_deprecated_copy#:#(Deprecated)###10 12 2024 new variable
 dcl#:#dcl_desc#:#Descending Order (DESC)###26 09 2014 new variable
 dcl#:#dcl_description#:#字段描述
 dcl#:#dcl_detailed_view#:#Detailed View###25 10 2016 new variable
@@ -8615,7 +8627,6 @@ dcl#:#dcl_formula#:#Formula###26 09 2014 new variable
 dcl#:#dcl_formula_desc#:#Ähnlich wie bei der Tabellenkalkulation können per Formel Einträge verbunden oder berechnet werden.###30 08 2015 new variable
 dcl#:#dcl_formula_detail_desc#:#Entries are generated automatically, you are not able to edit the entry.###30 08 2015 new variable
 dcl#:#dcl_height#:#高度
-dcl#:#dcl_hello#:#Dear###10 07 2013 new variable
 dcl#:#dcl_id#:#ID###20 07 2014 new variable
 dcl#:#dcl_id_description#:#The internal ID.###20 07 2014 new variable
 dcl#:#dcl_ilias_reference#:#Link to an ILIAS module###25 10 2016 new variable
@@ -8673,16 +8684,14 @@ dcl#:#dcl_new#:#创建新的数据采集
 dcl#:#dcl_new_field#:#新字段
 dcl#:#dcl_new_table#:#新表
 dcl#:#dcl_next_record#:#Next record###26 09 2014 new variable
-dcl#:#dcl_no_content_warning#:#注意，数据收集是在线的，但还没有内容！
 dcl#:#dcl_no_entry#:#No entry###07 02 2020 new variable
-dcl#:#dcl_no_export_content_available#:#No data available for export.###23 10 2017 new variable
+dcl#:#dcl_no_export_async_config#:#No SOAP Configuration for asyncronous exports available.###20 05 2025 new variable
 dcl#:#dcl_no_export_data_available#:#No data or fields available for export.###25 10 2016 new variable
-dcl#:#dcl_no_export_fields_available#:#No fields activated for export. Mark at least one field as exportable in the <a href="%s">table settings</a>.###23 10 2017 new variable
 dcl#:#dcl_no_fields_yet#:#这个表没有定义字段，因此您还不能创建任何条目。
 dcl#:#dcl_no_read_access_on_any_standard_view#:#You don't have read access on any standard view of a table.###10 11 2018 new variable
 dcl#:#dcl_no_search_results_found_for#:#没有模块发现
 dcl#:#dcl_no_such_reference#:#The following value is not available in the reference table:###24 10 2013 new variable
-dcl#:#dcl_no_warnings#:#The import terminated with no warnings.###24 10 2013 new variable
+dcl#:#dcl_no_tableview_found#:#No visible tableview found!###08 07 2025 new variable
 dcl#:#dcl_not_checked#:#未勾选的
 dcl#:#dcl_not_supported_in_import#:#This type of field is not supported in the import###24 10 2013 new variable
 dcl#:#dcl_notification_activate_dcl#:#为数据收集激活通知
@@ -8695,7 +8704,10 @@ dcl#:#dcl_noturl_exception#:#您必须输入一个链接(以http://开始)
 dcl#:#dcl_number#:#Integer###25 10 2016 new variable
 dcl#:#dcl_number_desc#:#Field for integer values (max. 9 digits). No decimals or fractions.###25 10 2016 new variable
 dcl#:#dcl_online_info#:#Only if the Data Collection is online, users are able to use the Data Collection.###06 02 2015 new variable
+dcl#:#dcl_open_detail_view#:#Open detail view###26 08 2025 new variable
+dcl#:#dcl_open_url#:#Open link###26 08 2025 new variable
 dcl#:#dcl_order#:#排序
+dcl#:#dcl_origin_not_found#:#Origin field was not found!###10 12 2024 new variable
 dcl#:#dcl_own_entries#:#Only own entries###30 08 2015 new variable
 dcl#:#dcl_owner#:#Owner###20 07 2014 new variable
 dcl#:#dcl_owner_description#:#The owner of the entry.###20 07 2014 new variable
@@ -8705,7 +8717,6 @@ dcl#:#dcl_permissions_form#:#用户权限
 dcl#:#dcl_please_select#:#--- Please select ---###04 01 2014 new variable
 dcl#:#dcl_plugin#:#Plugin###25 10 2016 new variable
 dcl#:#dcl_plugin_desc#:#DataCollection Field-Plugins###25 10 2016 new variable
-dcl#:#dcl_plugin_hooks#:#Available Plugins###25 10 2016 new variable
 dcl#:#dcl_plugin_no_hooks_available#:#No active field-type plugins found###25 10 2016 new variable
 dcl#:#dcl_prev_record#:#Previous record###26 09 2014 new variable
 dcl#:#dcl_prop_expression#:#Expression###26 09 2014 new variable
@@ -8749,8 +8760,6 @@ dcl#:#dcl_supported_filetypes_desc#:#You can set the allowed extensions comma se
 dcl#:#dcl_switch_table#:#Switch Table###30 04 2024 new variable
 dcl#:#dcl_switch_view#:#Change View###30 04 2024 new variable
 dcl#:#dcl_table#:#表
-dcl#:#dcl_table_create#:#创建表
-dcl#:#dcl_table_edit#:#更新表
 dcl#:#dcl_table_id#:#表ID
 dcl#:#dcl_table_info#:#具有权限"编辑设置"的用户(请看选项卡"权限")总是被授予添加/编辑/删除条目的权限。具有"编辑设置"权限的用户(请看选项卡"权限")仅有根据上面的表单中指定的设置权限。
 dcl#:#dcl_table_info_title#:#信息
@@ -8791,7 +8800,9 @@ dcl#:#dcl_title_standardview#:#Standard Views###10 11 2018 new variable
 dcl#:#dcl_unique#:#独一无二
 dcl#:#dcl_unique_desc#:#In dieses Feld kann ein gleichlautender Eintrag nur einmal vorgenommen werden.###30 08 2015 new variable
 dcl#:#dcl_unique_exception#:#您输入的值已被其他记录采用。
+dcl#:#dcl_unknown#:#Unkown###20 05 2025 new variable
 dcl#:#dcl_unknown_exception#:#您输入的值无效。
+dcl#:#dcl_unknown_plugin#:#Unknown plugin type###20 05 2025 new variable
 dcl#:#dcl_update_field#:#更新字段
 dcl#:#dcl_update_record#:#更新记录
 dcl#:#dcl_url#:#URL
@@ -8805,7 +8816,7 @@ dcl#:#dcl_width#:#宽度
 dcl#:#dcl_wrong_input_type#:#您输入的值不符合规范(错误类型)。
 dcl#:#dcl_wrong_length#:#您输入的文本太长
 dcl#:#dcl_wrong_regex#:#您输入的文本与这个字段的模式(正则表达式)不匹配。
-dcl#:#dlc_xls_async_export#:#Asynchronous XLSX-Export###25 10 2016 new variable
+dcl#:#dcl_xls_async_export#:#as XLSX (asynchronous)###20 05 2025 new variable
 dcl#:#fieldtitle_allow_chars#:#Allowed chars: %s###16 09 2013 new variable
 dcl#:#fileupload_not_migrated#:#File has not yet been migration and cannot be displayed. Please contact your System-Administrator.###30 04 2024 new variable
 didactic#:#activate_exclusive_template#:#Grey Out Default###25 10 2016 new variable
@@ -9090,6 +9101,7 @@ ecs#:#ecs_protocol#:#协议。
 ecs#:#ecs_publish_as#:#Publish as:
 ecs#:#ecs_publish_for#:#Release for:
 ecs#:#ecs_published_for#:#Published for：
+ecs#:#ecs_rcat_created_body_a#:#A new ECS Category has been created:###10 12 2024 new variable
 ecs#:#ecs_rcrs_created_body_a#:#一个新的远程课程已创建：
 ecs#:#ecs_read_remote_links#:#更新远程课程
 ecs#:#ecs_refresh_participants#:#Refresh ECS-Participants###27 01 2015 new variable
@@ -9152,8 +9164,10 @@ etal#:#etal_date_series_edit#:#Date of Talk Series###31 03 2023 new variable
 etal#:#etal_delete_confirmation_msg#:#Are you sure that you want to delete the following talk?###30 04 2024 new variable
 etal#:#etal_edit#:#General###31 03 2023 new variable
 etal#:#etal_invalid_user#:#This user either does not exist or can't be invited.###31 03 2023 new variable
+etal#:#etal_location#:#Location###04 11 2025 new variable
 etal#:#etal_new#:#New Talk###31 03 2023 new variable
 etal#:#etal_open#:#Open Employee Talk###31 03 2023 new variable
+etal#:#etal_recurrence#:#Recurrence###04 11 2025 new variable
 etal#:#etal_status_all#:#All###31 03 2023 new variable
 etal#:#etal_status_completed#:#Completed###31 03 2023 new variable
 etal#:#etal_status_pending#:#Pending###31 03 2023 new variable
@@ -9169,6 +9183,7 @@ etal#:#notification_talks_subject#:#Invitation: %s###31 03 2023 new variable
 etal#:#notification_talks_subject_update#:#Update: %s###31 03 2023 new variable
 etal#:#notification_talks_updated#:#The following talk appointments have been changed.###31 03 2023 new variable
 etal#:#pending_talks_warning#:#The following pending talk appointments will be replaced:###28 11 2023 new variable
+etal#:#tala_no_content_without_admin_info#:#The Administrator role is required for access to Talk Templates.###08 07 2025 new variable
 etal#:#talk_serial#:#Talk Serial###31 03 2023 new variable
 etal#:#tals_add#:#Add Talks###31 03 2023 new variable
 etal#:#tals_new#:#New Talks###31 03 2023 new variable
@@ -9771,6 +9786,8 @@ file#:#preview_caption#:#Preview %sof %s###30 04 2024 new variable
 file#:#preview_image_size_info#:#The preview versions of images will be downscaled or upscaled as appropriate, so that their longest side is the length (in px) entered here.###30 04 2024 new variable
 file#:#preview_persisting#:#Persistent Preview Images###30 04 2024 new variable
 file#:#preview_persisting_info#:#Generated preview images will be stored by ILIAS and used from then on each time the preview icon for that file is clicked on. If deactivated, previews will be generated anew each time.###30 04 2024 new variable
+file#:#previews_for_tiles#:#Tiles###01 04 2025 new variable
+file#:#previews_for_tiles_info#:#Use Preview for Tiles where possible.###01 04 2025 new variable
 file#:#publish_before_delete#:#Version(s) could not be deleted because an unpublished draft exists.###30 04 2024 new variable
 file#:#replace_file_info#:#所有文件版本都将被删除。
 file#:#resource_id#:#Resource ID###24 09 2021 new variable
@@ -10758,6 +10775,7 @@ ldoc#:#ldoc_form_edit_doc_head#:#Edit Document###30 04 2024 new variable
 ldoc#:#ldoc_form_new_doc_head#:#Create Document###30 04 2024 new variable
 ldoc#:#ldoc_last_modified#:#Last Change###30 04 2024 new variable
 ldoc#:#ldoc_ldoc_settings#:#Settings###30 04 2024 new variable
+ldoc#:#ldoc_order_invalid#:#Please enter a number for the order###14 01 2025 new variable
 ldoc#:#ldoc_period#:#Period###30 04 2024 new variable
 ldoc#:#ldoc_period_from#:#From###30 04 2024 new variable
 ldoc#:#ldoc_period_until#:#Until###30 04 2024 new variable
@@ -10925,6 +10943,7 @@ lso#:#lso_player_abstract#:#Show Abstract Info###10 11 2018 new variable
 lso#:#lso_player_extro#:#Show Final Page###10 11 2018 new variable
 lso#:#lso_player_finish#:#Finish###10 11 2018 new variable
 lso#:#lso_player_next#:#Next###10 11 2018 new variable
+lso#:#lso_player_noitems#:#There are no available items in this Learning Sequence.###08 07 2025 new variable
 lso#:#lso_player_previous#:#Previous###10 11 2018 new variable
 lso#:#lso_player_resume#:#Resume Learning Sequence###10 11 2018 new variable
 lso#:#lso_player_review#:#Review Learning Sequence###10 11 2018 new variable
@@ -10935,7 +10954,6 @@ lso#:#lso_print_list#:#Print list###10 11 2018 new variable
 lso#:#lso_read#:#User has read access to Learning Sequence###10 11 2018 new variable
 lso#:#lso_search_users#:#Search user###10 11 2018 new variable
 lso#:#lso_settings_availability#:#availability###10 11 2018 new variable
-lso#:#lso_settings_availability_error#:#The end date can not be earlier than the start date###30 04 2024 new variable
 lso#:#lso_settings_extro#:#Exitpage Settings###10 11 2018 new variable
 lso#:#lso_settings_intro#:#Intropage Settings###10 11 2018 new variable
 lso#:#lso_settings_old_extro#:#View Old Exit Page###31 03 2023 new variable
@@ -11188,6 +11206,7 @@ lti#:#lti_object_consumer#:#LTI Consumers###31 08 2017 new variable
 lti#:#lti_object_release_settings_form#:#LTI Freigaben bearbeiten###31 08 2017 new variable
 lti#:#lti_provider#:#LTI-Freigaben###31 08 2017 new variable
 lti#:#lti_provider_not_avail_msg#:#LTI Provider is set to 'Not Available'###07 02 2020 new variable
+lti#:#lti_provider_not_set_msg#:#Configuration of LTI Provider / tool is not completely finished.###08 07 2025 new variable
 lti#:#lti_providing_tab#:#ILIAS as LTI Provider###07 02 2020 new variable
 lti#:#lti_released_objects#:#Objekt-Freigaben###31 08 2017 new variable
 lti#:#lti_select_provider#:#Select Provider###07 02 2020 new variable
@@ -12780,18 +12799,12 @@ noti#:#noti_notification_deactivated#:#Notification Deactivated###10 11 2018 new
 notifications_adm#:#enable_osd#:#Enable On-Screen Notifications###31 03 2023 new variable
 notifications_adm#:#enable_osd_desc#:#If enabled, users are notified by a popup about new notifications.###31 03 2023 new variable
 notifications_adm#:#notification_settings#:#Notification Settings###31 03 2023 new variable
-notifications_adm#:#osd_delay#:#Presentation Delay###31 03 2023 new variable
-notifications_adm#:#osd_delay_desc#:#Delay of the visible presentation in milliseconds.###31 03 2023 new variable
-notifications_adm#:#osd_error_presentation_time_too_small#:#The Presentation Time has to be at least than 1000 miliseconds.###31 03 2023 new variable
-notifications_adm#:#osd_error_refresh_interval_smaller_than_delay_and_vanish_combined#:#The Refresh Interval has to be greater than the Presentation Time and the Presentation Delay combined.###31 03 2023 new variable
 notifications_adm#:#osd_error_refresh_interval_too_small#:#The Refresh Interval has to be at least than 3000 miliseconds.###31 03 2023 new variable
 notifications_adm#:#osd_interval#:#Refreshinterval###31 03 2023 new variable
 notifications_adm#:#osd_interval_desc#:#Polling interval for checking of new notifications in miliseconds. A lower number will notify the user more quickly but increases the number of requests the web server must handle.###31 03 2023 new variable
 notifications_adm#:#osd_play_sound#:#Play a Sound###31 03 2023 new variable
 notifications_adm#:#osd_play_sound_desc#:#Play a sound when receiving a new notficiation.###31 03 2023 new variable
 notifications_adm#:#osd_settings#:#On-Screen Notifications###31 03 2023 new variable
-notifications_adm#:#osd_vanish#:#Presentation Time###31 03 2023 new variable
-notifications_adm#:#osd_vanish_desc#:#Visible time of a notification on the screen in miliseconds.###31 03 2023 new variable
 obj#:#activation_visible_when_disabled#:#Visibility###30 04 2024 new variable
 obj#:#activation_visible_when_disabled_info#:#The item is visible outside of the selected availability period, but it cannot be opened.###30 04 2024 new variable
 obj#:#availability_period_changed#:#The availability period for the selected objects has been changed successfully.###30 04 2024 new variable
@@ -12804,6 +12817,7 @@ obj#:#copy_container_page_yes_label#:#Copy Content Page###30 04 2024 new variabl
 obj#:#custom_icon#:#Custom Icon###30 04 2024 new variable
 obj#:#edit_availability_period#:#Availability Period###30 04 2024 new variable
 obj#:#edit_questions#:#Edit Questions###10 07 2013 new variable
+obj#:#multiple_reference_deletion_info#:#Further references exist for the following objects.###01 04 2025 new variable
 obj#:#no_objects_selected#:#At least one object needs to be selected.###30 04 2024 new variable
 obj#:#obj_activate_content_lang#:#Activate Translation for Page Editing###22 01 2014 new variable
 obj#:#obj_activate_multilang#:#Activate Multilinguality###22 01 2014 new variable
@@ -12859,6 +12873,7 @@ obj#:#obj_tool_setting_skills_info#:#Activates competence management and compete
 obj#:#obj_tool_setting_tag_cloud#:#Tag Cloud###26 09 2014 new variable
 obj#:#obj_tool_setting_tag_cloud_info#:#The "tag cloud" block will be displayed inside the "Content" tab.###26 09 2014 new variable
 obj#:#obj_tool_setting_taxonomies#:#Taxonomies###26 09 2014 new variable
+obj#:#obj_tool_setting_taxonomies_info#:#Taxonomies allow the filtering of objects. They are created in the "Taxonomy" sub-tab in the "Settings" tab.###10 12 2024 new variable
 obj#:#obj_tool_setting_use_news#:#News###25 10 2016 new variable
 obj#:#obj_tool_setting_use_news_info#:#Activate the news block and/or timeline view.###25 10 2016 new variable
 obj#:#obj_tool_setting_use_news_open_settings#:#Open Settings###25 10 2016 new variable
@@ -13117,6 +13132,7 @@ prg#:#auto_membership_src_type#:#Type###07 02 2020 new variable
 prg#:#auto_membership_title#:#Sources for Membership Automation###07 02 2020 new variable
 prg#:#auto_memberships#:#Membership Automation###07 02 2020 new variable
 prg#:#category#:#Category###07 02 2020 new variable
+prg#:#cert_relevance#:#Certificate###08 07 2025 new variable
 prg#:#completion_date#:#Completion Date###07 02 2020 new variable
 prg#:#confirm_to_remove_selected_assignments#:#Do you really want to remove the user assignment(s)?###24 09 2021 new variable
 prg#:#cont_ed_insert_prgactionnote#:#Insert Study Programme Action Note###30 04 2024 new variable
@@ -13201,6 +13217,7 @@ prg#:#pc_prgstatus_unlimited_validation#:#Unlimited validity###30 04 2024 new va
 prg#:#percentage#:#%###07 02 2020 new variable
 prg#:#prg_access_by_orgu#:#Access Control by Organisation Unit Positions###30 04 2021 new variable
 prg#:#prg_access_by_orgu_byline#:#If enabled, additional access control rules can be defined by positions in organisational units.###30 04 2021 new variable
+prg#:#prg_acknowledge_all_completed_courses#:#Acknowledge All Completed Courses###10 12 2024 new variable
 prg#:#prg_acknowledge_completed_courses#:#Acknowledge Completed Courses###25 10 2015 new variable
 prg#:#prg_add#:#Add Study Programme###30 08 2015 new variable
 prg#:#prg_added_course_ref_successful#:#New course-reference was added successfully###30 08 2015 new variable
@@ -13686,6 +13703,7 @@ pwsp#:#pwsp_enable_personal_resources#:#Enable personal resources###07 02 2020 n
 pwsp#:#pwsp_enable_wsp_blogs#:#Enable Blogs###07 02 2020 new variable
 pwsp#:#pwsp_enable_wsp_files#:#Enable Files###07 02 2020 new variable
 pwsp#:#pwsp_enable_wsp_links#:#Enable Links###07 02 2020 new variable
+pwsp#:#pwsp_type_cannot_be_copied#:#Objects of type '%s' cannot be copied.###23 09 2025 new variable
 qpl#:#qpl_filter_commented_exclude#:#Questions without comments###30 04 2024 new variable
 qpl#:#qpl_filter_commented_only#:#Questions with comments###30 04 2024 new variable
 qpl#:#qpl_page_type_qfbg#:#General Feedback###30 04 2021 new variable
@@ -13834,7 +13852,7 @@ rbac#:#chtr_moderate#:#Moderate 聊天室
 rbac#:#chtr_read#:#读
 rbac#:#chtr_visible#:#可见
 rbac#:#chtr_write#:#写
-rbac#:#cmis_edit_permissions#:#User can change permission settings of xAPI/cmi5 administration.###30 04 2021 new variable
+rbac#:#cmis_edit_permission#:#User can change permission settings of xAPI/cmi5 administration.###01 04 2025 new variable
 rbac#:#cmis_read#:#User has read access to xAPI/cmi5 administration.###30 04 2021 new variable
 rbac#:#cmis_visible#:#Administration of xAPI/cmi5 is visible.###30 04 2021 new variable
 rbac#:#cmis_write#:#User can edit settings of xAPI/cmi5 administration.###30 04 2021 new variable
@@ -13906,6 +13924,10 @@ rbac#:#dcl_write#:#用户可以编辑设置和数据采集的内容。
 rbac#:#delete_files#:#Delete Files###24 10 2013 new variable
 rbac#:#delete_folders#:#Delete Folders###24 10 2013 new variable
 rbac#:#delete_wiki_pages#:#Delete Pages###30 08 2015 new variable
+rbac#:#dpro_edit_permission#:#User can change permission settings in the Declaration of Data Protected administration###01 04 2025 new variable
+rbac#:#dpro_read#:#User has read access to the Declaration of Data Protection administration###01 04 2025 new variable
+rbac#:#dpro_visible#:#Declaration of Data Protection administration is visible###01 04 2025 new variable
+rbac#:#dpro_write#:#Edit settings in the Declaration of Data Protection###01 04 2025 new variable
 rbac#:#dshs_change_presentation#:#Change presentation of dashboard view###07 02 2020 new variable
 rbac#:#dshs_edit_permission#:#User can change permission settings of Dashboard administration###07 02 2020 new variable
 rbac#:#dshs_read#:#User has read access to Dashboard administration###07 02 2020 new variable
@@ -13987,9 +14009,11 @@ rbac#:#frm_add_reply#:#用户可以回复一个帖子
 rbac#:#frm_add_thread#:#添加新主题
 rbac#:#frm_copy#:#复制论坛
 rbac#:#frm_delete#:#删除论坛
+rbac#:#frm_edit_learning_progress#:#User can edit learning progress settings###14 01 2025 new variable
 rbac#:#frm_edit_permission#:#更改许可设置
 rbac#:#frm_moderate_frm#:#删除帖子,审查
 rbac#:#frm_read#:#论坛设为读访问
+rbac#:#frm_read_learning_progress#:#User can view learning progress of other users###14 01 2025 new variable
 rbac#:#frm_visible#:#论坛可见
 rbac#:#frm_write#:#编辑论坛
 rbac#:#frma_edit_permission#:#更改权限设置
@@ -14052,6 +14076,10 @@ rbac#:#il_lti_global_role#:#LTI User###24 09 2021 new variable
 rbac#:#il_sess_participant#:#Session Participant###31 08 2017 new variable
 rbac#:#il_sess_status_closed#:#Non-Participant Closed Session###31 08 2017 new variable
 rbac#:#ilias_id#:#ILIAS-ID###27 01 2015 new variable
+rbac#:#impr_edit_permission#:#User can change permission settings of Legal Notice administration###01 04 2025 new variable
+rbac#:#impr_read#:#User can read in Legal Notice administration###01 04 2025 new variable
+rbac#:#impr_visible#:#Administration of Legal Notice is visible###01 04 2025 new variable
+rbac#:#impr_write#:#User can edit content and settings of Legal Notice###01 04 2025 new variable
 rbac#:#info_user_view_changed#:#用户视图已更改
 rbac#:#internal_mail#:#内部邮件
 rbac#:#invite#:#邀请调查
@@ -14099,7 +14127,7 @@ rbac#:#lso_read_learning_progress#:#User can view learning progress of other use
 rbac#:#lso_unparticipate#:#User can unsubscribe from a Learning Sequence###07 02 2020 new variable
 rbac#:#lso_visible#:#Learning Sequence is visible###10 11 2018 new variable
 rbac#:#lso_write#:#User can edit settings of Learning Sequence###10 11 2018 new variable
-rbac#:#lsos_edit_permissions#:#User can change permission settings of Learning Sequences administration.###30 04 2021 new variable
+rbac#:#lsos_edit_permission#:#User can change permission settings of Learning Sequences administration.###01 04 2025 new variable
 rbac#:#lsos_read#:#User has read access to Learning Sequences administration.###30 04 2021 new variable
 rbac#:#lsos_visible#:#Administration of Learning Sequences is visible.###30 04 2021 new variable
 rbac#:#lsos_write#:#User can edit settings of Learning Sequences administration.###30 04 2021 new variable
@@ -14164,7 +14192,8 @@ rbac#:#moderate_frm#:#Moderate
 rbac#:#msg_anonymous_cannot_be_assigned#:#Anonymous cannot be assigned to a role.###19 03 2024 new variable
 rbac#:#msg_no_roles_of_type#:#选定的过滤器设置没有可用的角色
 rbac#:#news_add_news#:#Add News###25 10 2016 new variable
-rbac#:#nots_edit_permissions#:#User can change permission settings of Notes administration.###30 04 2021 new variable
+rbac#:#no_corresponding_roles#:#No corresponding roles could be found.###01 04 2025 new variable
+rbac#:#nots_edit_permission#:#User can change permission settings of Notes administration.###01 04 2025 new variable
 rbac#:#nots_read#:#User has read access to Notes administration.###30 04 2021 new variable
 rbac#:#nots_visible#:#Administration of Notes is visible.###30 04 2021 new variable
 rbac#:#nots_write#:#User can edit settings of Notes administration.###30 04 2021 new variable
@@ -14241,7 +14270,7 @@ rbac#:#prgs_edit_permission#:#Change permission settings in Study Programme admi
 rbac#:#prgs_read#:#User has read access to Study Programme administration###08 10 2015 new variable
 rbac#:#prgs_visible#:#Study Programme administration is visible###08 10 2015 new variable
 rbac#:#prgs_write#:#Edit settings in Study Programme administration###08 10 2015 new variable
-rbac#:#prss_edit_permissions#:#User can change permission settings of Personal Resources administration.###30 04 2021 new variable
+rbac#:#prss_edit_permission#:#User can change permission settings of Personal Resources administration.###01 04 2025 new variable
 rbac#:#prss_read#:#User has read access to Personal Resources administration.###30 04 2021 new variable
 rbac#:#prss_visible#:#Administration of Personal Resources is visible.###30 04 2021 new variable
 rbac#:#prss_write#:#User can edit settings of Personal Resources administration.###30 04 2021 new variable
@@ -14279,7 +14308,10 @@ rbac#:#rbac_choose_copy_targets#:#请为选择目标角色输入一个阙值。
 rbac#:#rbac_condition_delete_sure#:#您确定要删除以下先决条件？
 rbac#:#rbac_context_global#:#全局
 rbac#:#rbac_copy_behaviour#:#角色复制设置
+rbac#:#rbac_copy_behaviour_info#:#Transfer Permissions from: %s to: %s###20 05 2025 new variable
 rbac#:#rbac_copy_finished#:#已完成复制
+rbac#:#rbac_copy_multi_targets#:#%s, %s and %s further Roles selected%s###20 05 2025 new variable
+rbac#:#rbac_copy_no_targets#:#At least one Role must be selected as Target###20 05 2025 new variable
 rbac#:#rbac_copy_role#:#复制角色
 rbac#:#rbac_copy_role_add_perm#:#Add Permissions###24 10 2013 new variable
 rbac#:#rbac_copy_role_copy#:#Copy Permissions###24 10 2013 new variable
@@ -14400,6 +14432,7 @@ rbac#:#rbac_role_rights_copy_empty#:#None
 rbac#:#rbac_role_selection#:#角色类型
 rbac#:#rbac_role_title#:#角色标题
 rbac#:#rbac_select_copy_targets#:#请选择目标角色
+rbac#:#rbac_select_roles#:#Role Selection
 rbac#:#rbac_ud_global#:#用户定义的全局角色
 rbac#:#rbac_ud_local#:#用户定义的本地角色
 rbac#:#rbac_ud_rolt#:#用户定义的角色模板
@@ -14590,7 +14623,7 @@ rbac#:#usrf_read#:#用户账号设为读访问
 rbac#:#usrf_read_users#:#本地管理员角色分配
 rbac#:#usrf_visible#:#用户账号可视
 rbac#:#usrf_write#:#编辑用户账号
-rbac#:#wbdv_edit_permissions#:#User can change permission settings of WebDAV administration.###30 04 2021 new variable
+rbac#:#wbdv_edit_permission#:#User can change permission settings of WebDAV administration.###01 04 2025 new variable
 rbac#:#wbdv_read#:#User has read access to WebDAV administration.###30 04 2021 new variable
 rbac#:#wbdv_visible#:#Administration of WebDAV is visible.###30 04 2021 new variable
 rbac#:#wbdv_write#:#User can edit settings of WebDAV administration.###30 04 2021 new variable
@@ -14774,6 +14807,7 @@ rep#:#rep_fav_intro2#:#Klicken Sie auf '%s' und wählen Sie aus dem verfügbaren
 rep#:#rep_fav_intro3#:#Wenn Sie etwas gefunden haben, das Sie interessiert, können Sie es ganz einfach zu Ihren Favoriten hinzufügen. Wählen Sie beim gewünschten Objekt im <i>Aktionen</i>-Menü die Option "<i>Zu Favoriten hinzufügen</i>".###07 02 2020 new variable
 rep#:#rep_favourites#:#Favourites###09 03 2022 new variable
 rep#:#rep_favourites_info#:#Users can mark single repository items as favourites. Favourites lists can be activated and configured in the dashboard and menu settings.###09 03 2022 new variable
+rep#:#rep_input_not_empty#:#This field must not be empty, please provide a value.###01 04 2025 new variable
 rep#:#rep_intro#:#欢迎来到知识库！
 rep#:#rep_intro1#:#在这个区域，您能为所有用户创建学习和工作资源。所有资源都组织在类目中。类目能反映您的组织结构(例如，部门)、一个学科的层次结构，或一个学校的类别。
 rep#:#rep_intro2#:#建立一个初始结构需要三个步骤：
@@ -15711,6 +15745,7 @@ style#:#sty_ca_cntr_class#:#Carousel Container###30 08 2015 new variable
 style#:#sty_ca_icntr_class#:#Carousel Item Container###30 08 2015 new variable
 style#:#sty_ca_icont_class#:#Carousel Item Content###30 08 2015 new variable
 style#:#sty_ca_ihead_class#:#Carousel Item Header###30 08 2015 new variable
+style#:#sty_cannot_be_copied#:#The following style types cannot be copied###20 05 2025 new variable
 style#:#sty_caption#:#标题(Caption)
 style#:#sty_caption_class#:#标题(Caption)
 style#:#sty_carousel_templates#:#Carousel Templates###30 08 2015 new variable
@@ -15811,6 +15846,7 @@ style#:#sty_media_queries#:#Media Queries###26 09 2014 new variable
 style#:#sty_media_query_info#:#A separete CSS block is added for each media query after the default (no special media query) block.###26 09 2014 new variable
 style#:#sty_min_height#:#最小高度
 style#:#sty_move_lm_styles#:#更改学习模块的样式
+style#:#sty_move_obj_styles#:#Change Style of Objects###23 09 2025 new variable
 style#:#sty_move_style#:#更改风格
 style#:#sty_move_user_styles#:#改变用户风格
 style#:#sty_msg_characteristic_must_only_include#:#样式类的标题可能仅包含以下字符：
@@ -15818,6 +15854,7 @@ style#:#sty_msg_color_must_only_include#:#颜色名可能仅包含以下字符�
 style#:#sty_msg_input_must_be_numeric#:#只能输入数字：
 style#:#sty_name#:#名字
 style#:#sty_nr_learning_modules#:#学习模块的数目
+style#:#sty_nr_objects#:#Number of Objects###23 09 2025 new variable
 style#:#sty_odd_col_class#:#奇数列
 style#:#sty_odd_row_class#:#奇数行
 style#:#sty_ol#:#Ordered List###30 04 2024 new variable
@@ -16821,6 +16858,7 @@ tagging#:#tagging_enable_all_users_info#:#添加一个段落“所有用户”�
 tagging#:#tagging_enable_tagging#:#启用标签
 tagging#:#tagging_forbidden_tags#:#禁止标签
 tagging#:#tagging_no_obj_for_tag#:#No Resources tagged with %s.###09 03 2022 new variable
+tagging#:#tagging_no_perm_write#:#You have no permission to change this data.###10 12 2024 new variable
 tagging#:#tagging_other_users#:#Other Users###26 09 2014 new variable
 tagging#:#tagging_resources_for_tag#:#资源贴上标签 %s
 tagging#:#tagging_search_users#:#搜索用户
@@ -17175,6 +17213,7 @@ ui#:#order_option_numerical_ascending#:#0 to 9###30 04 2024 new variable
 ui#:#order_option_numerical_descending#:#9 to 0###30 04 2024 new variable
 ui#:#presentation_table_collapse#:#collapse all###30 04 2024 new variable
 ui#:#presentation_table_expand#:#expand all###30 04 2024 new variable
+ui#:#table_posinput_col_title#:#Position###01 04 2025 new variable
 ui#:#ui_chars_max#:#Maximum:###10 11 2018 new variable
 ui#:#ui_chars_min#:#Minimum:###10 11 2018 new variable
 ui#:#ui_chars_remaining#:#Characters remaining:###10 11 2018 new variable
@@ -17352,6 +17391,7 @@ validation#:#not_min_length#:#Your input has a length of %d and falls below the 
 validation#:#not_numeric#:#'%s' is not numeric.###10 11 2018 new variable
 validation#:#not_numeric_empty_string#:#Your input is not numeric.###07 02 2020 new variable
 validation#:#numeric_only#:#Please insert a whole number.###30 04 2024 new variable
+validation#:#required#:#This input is required.###08 07 2025 new variable
 validation#:#tag_required#:#Please insert at least one tag.###30 04 2024 new variable
 violation#:#not_a_string#:#Given value is not a String###31 03 2023 new variable
 webr#:#invalid_links_tbl#:#无效链接

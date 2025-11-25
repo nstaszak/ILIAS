@@ -70,7 +70,7 @@ class ilObjTestSettingsScoringResultsGUI extends ilTestSettingsGUI
 
         if ($template_id) {
             $this->settingsTemplate = new ilSettingsTemplate(
-                (int)$template_id,
+                (int) $template_id,
                 ilObjAssessmentFolderGUI::getSettingsTemplateConfig()
             );
         }
@@ -110,7 +110,6 @@ class ilObjTestSettingsScoringResultsGUI extends ilTestSettingsGUI
                         $this->saveForm();
                         break;
                     case self::CMD_CONFIRMED_RECALC:
-                        $this->saveForm();
                         $settings = $this->buildForm()
                             ->withRequest($this->getRelayedRequest())
                             ->getData();
@@ -170,7 +169,15 @@ class ilObjTestSettingsScoringResultsGUI extends ilTestSettingsGUI
         return unserialize(
             base64_decode(
                 $this->request->getParsedBody()[self::F_CONFIRM_SETTINGS]
-            )
+            ),
+            [
+                'allowed_classes' => [
+                    GuzzleHttp\Psr7\ServerRequest::class,
+                    GuzzleHttp\Psr7\Uri::class,
+                    GuzzleHttp\Psr7\UploadedFile::class,
+                    GuzzleHttp\Psr7\Stream::class,
+                ]
+            ]
         );
     }
 
@@ -227,13 +234,9 @@ class ilObjTestSettingsScoringResultsGUI extends ilTestSettingsGUI
             return false;
         }
 
-        $now = (new DateTimeImmutable("NOW"))->format('YmdHis');
-
-        if (
-            $this->test_object->getScoreReporting() == ilObjTestSettingsResultSummary::SCORE_REPORTING_DATE
-            && $this->test_object->getReportingDate() > $now
-        ) {
-            return false;
+        if ($this->test_object->getScoreReporting() == ilObjTestSettingsResultSummary::SCORE_REPORTING_DATE) {
+            $reporting_date = $this->test_object->getScoreSettings()->getResultSummarySettings()->getReportingDate();
+            return $reporting_date <= new DateTimeImmutable('now', new DateTimeZone('UTC'));
         }
 
         return true;

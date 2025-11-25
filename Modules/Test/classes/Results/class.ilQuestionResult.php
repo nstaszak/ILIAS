@@ -40,7 +40,9 @@ class ilQuestionResult
         protected bool $workedthrough,
         protected bool $answered,
         protected int $requested_hints,
-        protected ?string $content_for_recapitulation
+        protected ?string $content_for_recapitulation,
+        protected ?string $autosaved_answer,
+        protected int $position,
     ) {
     }
 
@@ -110,4 +112,13 @@ class ilQuestionResult
     {
         return $this->requested_hints;
     }
+    public function getAutosavedAnswer(): ?string
+    {
+        return $this->autosaved_answer;
+    }
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
 }

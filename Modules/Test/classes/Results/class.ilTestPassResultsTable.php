@@ -84,7 +84,7 @@ class ilTestPassResultsTable
         string $sortation,
         array $question_results
     ) {
-        switch($mode) {
+        switch ($mode) {
             case self::MODE_OPT_CORRECT:
                 $filter = static fn($qr) => $qr->getCorrect() === ilQuestionResult::CORRECT_FULL;
                 break;
@@ -110,8 +110,8 @@ class ilTestPassResultsTable
     protected function getViewControlNamespace(): array
     {
         $namespace = self::URL_NAMESPACE;
-        $namespace[] = (string)$this->test_results->getActiveId();
-        $namespace[] = (string)$this->test_results->getPass();
+        $namespace[] = (string) $this->test_results->getActiveId();
+        $namespace[] = (string) $this->test_results->getPass();
         return $namespace;
     }
 
@@ -173,62 +173,60 @@ class ilTestPassResultsTable
 
     protected function getMapping(): \Closure
     {
-        return function ($row, $question, $ui_factory, $environment) {
+        return function ($row, $question_result, $ui_factory, $environment) {
             $env = $environment[self::ENV];
             $lng = $environment[self::LNG];
 
-            $title = sprintf(
-                '%s [ID: %s]',
-                $question->getTitle(),
-                (string)$question->getId()
-            );
+            $title = htmlspecialchars($question_result->getTitle());
 
             $important_fields = [
-                $lng->txt('question_id') => (string)$question->getId(),
-                $lng->txt('question_type') => $lng->txt($question->getType()),
+                $lng->txt('position') => (string) ($question_result->getPosition() + 1),
+                $lng->txt('question_id') => (string) $question_result->getId(),
+                $lng->txt('question_type') => $lng->txt($question_result->getType()),
                 $lng->txt('points') => sprintf(
                     '%s/%s (%s%%)',
-                    (string)$question->getUserScore(),
-                    (string)$question->getQuestionScore(),
-                    (string)$question->getUserScorePercent()
+                    (string) $question_result->getUserScore(),
+                    (string) $question_result->getQuestionScore(),
+                    (string) $question_result->getUserScorePercent()
                 )
             ];
 
             $stats_fields = $important_fields;
-            $stats_fields[$lng->txt('tst_question_hints_requested_hint_count_header')] = (string)$question->getNumberOfRequestedHints();
+            $stats_fields[$lng->txt('tst_question_hints_requested_hint_count_header')] = (string) $question_result->getNumberOfRequestedHints();
             $stats = $ui_factory->listing()->characteristicValue()->text($stats_fields);
 
-            $user_answer = $question->getUserAnswer();
-            $best_solution = $env->getShowBestSolution() ? $question->getBestSolution() : '';
+            $contents = [
+                $stats
+            ];
 
-
-            $feedback = $ui_factory->listing()->descriptive([
-                $lng->txt('tst_feedback') => $question->getFeedback()
-            ]);
-
-            $contents = [];
-
-            $contents[] = $stats;
-            if ($env->getShowFeedback()) {
-                $contents[] = $feedback;
-            }
-
-            if ($recap = $question->getContentForRecapitulation()) {
+            if ($recap = $question_result->getContentForRecapitulation()) {
                 $contents[] = $ui_factory->listing()->descriptive([
                     $lng->txt('suggested_solution') => $recap
                 ]);
             }
 
+            $listing = [
+                $lng->txt('tst_header_participant') => $question_result->getUserAnswer()
+            ];
+            if ($autosave_content = $question_result->getAutosavedAnswer()) {
+                $listing[$lng->txt('autosavecontent')] = $autosave_content;
+            }
 
-            $answers = $ui_factory->layout()->alignment()->horizontal()->evenlyDistributed(
-                $ui_factory->listing()->descriptive([$lng->txt('tst_header_participant') => $user_answer]),
-                $ui_factory->listing()->descriptive([$lng->txt('tst_header_solution') => $best_solution])
-            );
+            $answer_contents = [
+                $ui_factory->listing()->descriptive($listing)
+            ];
+            if ($env->getShowBestSolution()) {
+                $answer_contents[] = $ui_factory->listing()->descriptive([
+                    $lng->txt('tst_header_solution') => $question_result->getBestSolution()
+                ]);
+            }
+
+            $answers = $ui_factory->layout()->alignment()->horizontal()->evenlyDistributed(...$answer_contents);
             $contents[] = $answers;
 
             $content = $ui_factory->layout()->alignment()->vertical(...$contents);
 
-            switch($question->getCorrect()) {
+            switch ($question_result->getCorrect()) {
                 case ilQuestionResult::CORRECT_FULL:
                     $icon_name = 'icon_ok.svg';
                     $label = $lng->txt("answer_is_right");

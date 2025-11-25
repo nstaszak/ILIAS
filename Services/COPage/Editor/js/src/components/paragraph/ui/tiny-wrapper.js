@@ -337,7 +337,7 @@ export default class TinyWrapper {
         cb();
       });
 
-      if (ev.key === "Escape") {
+      if (ev.key === 'Escape') {
         wrapper.getCallbacks(CB.ESCAPE).forEach((cb) => {
           cb();
         });
@@ -694,21 +694,23 @@ export default class TinyWrapper {
   copyInputToGhost(add_final_spacer) {
     this.log('tiny-wrapper.copyInputToGhost');
     let tag;
+    let characteristic;
     const ed = this.tiny;
     const html = this.htmlTransform;
 
     if (this.ghost) {
       let cl = ed.dom.getRoot().className;
-      let c = html.p2br(ed.getContent());
+      let c = html.p2br(ed.getContent()); // the tag is added later
 
       if (this.getDataTableMode()) {
         cl = 'ilc_Paragraph ilc_text_block_TableContent';
+        characteristic = 'TableContent';
+      } else {
+        characteristic = this.getCharacteristicFromClass(cl);
       }
 
       cl = `copg-input-ghost ${cl}`;
       this.log(cl);
-      const cl_arr = cl.split('_');
-      const characteristic = cl_arr[cl_arr.length - 1];
       switch (characteristic) {
         case 'Headline1':
           tag = 'h1';
@@ -720,12 +722,22 @@ export default class TinyWrapper {
           tag = 'h3';
           break;
         default:
-          tag = 'div';
+          tag = 'p';
           break;
+      }
+      if (this.getDataTableMode()) {
+        tag = 'div';
+      }
+
+      if (c.includes('</ul>') || c.includes('</ol>')) {
+        tag = 'div';
       }
 
       if (add_final_spacer) {
-        c += '<br />.';
+        //        c += '<br />.';
+      }
+      if (c.trim() === '') {
+        c = '<p>&nbsp;</p>';
       }
 
       let label = '';
@@ -739,10 +751,9 @@ export default class TinyWrapper {
       }
 
       c = `${label}<${tag} style='position:static;' class='${cl}'>${c}</${tag}>`;
-
       // we remove the first child div content div (edit label)
       this.ghost.querySelector('div').remove(); // edit label in case of paragraph, content div in case of td
-      const div2 = this.ghost.querySelector('div, h1, h2, h3'); // content element in case of paragraph
+      const div2 = this.ghost.querySelector('p, h1, h2, h3'); // content element in case of paragraph
       if (div2) {
         div2.remove();
       }
@@ -752,6 +763,21 @@ export default class TinyWrapper {
       // we replace the second div (content) with c
       this.ghost.innerHTML = c;
     }
+  }
+
+  /**
+   * E.g. "ilc_text_block_Classname" -> "Classname"
+   */
+  getCharacteristicFromClass(cl) {
+    let characteristic;
+    const prefix = 'ilc_text_block_';
+    if (cl.startsWith(prefix)) {
+      characteristic = cl.slice(prefix.length);
+    } else {
+      const cl_arr = cl.split('_');
+      characteristic = cl_arr[cl_arr.length - 1];
+    }
+    return characteristic;
   }
 
   stopEditing() {
@@ -946,9 +972,7 @@ export default class TinyWrapper {
 
   getCharacteristic() {
     const ed = this.tiny;
-    const parts = ed.dom.getRoot().className.split('_');
-    // console.log("---");
-    return parts[parts.length - 1];
+    return this.getCharacteristicFromClass(ed.dom.getRoot().className);
   }
 
   setParagraphClass(i) {
@@ -974,6 +998,7 @@ export default class TinyWrapper {
       t = 'mycode';
     }
     ed.execCommand('mceToggleFormat', false, t);
+    this.getTinyDomTransform().nestMultiClasses(`ilc_text_inline_${t}`);
     ed.focus();
     // ed.selection.collapse(false); // see #33963
     this.autoResize();

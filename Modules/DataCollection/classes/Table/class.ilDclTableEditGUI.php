@@ -28,6 +28,7 @@ class ilDclTableEditGUI
     protected ilGlobalTemplateInterface $tpl;
     protected ilToolbarGUI $toolbar;
     protected ilPropertyFormGUI $form;
+    protected ilHelpGUI $help;
     protected ILIAS\HTTP\Services $http;
     protected ILIAS\Refinery\Factory $refinery;
     protected ilDclTableListGUI $parent_object;
@@ -48,6 +49,7 @@ class ilDclTableEditGUI
         $this->toolbar = $DIC->toolbar();
         $this->parent_object = $a_parent_obj;
         $this->obj_id = $a_parent_obj->getObjId();
+        $this->help = $DIC->help();
         $this->http = $DIC->http();
         $this->refinery = $DIC->refinery();
         $this->ui_factory = $DIC->ui()->factory();
@@ -75,10 +77,9 @@ class ilDclTableEditGUI
     public function executeCommand(): void
     {
         $cmd = $this->ctrl->getCmd();
-
         switch ($cmd) {
             case 'update':
-                $this->save("update");
+                $this->save(false);
                 break;
             default:
                 $this->$cmd();
@@ -88,6 +89,8 @@ class ilDclTableEditGUI
 
     public function create(): void
     {
+        $this->help->setSubScreenId('create');
+
         $this->initForm();
         $this->getStandardValues();
         $this->tpl->setContent($this->form->getHTML());
@@ -95,6 +98,8 @@ class ilDclTableEditGUI
 
     public function edit(): void
     {
+        $this->help->setSubScreenId('edit');
+
         if (!$this->table_id) {
             $this->ctrl->redirectByClass(ilDclFieldEditGUI::class, "listFields");
 
@@ -102,7 +107,7 @@ class ilDclTableEditGUI
         } else {
             $this->table = ilDclCache::getTableCache($this->table_id);
         }
-        $this->initForm("edit");
+        $this->initForm(false);
         $this->getValues();
         $this->tpl->setContent($this->form->getHTML());
     }
@@ -163,10 +168,7 @@ class ilDclTableEditGUI
         $this->ctrl->redirectByClass("ilDclTableListGUI", "listTables");
     }
 
-    /**
-     * initEditCustomForm
-     */
-    public function initForm(string $a_mode = "create"): void
+    public function initForm(bool $create = true): void
     {
         $this->form = new ilPropertyFormGUI();
 
@@ -174,8 +176,7 @@ class ilDclTableEditGUI
         $item->setRequired(true);
         $this->form->addItem($item);
 
-        // Show default order field, direction and tableswitcher only in edit mode, because table id is not yet given and there are no fields to select
-        if ($a_mode != 'create') {
+        if (!$create) {
             $switcher = new ilDclSwitcher($this->toolbar, $this->ui_factory, $this->ctrl, $this->lng);
             $switcher->addTableSwitcherToToolbar(
                 $this->parent_object->getDataCollectionObject()->getTables(),
@@ -264,23 +265,20 @@ class ilDclTableEditGUI
         $item->addSubItem($sitem2);
         $this->form->addItem($item);
 
-        if ($a_mode == "edit") {
-            $this->form->addCommandButton('update', $this->lng->txt('dcl_table_' . $a_mode));
-        } else {
-            $this->form->addCommandButton('save', $this->lng->txt('dcl_table_' . $a_mode));
-        }
-
-        $this->form->addCommandButton('cancel', $this->lng->txt('cancel'));
-        $this->ctrl->setParameter($this, "table_id", $this->table_id);
-        $this->form->setFormAction($this->ctrl->getFormAction($this, $a_mode));
-        if ($a_mode == "edit") {
-            $this->form->setTitle($this->lng->txt('dcl_edit_table'));
-        } else {
+        $this->ctrl->setParameter($this, 'table_id', $this->table_id);
+        if ($create) {
             $this->form->setTitle($this->lng->txt('dcl_new_table'));
+            $this->form->addCommandButton('save', $this->lng->txt('create'));
+            $this->form->setFormAction($this->ctrl->getFormAction($this, 'create'));
+        } else {
+            $this->form->setTitle($this->lng->txt('dcl_edit_table'));
+            $this->form->addCommandButton('update', $this->lng->txt('save'));
+            $this->form->setFormAction($this->ctrl->getFormAction($this, 'update'));
         }
+        $this->form->addCommandButton('cancel', $this->lng->txt('cancel'));
     }
 
-    public function save(string $a_mode = "create"): void
+    public function save(bool $create = true): void
     {
         global $DIC;
         $ilTabs = $DIC['ilTabs'];
@@ -292,10 +290,10 @@ class ilDclTableEditGUI
         }
 
         $ilTabs->activateTab("id_fields");
-        $this->initForm($a_mode);
+        $this->initForm($create);
 
-        if ($this->checkInput($a_mode)) {
-            if ($a_mode != "update") {
+        if ($this->checkInput()) {
+            if ($create) {
                 $this->table = ilDclCache::getTableCache();
             } elseif ($this->table_id) {
                 $this->table = ilDclCache::getTableCache($this->table_id);
@@ -326,15 +324,15 @@ class ilDclTableEditGUI
             $this->table->setDescription($this->form->getInput('description'));
             $this->table->setLimitStart((string) $this->form->getInput("limit_start"));
             $this->table->setLimitEnd((string) $this->form->getInput("limit_end"));
-            if ($a_mode == "update") {
-                $this->table->doUpdate();
-                $this->tpl->setOnScreenMessage('success', $this->lng->txt("dcl_msg_table_edited"), true);
-                $this->ctrl->redirectByClass("ildcltableeditgui", "edit");
-            } else {
+            if ($create) {
                 $this->table->doCreate();
                 $this->tpl->setOnScreenMessage('success', $this->lng->txt("dcl_msg_table_created"), true);
                 $this->ctrl->setParameterByClass("ildclfieldlistgui", "table_id", $this->table->getId());
                 $this->ctrl->redirectByClass("ildclfieldlistgui", "listFields");
+            } else {
+                $this->table->doUpdate();
+                $this->tpl->setOnScreenMessage('success', $this->lng->txt("dcl_msg_table_edited"), true);
+                $this->ctrl->redirectByClass("ildcltableeditgui", "edit");
             }
         } else {
             $this->form->setValuesByPost();
@@ -342,22 +340,17 @@ class ilDclTableEditGUI
         }
     }
 
-    /**
-     * Custom checks for the form input
-     * @param $a_mode 'create' | 'update'
-     */
-    protected function checkInput(string $a_mode): bool
+    protected function checkInput(): bool
     {
         $return = $this->form->checkInput();
 
-        // Title of table must be unique in one DC
-        if ($a_mode == 'create') {
-            if ($title = $this->form->getInput('title')) {
-                if (ilObjDataCollection::_hasTableByTitle($title, $this->obj_id)) {
-                    $inputObj = $this->form->getItemByPostVar('title');
-                    $inputObj->setAlert($this->lng->txt("dcl_table_title_unique"));
-                    $return = false;
-                }
+        $title = $this->form->getInput('title');
+        foreach ($this->parent_object->getDataCollectionObject()->getTables() as $table) {
+            if ($table->getTitle() === $title && $table->getId() !== $this->table->getId()) {
+                $inputObj = $this->form->getItemByPostVar('title');
+                $inputObj->setAlert($this->lng->txt("dcl_table_title_unique"));
+                $return = false;
+                break;
             }
         }
 

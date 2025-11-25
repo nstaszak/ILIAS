@@ -21,17 +21,19 @@ declare(strict_types=1);
 namespace ILIAS\FileDelivery\Delivery\ResponseBuilder;
 
 use Psr\Http\Message\ResponseInterface;
-use ILIAS\FileDelivery\Token\Data\Stream;
 use ILIAS\Filesystem\Stream\FileStream;
 use ILIAS\HTTP\Response\ResponseHeader;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\RequestInterface;
+use ILIAS\Filesystem\Stream\Streams;
 
 /**
  * @author Fabian Schmid <fabian@sr.solutions>
  */
 class PHPResponseBuilder implements ResponseBuilder
 {
+    private bool $send_caching_headers = true;
+
     public function getName(): string
     {
         return 'php';
@@ -43,7 +45,13 @@ class PHPResponseBuilder implements ResponseBuilder
         FileStream $stream,
     ): ResponseInterface {
         $response = $this->buildHeaders($response, $stream);
-        if (isset($request->getServerParams()['HTTP_RANGE'])) {
+        $server_params = $request->getServerParams();
+
+        if ($request->getMethod() === 'HEAD') {
+            return $response->withStatus(200);
+        }
+
+        if (isset($server_params['HTTP_RANGE']) && $this->supportPartial()) {
             return $this->deliverPartial($request, $response, $stream);
         }
         return $this->deliverFull($response, $stream);
@@ -54,24 +62,34 @@ class PHPResponseBuilder implements ResponseBuilder
         FileStream $stream
     ): ResponseInterface {
         $uri = $stream->getMetadata('uri');
-
-        $response = $response->withHeader(ResponseHeader::ACCEPT_RANGES, 'bytes');
-        $response = $response->withHeader(ResponseHeader::CONTENT_LENGTH, $stream->getSize());
-        try {
-            $response = $response->withHeader(
-                ResponseHeader::LAST_MODIFIED,
-                date("D, j M Y H:i:s", filemtime($uri) ?: time()) . " GMT"
-            );
-        } catch (\Throwable) {
+        if ($this->supportPartial()) {
+            $response = $response->withHeader(ResponseHeader::ACCEPT_RANGES, 'bytes');
         }
 
-        return $response->withHeader(ResponseHeader::ETAG, md5($uri));
+        if ($this->send_caching_headers) {
+            $file_modification_time = '';
+            $response = $response->withHeader(ResponseHeader::CONTENT_LENGTH, $stream->getSize());
+            try {
+                $file_modification_time = date("D, j M Y H:i:s", filemtime($uri) ?: time()) . " GMT";
+                $response = $response->withHeader(
+                    ResponseHeader::LAST_MODIFIED,
+                    $file_modification_time
+                );
+            } catch (\Throwable) {
+                $h = 1;
+            }
+
+            return $response->withHeader(ResponseHeader::ETAG, md5($uri . $file_modification_time));
+        }
+
+        return $response;
     }
 
     protected function deliverFull(
         ResponseInterface $response,
         FileStream $stream,
     ): ResponseInterface {
+        $stream->rewind();
         return $response->withBody($stream);
     }
 
@@ -80,52 +98,71 @@ class PHPResponseBuilder implements ResponseBuilder
         ResponseInterface $response,
         FileStream $stream,
     ): ResponseInterface {
-        if (!$this->support_partial) {
+        if (!$this->supportPartial()) {
             return $response;
         }
-        $server_params = $request->getServerParams();
+        $request->getServerParams();
 
-        $byte_offset = 0;
-        $byte_length = $content_length = $stream->getSize();
+        $start = 0;
+        $content_length = $stream->getSize();
+        $end = null;
 
-        if (isset($server_params['HTTP_RANGE']) && preg_match('%bytes=(\d+)-(\d+)?%i', $server['HTTP_RANGE'], $match)) {
-            $byte_offset = (int) $match[1];
+        $range_header = $request->getHeaderLine('Range');
+
+        if ($range_header && preg_match(
+            '%bytes=(\d+)-(\d+)?%i',
+            $range_header,
+            $match
+        )) {
+            $start = (int) $match[1];
             if (isset($match[2])) {
-                $finish_bytes = (int) $match[2];
-                $byte_length = $finish_bytes + 1;
-            } else {
-                $finish_bytes = $content_length - 1;
+                $end = (int) $match[2];
             }
-            $response = $response->withStatus(206, 'Partial Content');
-            $response = $response->withHeader(
-                ResponseHeader::CONTENT_RANGE, "bytes {$byte_offset}-{$finish_bytes}/{$content_length}"
-            );
+            $end ??= $content_length - 1;
         }
 
-        $byte_range = $byte_length - $byte_offset;
+        $response = $response->withStatus(206);
 
-        $response = $response->withHeader(ResponseHeader::CONTENT_LENGTH, $byte_length);
-
-        $buffer_size = 512 * 16;
-        $bite_pool = $byte_range;
-
+        $length = $end - $start + 1;
         $fh = $stream->detach();
 
-        while ($bite_pool > 0) {
-            $chunk_size_requested = min($buffer_size, $bite_pool);
-            $buffer = fread($fh, $chunk_size_requested);
-            $chunk_actual_size = strlen($buffer);
+        // set $buffer_size to 8MB
+        $buffer_size = 8048 * 1000; // 8,048,000 bytes
 
-            if ($chunk_actual_size === 0) {
-                throw new \RuntimeException("Chunksize became 0");
+        $output_length = 0;
+        if ($stream->isSeekable()) {
+            fseek($fh, $start);
+            while (!feof($fh) && $length > 0) {
+                $chunk_size_requested = min($buffer_size, $end - $start);
+                $content = fread($fh, $length);
+                if ($content === false) {
+                    break;
+                }
+                $length -= strlen($content);
+                $response->getBody()->write($content);
+                $output_length = strlen($content);
             }
-
-            $bite_pool -= $chunk_actual_size;
-
-            $response->getBody()->write($buffer);
+        } else {
+            $length = min($length, $buffer_size);
+            $content = stream_get_contents($fh, $length, $start);
+            $output_length = strlen($content);
+            $response = $response->withBody(
+                Streams::ofString($content)
+            );
+            $end = $start + $output_length - 1;
         }
 
-        return $response;
+        $response = $response->withHeader(
+            ResponseHeader::CONTENT_RANGE,
+            "bytes {$start}-{$end}/{$content_length}"
+        );
+
+        return $response->withHeader(ResponseHeader::CONTENT_LENGTH, $output_length);
+    }
+
+    public function supportPartial(): bool
+    {
+        return true;
     }
 
     public function supportStreaming(): bool
@@ -147,4 +184,5 @@ class PHPResponseBuilder implements ResponseBuilder
     {
         return true;
     }
+
 }

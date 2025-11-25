@@ -19,15 +19,13 @@
 declare(strict_types=1);
 
 /**
- * @ilCtrl_Calls ilDclDetailedViewGUI: ilDclDetailedViewDefinitionGUI, ilEditClipboardGUI
+ * @ilCtrl_Calls ilDclDetailedViewGUI: ilDclDetailedViewDefinitionGUI, ilEditClipboardGUI, ilCommentGUI
  */
 class ilDclDetailedViewGUI
 {
     protected \ILIAS\UI\Factory $ui_factory;
     protected \ILIAS\UI\Renderer $renderer;
-    protected ILIAS\Style\Content\Object\ObjectFacade $content_style_domain;
     protected ilObjDataCollectionGUI $dcl_gui_object;
-    protected ilNoteGUI $notes_gui;
     protected ilDclTable $table;
     protected int $tableview_id;
     protected ilDclBaseRecordModel $record_obj;
@@ -43,7 +41,7 @@ class ilDclDetailedViewGUI
     protected ILIAS\HTTP\Services $http;
     protected ILIAS\Refinery\Factory $refinery;
     protected ?int $record_id;
-    protected ilNoteGUI $notesGUI;
+    protected ilCommentGUI $commentGUI;
     protected ilDclBaseFieldModel $currentField;
 
     public function __construct(ilObjDataCollectionGUI $a_dcl_object, int $tableview_id)
@@ -96,11 +94,11 @@ class ilDclDetailedViewGUI
         // Comments
         $repId = $this->dcl_gui_object->getDataCollectionObject()->getId();
         $objId = $this->record_id;
-        $this->notesGUI = new ilNoteGUI($repId, $objId);
-        $this->notesGUI->enablePublicNotes();
-        $this->notesGUI->enablePublicNotesDeletion();
-        $this->ctrl->setParameterByClass(ilNoteGUI::class, "record_id", $this->record_id);
-        $this->ctrl->setParameterByClass(ilNoteGUI::class, "rep_id", $repId);
+        $this->commentGUI = new ilCommentGUI($repId, $objId);
+        $this->commentGUI->enablePublicNotes();
+        $this->commentGUI->enablePublicNotesDeletion();
+        $this->ctrl->setParameterByClass(ilCommentGUI::class, "record_id", $this->record_id);
+        $this->ctrl->setParameterByClass(ilCommentGUI::class, "rep_id", $repId);
 
         $this->tableview_id = $tableview_id;
 
@@ -112,11 +110,6 @@ class ilDclDetailedViewGUI
         if ($this->is_enabled_paging) {
             $this->determineNextPrevRecords();
         }
-        $this->content_style_domain = $DIC->contentStyle()
-                                          ->domain()
-                                          ->styleForRefId(
-                                              $this->dcl_gui_object->getDataCollectionObject()->getRefId()
-                                          );
     }
 
     public function executeCommand(): void
@@ -124,7 +117,7 @@ class ilDclDetailedViewGUI
         $this->ctrl->setParameter($this, 'tableview_id', $this->tableview_id);
 
         if (!$this->checkAccess()) {
-            if ($this->table->getVisibleTableViews($this->dcl_gui_object->getRefId(), true)) {
+            if ($this->table->getVisibleTableViews(0, true)) {
                 $this->offerAlternativeViews();
             } else {
                 $this->main_tpl->setOnScreenMessage('failure', $this->lng->txt('permission_denied'), true);
@@ -133,11 +126,11 @@ class ilDclDetailedViewGUI
             return;
         }
 
-        $cmd = $this->ctrl->getCmd();
+        $cmd = $this->ctrl->getCmd('renderRecord');
         $cmdClass = $this->ctrl->getCmdClass();
         switch (strtolower($cmdClass)) {
-            case 'ilnotegui':
-                $this->notesGUI->executeCommand();
+            case 'ilcommentgui':
+                $this->commentGUI->executeCommand();
                 break;
             default:
                 $this->$cmd();
@@ -157,6 +150,8 @@ class ilDclDetailedViewGUI
     public function renderRecord(bool $editComments = false): void
     {
         global $DIC;
+        $x = $DIC->help();
+        $DIC->help()->setScreenId('dcl_record');
         $ilTabs = $DIC->tabs();
         $tpl = $DIC->ui()->mainTemplate();
         $ilCtrl = $DIC->ctrl();
@@ -171,38 +166,13 @@ class ilDclDetailedViewGUI
 
         // see ilObjDataCollectionGUI->executeCommand about instantiation
         $pageObj = new ilDclDetailedViewDefinitionGUI($this->tableview_id);
-        $pageObj->setStyleId(
-            $this->content_style_domain->getEffectiveStyleId()
-        );
+        $pageObj->setOutputMode($pageObj::PRESENTATION);
 
-        $html = $pageObj->getHTML();
+        $html = $pageObj->showPage();
         $rctpl->addCss("./Services/COPage/css/content.css");
         $rctpl->fillCssFiles();
         $table = ilDclCache::getTableCache($this->record_obj->getTableId());
         foreach ($table->getRecordFields() as $field) {
-            //ILIAS_Ref_Links
-            $pattern = '/\[dcliln field="' . preg_quote($field->getTitle(), "/") . '"\](.*?)\[\/dcliln\]/';
-            if (preg_match($pattern, $html)) {
-                $html = preg_replace(
-                    $pattern,
-                    $this->record_obj->getRecordFieldSingleHTML($field->getId(), $this->setOptions("$1")),
-                    $html
-                );
-            }
-
-            //DataCollection Ref Links
-            $pattern = '/\[dclrefln field="' . preg_quote($field->getTitle(), "/") . '"\](.*?)\[\/dclrefln\]/';
-            if (preg_match($pattern, $html)) {
-                $this->currentField = $field;
-                $html = preg_replace_callback($pattern, [$this, "doReplace"], $html);
-            }
-
-            $pattern = '/\[ext tableOf="' . preg_quote($field->getTitle(), "/") . '" field="(.*?)"\]/';
-            if (preg_match($pattern, $html)) {
-                $this->currentField = $field;
-                $html = preg_replace_callback($pattern, [$this, "doExtReplace"], $html);
-            }
-
             $html = str_ireplace(
                 "[" . $field->getTitle() . "]",
                 $this->record_obj->getRecordFieldSingleHTML($field->getId(), ['tableview_id' => $this->tableview_id]),
@@ -314,9 +284,9 @@ class ilDclDetailedViewGUI
     protected function renderComments(bool $edit = false): string
     {
         if (!$edit) {
-            return $this->notesGUI->getListHTML();
+            return $this->commentGUI->getListHTML();
         } else {
-            return $this->notesGUI->editNoteForm();
+            return $this->commentGUI->addNoteForm();
         }
     }
 
@@ -399,14 +369,14 @@ class ilDclDetailedViewGUI
      */
     private function loadSession(): void
     {
-        // We need the default sorting etc. to dertermine on which position we currently are, thus we instantiate the table gui.
         $list = new ilDclRecordListTableGUI(
             new ilDclRecordListGUI($this->dcl_gui_object, $this->table->getId(), $this->tableview_id),
             "listRecords",
             $this->table,
             $this->tableview_id
         );
-        //we then partially load the records. note that this also fills up session data.
+        $list->initFilter();
+        $list->determineOffsetAndOrder();
         $this->table->getPartialRecords(
             (string) $this->table->getId(),
             $list->getOrderField(),

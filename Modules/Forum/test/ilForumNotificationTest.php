@@ -163,6 +163,7 @@ class ilForumNotificationTest extends TestCase
         $forumId = 970;
         $userId = 530;
         $objUserId = 3627;
+        $interested_in_events = 15;
         $nextId = 3737;
 
         $this->user->expects(self::once())->method('getId')->willReturn($objUserId);
@@ -171,15 +172,16 @@ class ilForumNotificationTest extends TestCase
         $this->database->expects(self::once())->method('manipulateF')->with(
             '
 			INSERT INTO frm_notification
-				(notification_id, user_id, frm_id, admin_force_noti, user_toggle_noti, user_id_noti)
-			VALUES(%s, %s, %s, %s, %s, %s)',
-            ['integer', 'integer', 'integer', 'integer', 'integer', 'integer'],
+				(notification_id, user_id, frm_id, admin_force_noti, user_toggle_noti, interested_events, user_id_noti)
+			VALUES(%s, %s, %s, %s, %s, %s, %s)',
+            ['integer', 'integer', 'integer', 'integer', 'integer', 'integer', 'integer'],
             [
                 $nextId,
                 $userId,
                 $forumId,
                 $adminForce,
                 $userToggle,
+                $interested_in_events,
                 $objUserId
             ]
         );
@@ -189,6 +191,7 @@ class ilForumNotificationTest extends TestCase
         $instance->setForumId($forumId);
         $instance->setAdminForce($adminForce);
         $instance->setUserToggle($userToggle);
+        $instance->setInterestedEvents($interested_in_events);
 
         $instance->insertAdminForce();
     }
@@ -259,14 +262,16 @@ class ilForumNotificationTest extends TestCase
 
     public function testCheckForumsExistsInsert(): void
     {
-        $nodeData = [];
         $userId = 927;
         $refId = 847;
+        $nodeData = [
+            'child' => $refId
+        ];
         $subTree = [['child' => 3719, 'ref_id' => 3738, 'obj_id' => 182]];
         $pathNode = [['child' => $refId, 'type' => 'aa']];
 
-        $this->tree->expects(self::once())->method('getNodePath')->with($subTree[0]['child'], $refId)->willReturn($pathNode);
         $this->tree->expects(self::once())->method('getNodeData')->with($refId)->willReturn($nodeData);
+        $this->tree->expects(self::once())->method('getNodePath')->with($subTree[0]['child'], $refId)->willReturn($pathNode);
         $this->tree->expects(self::once())->method('getSubTree')->with(
             $nodeData,
             true,

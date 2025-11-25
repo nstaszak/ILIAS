@@ -242,12 +242,13 @@ class ilObjTestAccess extends ilObjectAccess implements ilConditionHandling
                 [$user_id, $a_obj_id]
             );
 
+            $points = [];
             while ($row = $ilDB->fetchAssoc($result)) {
                 array_push($points, $row);
             }
             $reached = 0;
             $max = 0;
-            if ($points[0]["pass_scoring"] == 0) {
+            if (isset($points[0]['pass_scoring']) && $points[0]["pass_scoring"] == 0) {
                 $reached = $points[count($points) - 1]["points"];
                 $max = $points[count($points) - 1]["maxpoints"];
                 if (!$max) {
@@ -365,7 +366,7 @@ class ilObjTestAccess extends ilObjectAccess implements ilConditionHandling
         $commands = [
             ["permission" => "write", "cmd" => "questionsTabGateway", "lang_var" => "tst_edit_questions"],
             ["permission" => "write", "cmd" => "ilObjTestSettingsMainGUI::showForm", "lang_var" => "settings"],
-            ["permission" => "read", "cmd" => "testScreen", "lang_var" => "tst_run", "default" => true],
+            ["permission" => "read", "cmd" => "ilTestScreenGUI::testScreen", "lang_var" => "tst_run", "default" => true],
             ["permission" => "tst_statistics", "cmd" => "outEvaluation", "lang_var" => "tst_statistical_evaluation"],
             ["permission" => "read", "cmd" => "userResultsGateway", "lang_var" => "tst_user_results"],
             ["permission" => "write", "cmd" => "testResultsGateway", "lang_var" => "results"],

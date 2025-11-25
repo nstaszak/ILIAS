@@ -21,6 +21,7 @@
  */
 class ilObjGlossary extends ilObject implements ilAdvancedMetaDataSubItems
 {
+    protected \ILIAS\Glossary\Term\TermManager $term_manager;
     protected \ILIAS\Style\Content\DomainService $content_style_domain;
     protected ilGlossaryDefPage $page_object;
     protected array $file_ids = [];
@@ -56,6 +57,7 @@ class ilObjGlossary extends ilObject implements ilAdvancedMetaDataSubItems
         $this->content_style_domain = $DIC
             ->contentStyle()
             ->domain();
+        $this->term_manager = $DIC->glossary()->internal()->domain()->term($this);
     }
 
     public function create(bool $a_upload = false): int
@@ -163,11 +165,11 @@ class ilObjGlossary extends ilObject implements ilAdvancedMetaDataSubItems
         $this->snippet_length = $a_val;
     }
 
-    public function getSnippetLength(): ?int
+    public function getSnippetLength(): int
     {
         return ($this->snippet_length > 0)
             ? $this->snippet_length
-            : null;
+            : 200;
     }
 
     public function setOnline(bool $a_online): void
@@ -706,8 +708,7 @@ class ilObjGlossary extends ilObject implements ilAdvancedMetaDataSubItems
         if (!$this->isVirtual()) {
             $terms = $this->getTermList();
             foreach ($terms as $term) {
-                $term_obj = new ilGlossaryTerm($term["id"]);
-                $term_obj->delete();
+                $this->term_manager->deleteTerm((int) $term["id"]);
             }
         }
 

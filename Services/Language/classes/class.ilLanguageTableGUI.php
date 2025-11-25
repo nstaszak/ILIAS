@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -18,6 +16,8 @@ declare(strict_types=1);
  *
  ********************************************************************
  */
+
+declare(strict_types=1);
 
 include_once "./Services/Table/classes/class.ilTable2GUI.php";
 
@@ -81,14 +81,18 @@ class ilLanguageTableGUI extends ilTable2GUI
     public function getItems(): void
     {
         $languages = $this->folder->getLanguages();
-        $data = array();
+        $data = [];
+        $names = [];
+        $installed = [];
+
         foreach ($languages as $k => $l) {
-            $data[] = array_merge($l, array("key" => $k));
+            $data[] = array_merge($l, ["key" => $k]);
+            $names[] = $l['name'];
+            $installed[] = str_starts_with($l["desc"], 'installed') ? 1 : 2;
         }
 
-        // sort alphabetically but shoe installed languages first
-        $data = ilArrayUtil::stableSortArray($data, "name", "asc", false);
-        $data = ilArrayUtil::stableSortArray($data, "desc", "asc", false);
+        // sort alphabetically but show installed languages first
+        array_multisort($installed, SORT_ASC, $names, SORT_ASC, $data);
 
         $this->setData($data);
     }
@@ -130,13 +134,13 @@ class ilLanguageTableGUI extends ilTable2GUI
         if ($a_set["desc"] !== "not_installed") {
             $this->tpl->setVariable(
                 "LAST_REFRESH",
-                ilDatePresentation::formatDate(new ilDateTime($a_set["last_update"], IL_CAL_DATETIME))
+                ilDatePresentation::formatDate(new ilDateTime($a_set["last_update"], IL_CAL_DATETIME, 'UTC'))
             );
 
             $last_change = ilObjLanguage::_getLastLocalChange($a_set["key"]);
             $this->tpl->setVariable(
                 "LAST_CHANGE",
-                ilDatePresentation::formatDate(new ilDateTime($last_change, IL_CAL_DATETIME))
+                ilDatePresentation::formatDate(new ilDateTime($last_change, IL_CAL_DATETIME, 'UTC'))
             );
         }
 

@@ -182,6 +182,33 @@ class ilSessionMembershipGUI extends ilMembershipGUI
         return $table;
     }
 
+    protected function getParticipantTableTitle(): string
+    {
+        /*
+         * TODO this exact logic is also in ilSessionParticipantsTableGUI and ilMembershipGUI,
+         *  should be centralized.
+         */
+        if ($member_ref = $this->tree->checkForParentType(
+            $this->getParentObject()->getRefId(),
+            'grp'
+        )) {
+            $member_ref_id = $member_ref;
+        } elseif ($member_ref = $this->tree->checkForParentType(
+            $this->getParentObject()->getRefId(),
+            'crs'
+        )) {
+            $member_ref_id = $member_ref;
+        } else {
+            $this->logger->warning('Cannot find parent course or group for ref_id: ' . $this->getParentObject()->getRefId());
+            $member_ref_id = $this->getParentObject()->getRefId();
+        }
+
+        return sprintf(
+            $this->lng->txt('sess_mem_tbl_header'),
+            ilObjectFactory::getInstanceByRefId($member_ref_id)->getTitle(),
+        );
+    }
+
     protected function initSubscriberTable(): ilSubscriberTableGUI
     {
         $subscriber = new ilSubscriberTableGUI($this, $this->getParentObject(), true, false);
@@ -220,8 +247,8 @@ class ilSessionMembershipGUI extends ilMembershipGUI
             }
             $event_part = new ilEventParticipants($this->getParentObject()->getId());
             $event_part->setUserId($part_id);
-            $event_part->setMark(ilUtil::stripSlashes($this->requested_mark[$part_id]));
-            $event_part->setComment(ilUtil::stripSlashes($this->requested_comment[$part_id]));
+            $event_part->setMark(ilUtil::stripSlashes($this->requested_mark[$part_id] ?? ""));
+            $event_part->setComment(ilUtil::stripSlashes($this->requested_comment[$part_id] ?? ""));
             $event_part->setNotificationEnabled((bool) ($this->requested_notification[$part_id] ?? false));
             $event_part->setParticipated($participated);
             $event_part->setRegistered($registered);
@@ -328,6 +355,11 @@ class ilSessionMembershipGUI extends ilMembershipGUI
     protected function getMemberTabName(): string
     {
         return $this->lng->txt($this->getParentObject()->getType() . '_members');
+    }
+
+    protected function getMailButtonLabel(): string
+    {
+        return $this->lng->txt("sess_mail_type");
     }
 
     protected function getMailContextOptions(): array

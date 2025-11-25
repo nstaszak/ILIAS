@@ -113,11 +113,26 @@ class ilAuthModeDetermination
                     //#17731
                     $pattern = str_replace('*', '.*?', $server->getUsernameFilter());
 
-                    if (preg_match('/^' . $pattern . '$/', $a_username)) {
-                        $this->logger->debug('Filter matches for ' . $a_username);
-                        array_unshift($sorted, $auth_key);
-                        continue;
+                    foreach (ilAuthUtils::REGEX_DELIMITERS as $delimiter) {
+                        $this->logger->debug('Trying pattern to match username:' . $pattern . ' => ' . $a_username);
+                        set_error_handler(static function (int $severity, string $message, string $file, int $line): never {
+                            throw new ErrorException($message, $severity, $severity, $file, $line);
+                        });
+
+                        try {
+                            if (preg_match($delimiter . "^" . $pattern . '$' . $delimiter . 'i', $a_username) === 1) {
+                                $this->logger->debug('Filter matches for ' . $a_username);
+                                array_unshift($sorted, $auth_key);
+                                continue 2;
+                            }
+                            break;
+                        } catch (Exception $ex) {
+                            $this->logger->warning('Error occurred in preg_match Ex.: ' . $ex->getMessage());
+                        } finally {
+                            restore_error_handler();
+                        }
                     }
+
                     $this->logger->debug('Filter matches not for ' . $a_username . ' <-> ' . $server->getUsernameFilter());
                 }
             }
@@ -213,8 +228,9 @@ class ilAuthModeDetermination
 
                     default:
                         foreach (ilAuthUtils::getAuthPlugins() as $pl) {
+                            /** @var ilAuthPlugin $pl */
                             if ($pl->isAuthActive((int) $auth_mode)) {
-                                $this->position[] = $auth_mode;
+                                $this->position[] = (int) $auth_mode;
                             }
                         }
                         break;
@@ -241,6 +257,7 @@ class ilAuthModeDetermination
             $this->position[] = ilAuthUtils::AUTH_APACHE;
         }
         // begin-patch auth_plugin
+        /** @var ilAuthPlugin $pl */
         foreach (ilAuthUtils::getAuthPlugins() as $pl) {
             foreach ($pl->getAuthIds() as $auth_id) {
                 if ($pl->isAuthActive($auth_id) && !in_array($auth_id, $this->position, true)) {

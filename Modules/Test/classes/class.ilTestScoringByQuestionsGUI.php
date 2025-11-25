@@ -22,8 +22,8 @@ require_once 'Modules/Test/classes/inc.AssessmentConstants.php';
 
 class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
 {
-    public const EXCEPT_FINALIZED = 1;
-    public const ONLY_FINALIZED = 2;
+    public const EXCEPT_FINALIZED = '1';
+    public const ONLY_FINALIZED = '2';
 
     public function __construct(ilObjTest $a_object)
     {
@@ -71,7 +71,7 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
 
         $qst_id = (int) $table->getFilterItemByPostVar('question')->getValue();
         $passNr = $table->getFilterItemByPostVar('pass')->getValue();
-        $finalized_filter = (int) $table->getFilterItemByPostVar('finalize_evaluation')->getValue();
+        $finalized_filter = $table->getFilterItemByPostVar('finalize_evaluation')->getValue();
         $answered_filter = $table->getFilterItemByPostVar('only_answered')->getChecked();
         $table_data = [];
         $selected_questionData = null;
@@ -86,14 +86,16 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
             $data = $this->object->getCompleteEvaluationData(false);
             $participants = $data->getParticipants();
             $participantData = new ilTestParticipantData($this->db, $this->lng);
-            $participantData->setActiveIdsFilter(array_keys($data->getParticipants()));
+            $participantData->setActiveIdsFilter(array_keys($participants));
             $participantData->setParticipantAccessFilter(
                 $this->participant_access_filter->getScoreParticipantsUserFilter($this->ref_id)
             );
             $participantData->load($this->object->getTestId());
 
+            $test_participant_list = new ilTestParticipantList($this->object, $this->user, $this->lng, $this->db);
+            $test_participant_list->initializeFromDbRows($this->getObject()->getTestParticipants());
             foreach ($participantData->getActiveIds() as $active_id) {
-                $participant = $participants[$active_id];
+                $participant = $test_participant_list->getParticipantByActiveId($active_id);
                 $testResultData = $this->object->getTestResult($active_id, $passNr - 1);
 
                 foreach ($testResultData as $questionData) {
@@ -123,7 +125,8 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
                             $passNr - 1
                         ),
                         'maximum_points' => $this->questioninfo->getMaximumPoints((int) $questionData['qid']),
-                        'name' => $participant->getName()
+                        'name' => $participant ? $test_participant_list->buildFullname($participant) : '',
+                        'login' => $participant ? $participant->getLogin() : ''
                     ] + $feedback;
                 }
             }
@@ -319,7 +322,8 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
                         $maxPointsByQuestionId[$qst_id],
                         $pass,
                         true,
-                        $this->object->areObligationsEnabled()
+                        $this->object->areObligationsEnabled(),
+                        $this->getTestAccess()->getTestId()
                     );
                 }
             }
@@ -343,7 +347,7 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
 
             if ($lastAndHopefullyCurrentQuestionId) {
                 $question = assQuestion::instantiateQuestion($lastAndHopefullyCurrentQuestionId);
-                $qTitle = $question->getTitle();
+                $qTitle = $question->getTitleForHTMLOutput();
             }
 
             $msg = sprintf(
@@ -445,7 +449,7 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
         $participant = $data->getParticipant($active_id);
         $question_gui = $this->object->createQuestionGUI('', $question_id);
         $tmp_tpl = new ilTemplate('tpl.il_as_tst_correct_solution_output.html', true, true, 'Modules/Test');
-        if ($question_gui instanceof assTextQuestionGUI && $this->object->getAutosave()) {
+        if ($this->object->getAutosave()) {
             $aresult_output = $question_gui->getAutoSavedSolutionOutput(
                 $active_id,
                 $pass,
@@ -457,8 +461,10 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
                 true,
                 false
             );
-            $tmp_tpl->setVariable('TEXT_ASOLUTION_OUTPUT', $this->lng->txt('autosavecontent'));
-            $tmp_tpl->setVariable('ASOLUTION_OUTPUT', $aresult_output);
+            if ($aresult_output) {
+                $tmp_tpl->setVariable('TEXT_ASOLUTION_OUTPUT', $this->lng->txt('autosavecontent'));
+                $tmp_tpl->setVariable('ASOLUTION_OUTPUT', $aresult_output);
+            }
         }
         $result_output = $question_gui->getSolutionOutput(
             $active_id,
@@ -471,9 +477,7 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
             true
         );
         $max_points = $question_gui->object->getMaximumPoints();
-
-        $this->appendUserNameToModal($tmp_tpl, $participant);
-        $this->appendQuestionTitleToModal($tmp_tpl, $question_id, $max_points, $question_gui->object->getTitle());
+        $this->appendQuestionTitleToModal($tmp_tpl, $question_id, $max_points, $question_gui->object->getTitleForHTMLOutput());
         $this->appendSolutionAndPointsToModal(
             $tmp_tpl,
             $result_output,
@@ -481,7 +485,6 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
             $max_points
         );
         $this->appendFormToModal($tmp_tpl, $pass, $active_id, $question_id, $max_points);
-        $tmp_tpl->setVariable('TEXT_YOUR_SOLUTION', $this->lng->txt('answers_of') . ' ' . $participant->getName());
         $suggested_solution = assQuestion::_getSuggestedSolutionOutput($question_id);
         if ($this->object->getShowSolutionSuggested() && strlen($suggested_solution) > 0) {
             $tmp_tpl->setVariable('TEXT_SOLUTION_HINT', $this->lng->txt("solution_hint"));
@@ -491,7 +494,7 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
         $tmp_tpl->setVariable('TEXT_SOLUTION_OUTPUT', $this->lng->txt('question'));
         $tmp_tpl->setVariable('TEXT_RECEIVED_POINTS', $this->lng->txt('scoring'));
         $add_title = ' [' . $this->lng->txt('question_id_short') . ': ' . $question_id . ']';
-        $question_title = $this->object->getQuestionTitle($question_gui->object->getTitle());
+        $question_title = $this->object->getQuestionTitle($question_gui->object->getTitleForHTMLOutput());
         $lng = $this->lng->txt('points');
         if ($max_points == 1) {
             $lng = $this->lng->txt('point');
@@ -524,24 +527,6 @@ class ilTestScoringByQuestionsGUI extends ilTestScoringGUI
     public function checkConstraintsBeforeSaving(): void
     {
         $this->saveManScoringByQuestion(true);
-    }
-
-    private function appendUserNameToModal(ilTemplate $tmp_tpl, ilTestEvaluationUserData $participant_data): void
-    {
-        $tmp_tpl->setVariable(
-            'TEXT_YOUR_SOLUTION',
-            $this->lng->txt('answers_of') . ' ' . $participant_data->getName()
-        );
-
-        if (
-            $this->object->getAnonymity() == 1 ||
-            ($this->object->getAnonymity() == 2 && !$this->access->checkAccess('write', '', $this->object->getRefId()))
-        ) {
-            $tmp_tpl->setVariable(
-                'TEXT_YOUR_SOLUTION',
-                $this->lng->txt('answers_of') . ' ' . $this->lng->txt('anonymous')
-            );
-        }
     }
 
     private function appendQuestionTitleToModal(ilTemplate $tmp_tpl, int $question_id, float $max_points, string $title): void

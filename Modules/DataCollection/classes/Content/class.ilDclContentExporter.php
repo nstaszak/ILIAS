@@ -185,24 +185,12 @@ class ilDclContentExporter
             unlink($in_progress_file);
         }
 
-        if (!$data_available) {
-            $this->main_tpl->setOnScreenMessage('info', $this->lng->txt('dcl_no_export_content_available'));
-
+        if (!$data_available || !$fields_available) {
+            $this->main_tpl->setOnScreenMessage('failure', $this->lng->txt('dcl_no_export_data_available'));
             return false;
         }
 
-        if (!$fields_available) {
-            global $ilCtrl;
-            $this->main_tpl->setOnScreenMessage('info', sprintf(
-                $this->lng->txt('dcl_no_export_fields_available'),
-                $ilCtrl->getLinkTargetByClass(
-                    ['ilDclTableListGUI', 'ilDclFieldListGUI'],
-                    'listFields'
-                )
-            ));
-            return false;
-        }
-
+        $this->main_tpl->setOnScreenMessage($this->main_tpl::MESSAGE_TYPE_SUCCESS, $this->lng->txt('exp_file_created'), true);
         if ($send) {
             $adapter->sendToClient($filename);
         } else {

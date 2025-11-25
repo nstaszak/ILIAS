@@ -101,9 +101,7 @@ class ilObjFileImplementationStorage extends ilObjFileImplementationAbstract imp
         } else {
             $revision = $this->resource->getCurrentRevision();
         }
-        $consumer->overrideFileName($revision->getTitle());
-
-        $consumer->run();
+        $consumer->overrideFileName($revision->getTitle())->disableCaching()->run();
     }
 
     public function deleteVersions(?array $a_hist_entry_ids = null): void
@@ -170,10 +168,14 @@ class ilObjFileImplementationStorage extends ilObjFileImplementationAbstract imp
 
     public function getVersion(bool $inclduing_drafts = false): int
     {
-        if ($inclduing_drafts) {
-            return $this->resource->getCurrentRevisionIncludingDraft()->getVersionNumber();
+        try {
+            if ($inclduing_drafts) {
+                return $this->resource->getCurrentRevisionIncludingDraft()->getVersionNumber();
+            }
+            return $this->resource->getCurrentRevision()->getVersionNumber();
+        } catch (Throwable) {
+            return 0;
         }
-        return $this->resource->getCurrentRevision()->getVersionNumber();
     }
 
     public function getMaxVersion(): int

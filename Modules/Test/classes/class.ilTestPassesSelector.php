@@ -71,10 +71,7 @@ class ilTestPassesSelector
     private function loadPasses(): void
     {
         $query = '
-			SELECT DISTINCT tst_pass_result.* FROM tst_pass_result
-			LEFT JOIN tst_test_result
-			ON tst_pass_result.pass = tst_test_result.pass
-			AND tst_pass_result.active_fi = tst_test_result.active_fi
+			SELECT tst_pass_result.* FROM tst_pass_result
 			WHERE tst_pass_result.active_fi = %s
 			ORDER BY tst_pass_result.pass
 		';
@@ -242,17 +239,8 @@ class ilTestPassesSelector
 
     private function isReportingDateReached(): bool
     {
-        $reg = '/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/';
-        $date = $this->test_obj->getReportingDate();
-        $matches = null;
-
-        if (!preg_match($reg, $date, $matches)) {
-            return false;
-        }
-
-        $repTS = mktime((int) $matches[4], (int) $matches[5], (int) $matches[6], (int) $matches[2], (int) $matches[3], (int) $matches[1]);
-
-        return time() >= $repTS;
+        $reporting_date = $this->test_obj->getScoreSettings()->getResultSummarySettings()->getReportingDate();
+        return $reporting_date <= new DateTimeImmutable('now', new DateTimeZone('UTC'));
     }
 
     private function isProcessingTimeReached(int $pass): bool
@@ -278,7 +266,7 @@ class ilTestPassesSelector
         }
 
         $passes = $this->getLazyLoadedPasses();
-        if(! isset($passes[$last_finished_pass])) {
+        if (!isset($passes[$last_finished_pass])) {
             return null;
         }
         return $passes[$last_finished_pass]['tstamp'];

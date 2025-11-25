@@ -251,25 +251,25 @@ class ilTestScoringGUI extends ilTestServiceGUI
         }
 
         foreach ($questionGuiList as $questionId => $questionGui) {
-            $reachedPoints = $reached_points = $this->refinery->kindlyTo()->float()->transform(
-                $form->getItemByPostVar("question__{$questionId}__points")->getValue()
-            );
-            ;
+            $old_points = assQuestion::_getReachedPoints($active_id, $questionId, $pass);
+            $reached_points = $this->refinery->byTrying([
+                $this->refinery->kindlyTo()->float(),
+                $this->refinery->always($old_points)
+            ])->transform($form->getItemByPostVar("question__{$questionId}__points")?->getValue());
 
-            $finalized = (bool) $form->getItemByPostVar("{$questionId}__evaluated")->getchecked();
-
+            $finalized = (bool) $form->getItemByPostVar("{$questionId}__evaluated")?->getChecked();
             // fix #35543: save manual points only if they differ from the existing points
             // this prevents a question being set to "answered" if only feedback is entered
-            $oldPoints = assQuestion::_getReachedPoints($active_id, $questionId, $pass);
-            if ($reachedPoints != $oldPoints) {
+            if ($reached_points !== $old_points) {
                 assQuestion::_setReachedPoints(
                     $active_id,
                     $questionId,
-                    $reachedPoints,
+                    $reached_points,
                     $maxPointsByQuestionId[$questionId],
                     $pass,
                     true,
-                    $this->object->areObligationsEnabled()
+                    $this->object->areObligationsEnabled(),
+                    $this->getTestAccess()->getTestId()
                 );
             }
 
@@ -279,10 +279,10 @@ class ilTestScoringGUI extends ilTestServiceGUI
                 ilObjAdvancedEditing::_getUsedHTMLTagsAsString("assessment")
             );
 
-            $this->object->saveManualFeedback($active_id, (int) $questionId, (int) $pass, $feedback, $finalized, true);
+            $this->object->saveManualFeedback($active_id, (int) $questionId, $pass, $feedback, $finalized, true);
 
             $notificationData[$questionId] = [
-                'points' => $reachedPoints, 'feedback' => $feedback
+                'points' => $reached_points, 'feedback' => $feedback
             ];
         }
 
@@ -313,7 +313,7 @@ class ilTestScoringGUI extends ilTestServiceGUI
 
         $scorer = new ilTestScoring($this->object, $this->db);
         $scorer->setPreserveManualScores(true);
-        $scorer->recalculateSolutions();
+        $scorer->recalculateSolution($active_id, $pass);
 
         if ($this->object->getAnonymity() == 0) {
             $user_name = ilObjUser::_lookupName(ilObjTestAccess::_getParticipantId($active_id));
@@ -374,8 +374,10 @@ class ilTestScoringGUI extends ilTestServiceGUI
         $form->setTitle(sprintf($this->lng->txt('manscoring_results_pass'), $pass + 1));
         $form->setTableWidth('100%');
 
+        $autosave_enabled = $this->object->getAutosave();
+        $show_solutions_enabled = $this->object->getShowSolutionFeedback();
         foreach ($questionGuiList as $questionId => $questionGUI) {
-            $questionHeader = sprintf($this->lng->txt('tst_manscoring_question_section_header'), $questionGUI->object->getTitle());
+            $questionHeader = sprintf($this->lng->txt('tst_manscoring_question_section_header'), $questionGUI->object->getTitleForHTMLOutput());
             $questionSolution = $questionGUI->getSolutionOutput($active_id, $pass, false, false, true, false, false, true);
             $bestSolution = $questionGUI->object->getSuggestedSolutionOutput();
 
@@ -394,31 +396,34 @@ class ilTestScoringGUI extends ilTestServiceGUI
             $cust->setHtml($questionSolution);
             $form->addItem($cust);
 
-            if ($questionGUI instanceof assTextQuestionGUI && $this->object->getAutosave()) {
+            if ($autosave_enabled) {
                 $aresult_output = $questionGUI->getAutoSavedSolutionOutput(
                     $active_id,
                     $pass,
                     false,
                     false,
+                    true,
+                    $show_solutions_enabled,
                     false,
-                    false,
-                    false,
-                    false,
+                    true,
                     false
                 );
-                $cust = new ilCustomInputGUI($this->lng->txt('autosavecontent'));
-                $cust->setHtml($aresult_output);
-                $form->addItem($cust);
+                if ($aresult_output) {
+                    $cust = new ilCustomInputGUI($this->lng->txt('autosavecontent'));
+                    $cust->setHtml($aresult_output);
+                    $form->addItem($cust);
+                }
             }
 
-            $text = new ilTextInputGUI($this->lng->txt('tst_change_points_for_question'), "question__{$questionId}__points");
+            $number_input_gui = new \ilNumberInputGUI($this->lng->txt('tst_change_points_for_question'), "question__{$questionId}__points");
+            $number_input_gui->allowDecimals(true);
             if ($initValues) {
-                $text->setValue((string) assQuestion::_getReachedPoints($active_id, $questionId, $pass));
+                $number_input_gui->setValue((string) \assQuestion::_getReachedPoints($active_id, $questionId, $pass));
             }
             if ($disabled) {
-                $text->setDisabled($disabled);
+                $number_input_gui->setDisabled($disabled);
             }
-            $form->addItem($text);
+            $form->addItem($number_input_gui);
 
             $nonedit = new ilNonEditableValueGUI($this->lng->txt('tst_manscoring_input_max_points_for_question'), "question__{$questionId}__maxpoints");
             if ($initValues) {

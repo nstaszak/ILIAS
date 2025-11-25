@@ -587,7 +587,7 @@ class ilContainerRenderer
                 if (isset($this->block_items[$a_block_id])) {
                     foreach ($this->block_items[$a_block_id] as $item_id) {
                         if ($view_mode === ilContainerContentGUI::VIEW_MODE_LIST) {
-                            $this->addStandardRow($a_block_tpl, $this->items[$item_id]["html"], (int) $item_id);
+                            $this->addStandardRow($a_block_tpl, $this->items[$item_id]["html"], $item_id);
                         } else {
                             $cards[] = $this->items[$item_id]["html"];
                         }
@@ -738,8 +738,10 @@ class ilContainerRenderer
         }
 
         if ($a_order_id !== "") {
+            /* blocks are ordered in page editor
             $a_tpl->setVariable("BLOCK_HEADER_ORDER_NAME", "position[blocks][" . $a_order_id . "]");
             $a_tpl->setVariable("BLOCK_HEADER_ORDER_NUM", (++$this->order_cnt) * 10);
+            */
         }
 
         $presentation_title = $title;
@@ -757,11 +759,11 @@ class ilContainerRenderer
     protected function addStandardRow(
         ilTemplate $a_tpl,
         string $a_html,
-        int $a_ref_id = 0
+        string $a_item_id = null
     ): void {
-        if ($a_ref_id > 0) {
+        if ($a_item_id) {
             $a_tpl->setCurrentBlock("row");
-            $a_tpl->setVariable("ROW_ID", 'id="item_row_' . $a_ref_id . '"');
+            $a_tpl->setVariable("ROW_ID", 'id="item_row_' . $a_item_id . '"');
             $a_tpl->parseCurrentBlock();
         } else {
             $a_tpl->touchBlock("row");
@@ -851,7 +853,7 @@ class ilContainerRenderer
         $block_tpl = $this->initBlockTemplate();
 
         $preloader = new ilObjectListGUIPreloader(ilObjectListGUI::CONTEXT_REPOSITORY);
-        foreach($this->item_presentation->getAllRefIds() as $ref_id) {
+        foreach ($this->item_presentation->getAllRefIds() as $ref_id) {
             $rd = $this->item_presentation->getRawDataByRefId($ref_id);
             $preloader->addItem($rd["obj_id"], $rd["type"], $ref_id);
             if ($rd["type"] === "sess") {
@@ -920,9 +922,14 @@ class ilContainerRenderer
                 }
 
                 $item_data = $this->item_presentation->getRawDataByRefId($ref_id);
+                if ($item_data === null) {
+                    continue;
+                }
                 $checkbox = \ILIAS\Containter\Content\ItemRenderer::CHECKBOX_NONE;
                 if ($this->container_gui->isActiveAdministrationPanel()) {
                     $checkbox = \ILIAS\Containter\Content\ItemRenderer::CHECKBOX_ADMIN;
+                } elseif ($this->container_gui->isMultiDownloadEnabled()) {
+                    $checkbox = \ILIAS\Containter\Content\ItemRenderer::CHECKBOX_DOWNLOAD;
                 }
                 $item_group_list_presentation = "";
                 if ($block->getBlock() instanceof \ILIAS\Container\Content\ItemGroupBlock) {
@@ -944,7 +951,7 @@ class ilContainerRenderer
                     $pos_prefix,
                     $item_group_list_presentation,
                     $checkbox,
-                    $this->item_presentation->isActiveItemOrdering(),
+                    $this->item_presentation->isActiveItemOrdering($item_data["type"]),
                     $this->getDetailsLevel($item_data["obj_id"])
                 );
                 if ($html != "") {

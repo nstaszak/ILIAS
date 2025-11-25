@@ -706,13 +706,13 @@ class ilInitialisation
      */
     protected static function setCookieConstants(): void
     {
-        if (ilAuthFactory::getContext() == ilAuthFactory::CONTEXT_HTTP) {
+        if (\ilAuthFactory::getContext() === \ilAuthFactory::CONTEXT_HTTP) {
             $cookie_path = '/';
         } elseif (isset($GLOBALS['COOKIE_PATH'])) {
             // use a predefined cookie path from WebAccessChecker
             $cookie_path = $GLOBALS['COOKIE_PATH'];
         } else {
-            $cookie_path = dirname($_SERVER['PHP_SELF']);
+            $cookie_path = dirname($_SERVER['SCRIPT_NAME']);
         }
 
         /* if ilias is called directly within the docroot $cookie_path
@@ -1525,7 +1525,8 @@ class ilInitialisation
             self::goToLogin();
             return;
         }
-        if (ilPublicSectionSettings::getInstance()->isEnabledForDomain($_SERVER['SERVER_NAME'])) {
+        if (ilPublicSectionSettings::getInstance()->isEnabledForDomain($_SERVER['SERVER_NAME']) &&
+            $DIC->access()->checkAccessOfUser(ANONYMOUS_USER_ID, 'read', '', ROOT_FOLDER_ID)) {
             ilLoggerFactory::getLogger('init')->debug('Redirect to public section.');
             self::goToPublicSection();
             return;
@@ -1604,6 +1605,10 @@ class ilInitialisation
      */
     protected static function replaceSuperGlobals(\ILIAS\DI\Container $container): void
     {
+        if (!ilContext::initClient()) {
+            return;
+        }
+
         /** @var ilIniFile $client_ini */
         $client_ini = $container['ilClientIniFile'];
 

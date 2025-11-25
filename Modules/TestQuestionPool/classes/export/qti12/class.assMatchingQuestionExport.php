@@ -72,7 +72,7 @@ class assMatchingQuestionExport extends assQuestionExport
 
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "shuffle");
-        $a_xml_writer->xmlElement("fieldentry", null, $this->object->getShuffle());
+        $a_xml_writer->xmlElement("fieldentry", null, $this->object->getShuffleMode());
         $a_xml_writer->xmlEndTag("qtimetadatafield");
         $a_xml_writer->xmlStartTag("qtimetadatafield");
         $a_xml_writer->xmlElement("fieldlabel", null, "thumb_geometry");
@@ -100,10 +100,7 @@ class assMatchingQuestionExport extends assQuestionExport
             "rcardinality" => "Multiple"
         ];
         $a_xml_writer->xmlStartTag("response_grp", $attrs);
-        $solution = $this->object->getSuggestedSolution(0);
-        if ($solution !== null) {
-            $a_xml_writer = $this->addSuggestedSolutionLink($a_xml_writer, $solution);
-        }
+        $a_xml_writer = $this->addSuggestedSolution($a_xml_writer);
         // shuffle output
         $attrs = [];
         if ($this->object->getShuffle()) {

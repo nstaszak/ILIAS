@@ -620,7 +620,7 @@ class ilTestSequence implements ilTestQuestionSequence, ilTestSequenceSummaryPro
 
                 $row = [
                     "nr" => "$key",
-                    "title" => $question->getTitle(),
+                    "title" => $question->getTitleForHTMLOutput(),
                     "qid" => $question->getId(),
                     "presented" => $this->isQuestionPresented($question->getId()),
                     "visited" => $worked_through,
@@ -631,7 +631,9 @@ class ilTestSequence implements ilTestQuestionSequence, ilTestSequenceSummaryPro
                     "postponed" => $is_postponed,
                     "sequence" => $sequence,
                     "obligatory" => ilObjTest::isQuestionObligatory($question->getId()),
-                    'isAnswered' => $question->isAnswered($this->active_id, $this->pass)
+                    'isAnswered' => $question->isAnswered($this->active_id, $this->pass),
+                    'has_authorized_answer' => $question->authorizedSolutionExists($this->active_id, $this->pass)
+
                 ];
 
                 if (!$obligationsFilterEnabled || $row['obligatory']) {

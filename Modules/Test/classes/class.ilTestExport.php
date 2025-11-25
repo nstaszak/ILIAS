@@ -18,6 +18,8 @@
 
 declare(strict_types=1);
 
+use ILIAS\ResourceStorage\Services as ResourceStorage;
+
 require_once './Modules/Test/classes/inc.AssessmentConstants.php';
 
 /**
@@ -52,6 +54,9 @@ abstract class ilTestExport
     protected ILIAS $ilias;
 
     protected string $inst_id;
+    private ResourceStorage $irss;
+
+    private ilObjUser $user;
 
     public function __construct(
         public ilObjTest $test_obj,
@@ -63,6 +68,8 @@ abstract class ilTestExport
         $this->db = $DIC['ilDB'];
         $this->lng = $DIC['lng'];
         $this->bench = $DIC['ilBench'];
+        $this->irss = $DIC['resource_storage'];
+        $this->user = $DIC['ilUser'];
 
         $this->inst_id = (string) IL_INST_ID;
 
@@ -243,7 +250,14 @@ abstract class ilTestExport
         $this->bench->stop("TestExport", "buildExportFile_dumpToFile");
 
         if ($this->isResultExportingEnabledForTestExport()) {
-            $resultwriter = new ilTestResultsToXML($this->test_obj->getTestId(), $this->db, $this->test_obj->getAnonymity());
+            $resultwriter = new ilTestResultsToXML(
+                $this->test_obj,
+                $this->db,
+                $this->irss,
+                $this->user,
+                $this->lng,
+                "{$this->export_dir}/{$this->subdir}/objects"
+            );
             $resultwriter->setIncludeRandomTestQuestionsEnabled($this->test_obj->isRandomTest());
             $this->bench->start("TestExport", "buildExportFile_results");
             $resultwriter->xmlDumpFile($this->export_dir . "/" . $this->subdir . "/" . $this->resultsfile, false);
@@ -305,16 +319,6 @@ abstract class ilTestExport
     public function exportXHTMLMediaObjects($a_export_dir): void
     {
         $mobs = ilObjMediaObject::_getMobsOfObject("tst:html", $this->test_obj->getId());
-
-        $intro_page_id = $this->test_obj->getMainSettings()->getIntroductionSettings()->getIntroductionPageId();
-        if ($intro_page_id !== null) {
-            $mobs += ilObjMediaObject::_getMobsOfObject("tst:pg", $intro_page_id);
-        }
-
-        $concluding_remarks_page_id = $this->test_obj->getMainSettings()->getFinishingSettings()->getConcludingRemarksPageId();
-        if ($concluding_remarks_page_id !== null) {
-            $mobs += ilObjMediaObject::_getMobsOfObject("tst:pg", $concluding_remarks_page_id);
-        }
 
         foreach ($mobs as $mob) {
             if (ilObjMediaObject::_exists($mob)) {

@@ -978,13 +978,23 @@ s     */
         foreach ($lang_vars as $lang_var) {
             $xml .= $this->getLangVarXML($lang_var);
         }
+        foreach ($this->pc_service->plugged()->getPluginLangVars() as $k => $v) {
+            $xml .= $this->getLangVarXMLForValue($k, $v);
+        }
         $xml .= "</LVs>";
         return $xml;
     }
 
     protected function getLangVarXML(string $var): string
     {
-        $val = $this->lng->txt("cont_" . $var);
+        return $this->getLangVarXMLForValue(
+            $var,
+            $this->lng->txt("cont_" . $var)
+        );
+    }
+
+    protected function getLangVarXMLForValue(string $var, string $val): string
+    {
         $val = str_replace('"', "&quot;", $val);
         return "<LV name=\"$var\" value=\"" . $val . "\"/>";
     }
@@ -3013,7 +3023,7 @@ s     */
         $config = $this->getPageConfig();
         foreach ($this->pc_definition->getPCDefinitions() as $def) {
             $model_provider = $this->pc_definition->getPCModelProviderByName($def["name"]);
-            if ($config->getEnablePCType($def["name"])) {
+            if ($config->getEnablePCType($def["name"]) || $def["name"] === "PlaceHolder") {
                 if (!is_null($model_provider)) {
                     foreach ($model_provider->getModels(
                         $this->dom_util,

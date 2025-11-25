@@ -89,6 +89,10 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
      */
     protected function getEditAnswersSingleLine($checkonly = false): bool
     {
+        if ($this->object->getSelfAssessmentEditingMode()) {
+            return $this->object->isSingleline();
+        }
+
         if ($checkonly) {
             $types = $_POST['types'] ?? '0';
             return $types === '0' ? true : false;
@@ -132,7 +136,7 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
             $form->getItemByPostVar('selection_limit')->setMaxValue(count((array) $_POST['choice']['answer']));
 
             $form->setValuesByPost();
-            $errors = !$form->checkInput();
+            $errors = !$this->checkMaxPointsNotNegative($form) || !$form->checkInput();
             if ($errors) {
                 $checkonly = false;
             }
@@ -142,6 +146,28 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
             $this->tpl->setVariable("QUESTION_DATA", $form->getHTML());
         }
         return $errors;
+    }
+
+    private function checkMaxPointsNotNegative(ilPropertyFormGUI $form): bool
+    {
+        $choice = $form->getItemByPostVar('choice');
+        if (!$choice instanceof ilMultipleChoiceWizardInputGUI) {
+            return true;
+        }
+
+        $answers = $choice->getValues();
+        $total_max_points = 0;
+        /** @var ASS_AnswerMultipleResponseImage $answer */
+        foreach ($answers as $answer) {
+            $total_max_points += max($answer->getPointsChecked(), $answer->getPointsUnchecked());
+        }
+
+        if ($total_max_points < 0) {
+            $choice->setAlert($this->lng->txt('total_max_points_cannot_be_negative'));
+            return false;
+        }
+
+        return true;
     }
 
     public function addBasicQuestionFormProperties(ilPropertyFormGUI $form): void
@@ -215,43 +241,69 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
         $show_correct_solution = false,
         $show_manual_scoring = false,
         $show_question_text = true,
-        $show_inline_feedback = true
+        bool $show_inline_feedback = true
     ): string {
-        // shuffle output
-        $keys = $this->getChoiceKeys();
-
-
-        // get the solution of the user for the active pass or from the last pass if allowed
-        $user_solution = [];
-        if (($active_id > 0) && (!$show_correct_solution)) {
-            $solutions = $this->object->getSolutionValues($active_id, $pass);
-            foreach ($solutions as $idx => $solution_value) {
-                array_push($user_solution, $solution_value["value1"]);
-            }
+        if ($active_id > 0 && !$show_correct_solution) {
+            $user_solution = $this->object->getSolutionValues($active_id, $pass);
         } else {
-            // take the correct solution instead of the user solution
+            $user_solution = [];
             foreach ($this->object->answers as $index => $answer) {
                 $points_checked = $answer->getPointsChecked();
                 $points_unchecked = $answer->getPointsUnchecked();
-                if ($points_checked > $points_unchecked) {
-                    if ($points_checked > 0) {
-                        array_push($user_solution, $index);
-                    }
+                if ($points_checked > $points_unchecked && $points_checked > 0) {
+                    $user_solution[] = ['value1' => $index];
                 }
             }
         }
 
+        return $this->renderSolutionOutput(
+            $user_solution,
+            $active_id,
+            $pass,
+            $graphicalOutput,
+            $result_output,
+            $show_question_only,
+            $show_feedback,
+            $show_correct_solution,
+            $show_manual_scoring,
+            $show_question_text,
+            false,
+            $show_inline_feedback,
+        );
+    }
+
+    public function renderSolutionOutput(
+        mixed $user_solutions,
+        int $active_id,
+        ?int $pass,
+        bool $graphical_output = false,
+        bool $result_output = false,
+        bool $show_question_only = true,
+        bool $show_feedback = false,
+        bool $show_correct_solution = false,
+        bool $show_manual_scoring = false,
+        bool $show_question_text = true,
+        bool $show_autosave_title = false,
+        bool $show_inline_feedback = false,
+    ): ?string {
+        $user_solution = [];
+
+        foreach ($user_solutions as $idx => $solution_value) {
+            array_push($user_solution, $solution_value['value1']);
+        }
+
+        $keys = $this->getChoiceKeys();
         $template = new ilTemplate("tpl.il_as_qpl_mc_mr_output_solution.html", true, true, "Modules/TestQuestionPool");
         $solutiontemplate = new ilTemplate("tpl.il_as_tst_solution_output.html", true, true, "Modules/TestQuestionPool");
         foreach ($keys as $answer_id) {
             $answer = $this->object->answers[$answer_id];
             if (($active_id > 0) && (!$show_correct_solution)) {
-                if ($graphicalOutput) {
+                if ($graphical_output) {
                     // output of ok/not ok icons for user entered solutions
                     $ok = false;
                     $checked = false;
                     foreach ($user_solution as $mc_solution) {
-                        if (strcmp($mc_solution, $answer_id) == 0) {
+                        if ((string) $mc_solution === (string) $answer_id) {
                             $checked = true;
                         }
                     }
@@ -295,7 +347,7 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
             if (($show_feedback || !$this->isTestPresentationContext()) && $show_inline_feedback) {
                 if ($this->object->getSpecificFeedbackSetting() == 2) {
                     foreach ($user_solution as $mc_solution) {
-                        if (strcmp($mc_solution, $answer_id) == 0) {
+                        if ((string) $mc_solution === (string) $answer_id) {
                             $fb = $this->object->feedbackOBJ->getSpecificAnswerFeedbackTestPresentation(
                                 $this->object->getId(),
                                 0,
@@ -355,7 +407,7 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
                 $template->setVariable("RESULT_OUTPUT", sprintf("(" . $this->lng->txt("checkbox_checked") . " = $resulttextchecked, " . $this->lng->txt("checkbox_unchecked") . " = $resulttextunchecked)", $pointschecked, $pointsunchecked));
             }
             foreach ($user_solution as $mc_solution) {
-                if (strcmp($mc_solution, $answer_id) == 0) {
+                if ((string) $mc_solution === (string) $answer_id) {
                     if ($this->renderPurposeSupportsFormHtml() || $this->isRenderPurposePrintPdf()) {
                         $template->setVariable("SOLUTION_IMAGE", ilUtil::getHtmlPath(ilUtil::getImagePath("object/checkbox_checked.png")));
                         $template->setVariable("SOLUTION_ALT", $this->lng->txt("checked"));
@@ -461,7 +513,7 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
             $template->setVariable("ANSWER_ID", $answer_id);
             $template->setVariable("ANSWER_TEXT", ilLegacyFormElementsUtil::prepareTextareaOutput($answer->getAnswertext(), true));
             foreach ($user_solution as $mc_solution) {
-                if (strcmp($mc_solution, $answer_id) == 0) {
+                if ((string) $mc_solution === (string) $answer_id) {
                     $template->setVariable("CHECKED_ANSWER", " checked=\"checked\"");
                 }
             }
@@ -520,12 +572,12 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
             // hey.
             foreach ($solutions as $idx => $solution_value) {
                 // fau: testNav - don't add the dummy entry for 'none of the above' to the user options
-                if ($solution_value["value1"] == 'mc_none_above') {
+                if ($solution_value['value1'] == 'mc_none_above') {
                     $this->setUseEmptySolutionInputChecked(true);
                     continue;
                 }
 
-                $user_solution[] = $solution_value["value1"];
+                $user_solution[] = $solution_value['value1'];
                 // fau.
             }
 
@@ -581,7 +633,7 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
             $template->setVariable("ANSWER_ID", $answer_id);
             $template->setVariable("ANSWER_TEXT", ilLegacyFormElementsUtil::prepareTextareaOutput($answer->getAnswertext(), true));
             foreach ($user_solution as $mc_solution) {
-                if (strcmp($mc_solution, $answer_id) == 0) {
+                if ((string) $mc_solution === (string) $answer_id) {
                     $template->setVariable("CHECKED_ANSWER", " checked=\"checked\"");
                 }
             }
@@ -797,9 +849,10 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
 
         if ($is_singleline) {
             // thumb size
-            $thumb_size = new ilNumberInputGUI($this->lng->txt("thumb_size"), "thumb_size");
-            $thumb_size->setSuffix($this->lng->txt("thumb_size_unit_pixel"));
+            $thumb_size = new ilNumberInputGUI($this->lng->txt('thumb_size'), "thumb_size");
+            $thumb_size->setSuffix($this->lng->txt('thumb_size_unit_pixel'));
             $thumb_size->setMinValue($this->object->getMinimumThumbSize());
+            $thumb_size->setMaxValue($this->object->getMaximumThumbSize());
             $thumb_size->setDecimals(0);
             $thumb_size->setSize(6);
             $thumb_size->setInfo($this->lng->txt('thumb_size_info'));
@@ -824,7 +877,6 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
         if ($this->object->getSelfAssessmentEditingMode()) {
             $choices->setSize(40);
         }
-        $choices->setMaxLength(800);
         if ($this->object->getAnswerCount() == 0) {
             $this->object->addAnswer("", 0, 0, 0);
         }
@@ -932,7 +984,7 @@ class assMultipleChoiceGUI extends assQuestionGUI implements ilGuiQuestionScorin
     {
         if ($this->object->getSpecificFeedbackSetting() == 2) {
             foreach ($user_solution as $mc_solution) {
-                if (strcmp($mc_solution, $answer_id) == 0) {
+                if ((string) $mc_solution === (string) $answer_id) {
                     $fb = $this->object->feedbackOBJ->getSpecificAnswerFeedbackTestPresentation($this->object->getId(), 0, $answer_id);
                     if (strlen($fb)) {
                         $template->setCurrentBlock("feedback");

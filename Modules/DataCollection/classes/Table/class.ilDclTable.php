@@ -18,6 +18,10 @@
 
 declare(strict_types=1);
 
+
+use ILIAS\Modules\DataCollection\Fields\Formula\FormulaParser\Math\Functions;
+use ILIAS\Modules\DataCollection\Fields\Formula\FormulaParser\Math\Operators;
+
 class ilDclTable
 {
     protected int $id = 0;
@@ -146,16 +150,6 @@ class ilDclTable
             $field->doDelete();
         }
 
-        //		// SW: Fix #12794 und #11405
-        //		// Problem is that when the DC object gets deleted, $this::getCollectionObject() tries to load the DC but it's not in the DB anymore
-        //		// If $delete_main_table is true, avoid getting the collection object
-        //		$exec_delete = false;
-        //		if ($delete_main_table) {
-        //			$exec_delete = true;
-        //		}
-        //		if (!$exec_delete && $this->getCollectionObject()->getFirstVisibleTableId() != $this->getId()) {
-        //			$exec_delete = true;
-        //		}
         if (!$delete_only_content) {
             $query = "DELETE FROM il_dcl_table WHERE id = " . $this->db->quote($this->getId(), "integer");
             $this->db->manipulate($query);
@@ -355,9 +349,6 @@ class ilDclTable
         return $field;
     }
 
-    /**
-     * @return int[]
-     */
     public function getFieldIds(): array
     {
         $field_ids = [];
@@ -489,12 +480,11 @@ class ilDclTable
     }
 
     /**
-     * For current user
      * @return ilDclTableView[]
      */
-    public function getVisibleTableViews(int $ref_id, bool $with_active_detailedview = false, int $user_id = 0): array
+    public function getVisibleTableViews(int $user_id = 0, bool $with_active_detailedview = false): array
     {
-        if (ilObjDataCollectionAccess::hasWriteAccess($ref_id, $user_id) && !$with_active_detailedview) {
+        if (ilObjDataCollectionAccess::hasWriteAccess($this->getCollectionObject()->getRefId(), $user_id) && !$with_active_detailedview) {
             return $this->getTableViews();
         }
 
@@ -510,16 +500,12 @@ class ilDclTable
         return $visible_views;
     }
 
-    /**
-     * get id of first (for current user) available view
-     */
-    public function getFirstTableViewId(int $ref_id, int $user_id = 0, bool $with_detailed_view = false): ?int
+    public function getFirstTableViewId(int $user_id = 0, bool $with_detailed_view = false): ?int
     {
-        $uid = $user_id;
-        $array = $this->getVisibleTableViews($ref_id, $with_detailed_view, $uid);
+        $array = $this->getVisibleTableViews($user_id, $with_detailed_view);
         $tableview = array_shift($array);
 
-        return $tableview ? $tableview->getId() : null;
+        return $tableview?->getId();
     }
 
     /**
@@ -528,23 +514,18 @@ class ilDclTable
      */
     public function getFieldsForFormula(): array
     {
-        $unsupported = [
-            ilDclDatatype::INPUTFORMAT_ILIAS_REF,
-            ilDclDatatype::INPUTFORMAT_FORMULA,
-            ilDclDatatype::INPUTFORMAT_MOB,
-            ilDclDatatype::INPUTFORMAT_REFERENCELIST,
-            ilDclDatatype::INPUTFORMAT_REFERENCE,
-            ilDclDatatype::INPUTFORMAT_FILEUPLOAD,
-            ilDclDatatype::INPUTFORMAT_RATING,
-        ];
-
-        $this->loadCustomFields();
-        $return = $this->getStandardFields();
-        /**
-         * @var $field ilDclBaseFieldModel
-         */
-        foreach ($this->fields as $field) {
-            if (!in_array($field->getDatatypeId(), $unsupported)) {
+        $syntax_chars = array_merge(
+            array_map(static fn(Operators $function): string => $function->value, Operators::cases()),
+            array_map(static fn(Functions $function): string => $function->value, Functions::cases()),
+            ['(', ')', ',']
+        );
+        foreach ($this->getFields() as $field) {
+            if (in_array($field->getDatatypeId(), ilDclFormulaFieldModel::SUPPORTED_FIELDS)) {
+                foreach ($syntax_chars as $element) {
+                    if (str_contains($field->getTitle(), $element)) {
+                        continue 2;
+                    }
+                }
                 $return[] = $field;
             }
         }
@@ -1308,6 +1289,16 @@ class ilDclTable
 
         if ($sort_query_object != null) {
             $total_record_ids = $sort_query_object->applyCustomSorting($sort_field, $total_record_ids, $direction);
+        }
+
+        if ($sort === 'n_comments') {
+            global $DIC;
+            $comments_nr = [];
+            foreach ($total_record_ids as $id) {
+                $comments_nr[$id] = $DIC->notes()->domain()->getNrOfCommentsForContext($DIC->notes()->data()->context($this->getObjId(), $id, 'dcl'));
+            }
+            uasort($comments_nr, static fn($a, $b) => ($direction === 'asc' ? 1 : -1) * ($a <=> $b));
+            $total_record_ids = array_keys($comments_nr);
         }
 
         // Now slice the array to load only the needed records in memory

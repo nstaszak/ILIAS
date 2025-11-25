@@ -18,6 +18,9 @@
 
 use ILIAS\News\StandardGUIRequest;
 use ILIAS\Repository\Filter\FilterAdapterGUI;
+use ILIAS\News\InternalDomainService;
+use ILIAS\News\Dashboard\DashboardNewsManager;
+use ILIAS\News\InternalGUIService;
 
 /**
  * News on PD
@@ -27,9 +30,10 @@ use ILIAS\Repository\Filter\FilterAdapterGUI;
  */
 class ilPDNewsGUI
 {
-    protected \ILIAS\News\Dashboard\DashboardNewsManager $dash_news_manager;
+    protected InternalDomainService $domain;
+    protected DashboardNewsManager $dash_news_manager;
     protected \ILIAS\News\Dashboard\DashboardSessionRepository $dash_news_repo;
-    protected \ILIAS\News\InternalGUIService $gui;
+    protected InternalGUIService $gui;
     protected ilGlobalTemplateInterface $tpl;
     protected ilLanguage $lng;
     protected ilCtrl $ctrl;
@@ -68,6 +72,9 @@ class ilPDNewsGUI
         $this->gui = $DIC->news()
             ->internal()
             ->gui();
+        $this->domain = $DIC->news()
+            ->internal()
+            ->domain();
         $this->dash_news_repo = $DIC->news()
             ->internal()
             ->repo()
@@ -82,13 +89,17 @@ class ilPDNewsGUI
     {
         $next_class = $this->ctrl->getNextClass();
 
-        switch ($next_class) {
-            case "ilnewstimelinegui":
+        if (!$this->domain->settings()->get("block_activated_news")) {
+            return false;
+        }
+
+        switch (strtolower($next_class)) {
+            case strtolower(ilNewsTimelineGUI::class):
                 $t = $this->gui->dashboard()->getTimelineGUI();
                 $this->ctrl->forwardCommand($t);
                 break;
 
-            case "ilcommonactiondispatchergui":
+            case strtolower(ilCommonActionDispatcherGUI::class):
                 $gui = ilCommonActionDispatcherGUI::getInstanceFromAjaxCall();
                 $this->ctrl->forwardCommand($gui);
                 break;

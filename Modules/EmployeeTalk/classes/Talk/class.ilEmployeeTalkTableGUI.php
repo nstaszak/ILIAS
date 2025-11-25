@@ -58,7 +58,6 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
         parent::__construct($a_parent_obj, $a_parent_cmd, '');
         $this->setRowTemplate('tpl.list_employee_talk_row.html', "Modules/EmployeeTalk");
         $this->setFormAction($DIC->ctrl()->getFormAction($a_parent_obj));
-        ;
         $this->setDefaultOrderDirection('desc');
 
         $this->setShowRowsSelector(true);
@@ -67,13 +66,9 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
         $this->setEnableTitle(true);
         $this->setDisableFilterHiding(true);
         $this->setEnableNumInfo(true);
-        $this->setExternalSegmentation(true);
 
         $this->addColumns();
-
         $this->initFilter();
-        $this->determineLimit();
-        $this->determineOffsetAndOrder();
     }
 
     public function initFilter(): void
@@ -198,16 +193,14 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
 
     public function setTalkData(array $talks): void
     {
-        $filter = $this->getCurrentState()['filter_values'];
-
         $data = [];
         foreach ($talks as $val) {
             if (!ilObject::_hasUntrashedReference($val->getObjectId())) {
                 continue;
             }
 
-            if ($filter['etal_employee'] !== "") {
-                $filterUser = ilObjUser::getUserIdByLogin($filter['etal_employee']);
+            if (trim($employee_filter = $this->getFilterValueByPostVar('etal_employee')) !== "") {
+                $filterUser = ilObjUser::getUserIdByLogin(trim($employee_filter));
                 if ($val->getEmployee() !== $filterUser) {
                     continue;
                 }
@@ -226,29 +219,32 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
                 $employeeName = ilObjUser::_lookupLogin($talkData->getEmployee());
             }
 
-            if ($filter['etal_superior'] !== "") {
-                $filterUser = ilObjUser::getUserIdByLogin($filter['etal_superior']);
+            if (trim($superior_filter = $this->getFilterValueByPostVar('etal_superior')) !== "") {
+                $filterUser = ilObjUser::getUserIdByLogin(trim($superior_filter));
                 if ($talk->getOwner() !== $filterUser) {
                     continue;
                 }
             }
 
-            if ($filter['etal_title'] !== "") {
-                if (strpos($talk->getTitle(), $filter['etal_title']) === false) {
+            if (trim($title_filter = $this->getFilterValueByPostVar('etal_title')) !== "") {
+                if (strpos(strtolower($talk->getTitle()), strtolower(trim($title_filter))) === false) {
                     continue;
                 }
             }
 
-            if ($filter['etal_date'] !== false && $filter['etal_date'] !== null && $filter['etal_date'] !== '') {
-                $filterDate = new ilDateTime($filter['etal_date'], IL_CAL_DATE);
+            if (($date_filter = $this->getFilterValueByPostVar('etal_date')) !== '') {
+                $filterDate = new ilDateTime($date_filter, IL_CAL_DATE);
                 if (
                     !ilDateTime::_equals($filterDate, $val->getStartDate(), IL_CAL_DAY)
                 ) {
                     continue;
                 }
             }
-            if ($filter['etal_status'] !== "" && intval($filter['etal_status'] !== 0)) {
-                $filterCompleted = intval($filter['etal_status']) === ilEmployeeTalkTableGUI::STATUS_COMPLETED;
+            if (
+                ($status_filter = $this->getFilterValueByPostVar('etal_status')) !== "" &&
+                $status_filter !== '0'
+            ) {
+                $filterCompleted = ((int) $status_filter === ilEmployeeTalkTableGUI::STATUS_COMPLETED);
                 if ($filterCompleted && !$val->isCompleted()) {
                     continue;
                 }
@@ -259,12 +255,12 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
             }
 
             $template_title = '';
-            if ($talkData->getTemplateId() > 0) {
+            if ($talkData->getTemplateId() > 0 && ilObject::_exists($talkData->getTemplateId())) {
                 $template = ilObjectFactory::getInstanceByObjId($talkData->getTemplateId());
                 $template_title = $template->getTitle();
             }
-            if ($filter['etal_template'] !== "") {
-                if (strpos($template_title, $filter['etal_template']) === false) {
+            if (trim($template_filter = $this->getFilterValueByPostVar('etal_template')) !== "") {
+                if (strpos(strtolower($template_title), strtolower(trim($template_filter))) === false) {
                     continue;
                 }
             }
@@ -281,14 +277,16 @@ final class ilEmployeeTalkTableGUI extends ilTable2GUI
                 "permission_delete" => false
             ];
         }
+        $this->setData($data);
+    }
 
-        $offset = $this->getOffset();
-        $limit = $this->getLimit() + 1;
-
-        $this->setMaxCount(count($data));
-
-        $dataSlice = array_slice($data, $offset, $limit, true);
-        $this->setData($dataSlice);
+    protected function getFilterValueByPostVar(string $post_var): string
+    {
+        $item = $this->getFilterItemByPostVar($post_var);
+        if ($item === null) {
+            return '';
+        }
+        return (string) $this->getFilterValue($item);
     }
 
     protected function getConfirmationModal(

@@ -23,7 +23,6 @@ use ILIAS\UI\Component\Input\Container\Form\FormInput;
 use ILIAS\UI\Component\Input\Field\Radio;
 use ILIAS\UI\Component\Input\Field\OptionalGroup;
 use ILIAS\Refinery\Factory as Refinery;
-use ILIAS\Refinery\Constraint;
 use ILIAS\Refinery\Transformation;
 
 class ilObjTestSettingsQuestionBehaviour extends TestSettings
@@ -132,7 +131,11 @@ class ilObjTestSettingsQuestionBehaviour extends TestSettings
         $sub_inputs_autosave['autosave_interval'] = $f->numeric($lng->txt('autosave_ival'), $lng->txt('seconds'))
             ->withRequired(true)
             ->withAdditionalTransformation($refinery->int()->isGreaterThan(0))
-            ->withValue($this->getAutosaveInterval() / 1000);
+            ->withValue(
+                $this->getAutosaveInterval() !== 0
+                ? $this->getAutosaveInterval() / 1000
+                : 30
+            );
 
         $autosave_input = $f->optionalGroup(
             $sub_inputs_autosave,
@@ -194,7 +197,7 @@ class ilObjTestSettingsQuestionBehaviour extends TestSettings
         );
 
         $instant_feedback = $f->optionalGroup(
-            $this->getSubInputInstantFeedback($lng, $f),
+            $this->getSubInputInstantFeedback($lng, $f, $environment),
             $lng->txt('tst_instant_feedback'),
             $lng->txt('tst_instant_feedback_desc')
         )->withValue(null)
@@ -225,7 +228,8 @@ class ilObjTestSettingsQuestionBehaviour extends TestSettings
 
     private function getSubInputInstantFeedback(
         \ilLanguage $lng,
-        FieldFactory $f
+        FieldFactory $f,
+        array $environment
     ): array {
         $feedback_options = [
             'instant_feedback_points' => $f->checkbox(
@@ -261,9 +265,15 @@ class ilObjTestSettingsQuestionBehaviour extends TestSettings
             '1',
             $lng->txt('tst_instant_feedback_trigger_forced'),
             $lng->txt('tst_instant_feedback_trigger_forced_desc')
-        )->withRequired(true);
+        );
 
+        if (!$environment['participant_data_exists']) {
+            $sub_inputs_feedback['feedback_trigger'] = $sub_inputs_feedback['feedback_trigger']
+                ->withRequired(true);
+        }
         return $sub_inputs_feedback;
+
+
     }
 
     private function getInputLockAnswers(

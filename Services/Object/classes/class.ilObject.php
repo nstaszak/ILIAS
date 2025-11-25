@@ -19,7 +19,6 @@
 declare(strict_types=1);
 
 use ILIAS\Object\ilObjectDIC;
-use ILIAS\Object\Properties\ObjectReferenceProperties\ObjectReferenceProperties;
 
 /**
  * Class ilObject
@@ -35,6 +34,7 @@ class ilObject
     public const DESC_LENGTH = 128; // (short) description column max length in db
     public const LONG_DESC_LENGTH = 4000; // long description column max length in db
     public const TABLE_OBJECT_DATA = "object_data";
+    private const DATABASE_DATE_FORMAT = 'Y-m-d H:i:s';
 
     private ?ilObjectProperties $object_properties = null;
 
@@ -258,6 +258,7 @@ class ilObject
 
             $res = $this->db->query($sql);
 
+            $this->long_desc = '';
             while ($row = $res->fetchRow(ilDBConstants::FETCHMODE_OBJECT)) {
                 if (($row->description ?? '') !== '') {
                     $this->setDescription($row->description);
@@ -549,6 +550,9 @@ class ilObject
             $owner = $user->getId();
         }
 
+        $now_string = (new DateTimeImmutable('@' . time(), new DateTimeZone('UTC')))
+            ->format(self::DATABASE_DATE_FORMAT);
+
         $this->id = $this->db->nextId(self::TABLE_OBJECT_DATA);
         $values = [
             "obj_id" => ["integer", $this->getId()],
@@ -556,8 +560,8 @@ class ilObject
             "title" => ["text", $this->getTitle()],
             "description" => ["text", $this->getDescription()],
             "owner" => ["integer", $owner],
-            "create_date" => ["date", $this->db->now()],
-            "last_update" => ["date", $this->db->now()],
+            "create_date" => ["date", $now_string],
+            "last_update" => ["date", $now_string],
             "import_id" => ["text", $this->getImportId()],
         ];
 
@@ -771,7 +775,11 @@ class ilObject
     {
         $values = [
             "owner" => ["integer", $this->getOwner()],
-            "last_update" => ["date", $this->db->now()]
+            "last_update" => [
+                "date",
+                (new DateTimeImmutable('@' . time(), new DateTimeZone('UTC')))
+                    ->format(self::DATABASE_DATE_FORMAT)
+            ]
         ];
 
         $where = [
@@ -994,7 +1002,7 @@ class ilObject
         $result = $db->query($sql);
         $row = $db->fetchAssoc($result);
 
-        return $row["deleted"];
+        return $row["deleted"] ?? null;
     }
 
     /**
@@ -1641,8 +1649,12 @@ class ilObject
         $customIcon = $customIconFactory->getByObjId($this->getId(), $this->getType());
         $customIcon->copy($new_obj->getId());
 
-        $tile_image = $this->getObjectProperties()->getPropertyTileImage()->getTileImage();
-        $tile_image->cloneFor($new_obj->getId());
+        $new_obj->getObjectProperties()->storePropertyTileImage(
+            $new_obj->getObjectProperties()->getPropertyTileImage()->withTileImage(
+                $this->getObjectProperties()->getPropertyTileImage()
+                    ->getTileImage()->cloneFor($new_obj->getId())
+            )
+        );
 
         $this->app_event_handler->raise(
             'Services/Object',
@@ -1843,10 +1855,11 @@ class ilObject
         string $type = "",
         bool $offline = false
     ): string {
+        /** @var ILIAS\DI\Container $DIC */
         global $DIC;
-
-        $ilSetting = $DIC->settings();
-        $objDefinition = $DIC["objDefinition"];
+        $objDefinition = $DIC['objDefinition'];
+        $icon_factory = $DIC['ui.factory']->symbol()->icon();
+        $irss = $DIC['resource_storage'];
 
         if ($obj_id == "" && $type == "") {
             return "";
@@ -1860,16 +1873,19 @@ class ilObject
             $size = "big";
         }
 
-        if ($obj_id && $ilSetting->get('custom_icons')) {
-            $customIconFactory = $DIC['object.customicons.factory'];
-            $customIcon = $customIconFactory->getPresenterByObjId($obj_id, $type);
-            if ($customIcon->exists()) {
-                $filename = $customIcon->getFullPath();
-                return $filename . '?tmp=' . filemtime($filename);
-            }
-        }
-
         if ($obj_id) {
+            /** @var ilObjectPropertyIcon $property_icon */
+            $property_icon = ilObjectDIC::dic()['additional_properties_repository']->getFor($obj_id)->getPropertyIcon();
+            $custom_icon = $property_icon->getCustomIcon();
+            if ($custom_icon?->exists()) {
+                return $custom_icon->getFullPath() . '?tmp=' . filemtime($custom_icon->getFullPath());
+            }
+
+            $file_type_specific_icon = $property_icon->getObjectTypeSpecificIcon($obj_id, $icon_factory, $irss);
+            if ($file_type_specific_icon !== null) {
+                return $file_type_specific_icon->getIconPath();
+            }
+
             $dtpl_icon_factory = ilDidacticTemplateIconFactory::getInstance();
             if ($ref_id) {
                 $path = $dtpl_icon_factory->getIconPathForReference($ref_id);
@@ -2172,4 +2188,4 @@ class ilObject
         $row = $ilDB->fetchAssoc($res);
         return (int) $row['obj_id'] ?? null;
     }
-} // END class.ilObject
+}

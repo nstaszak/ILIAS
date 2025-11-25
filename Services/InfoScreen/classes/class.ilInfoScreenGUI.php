@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * This file is part of ILIAS, a powerful learning management system
  * published by ILIAS open source e-Learning e.V.
@@ -17,6 +15,8 @@ declare(strict_types=1);
  * https://github.com/ILIAS-eLearning
  *
  *********************************************************************/
+
+declare(strict_types=1);
 
 use ILIAS\InfoScreen\StandardGUIRequest;
 use ILIAS\MetaData\Services\Services as Metadata;
@@ -346,8 +346,6 @@ class ilInfoScreenGUI
         $md_data_helper = $this->metadata->dataHelper();
 
         // general
-        $description = $md_reader->firstData($md_paths->descriptions())->value();
-
         $lang_data = $md_reader->allData($md_paths->languages());
         $langs = $md_data_helper->makePresentableAsList(', ', ...$lang_data);
 
@@ -372,31 +370,24 @@ class ilInfoScreenGUI
 
         // output
 
-        // description
-        /* see https://mantis.ilias.de/view.php?id=39079
-        if ($description != "") {
-            $this->addSection($lng->txt("description"));
-            $this->addProperty("", nl2br($description));
-        }*/
-
         // general section
         $this->addSection($lng->txt("meta_general"));
         if ($langs != "") {	// language
             $this->addProperty(
                 $lng->txt("language"),
-                $langs
+                $this->html->escape($langs)
             );
         }
         if ($keywords != "") {	// keywords
             $this->addProperty(
                 $lng->txt("keywords"),
-                $keywords
+                $this->html->escape($keywords)
             );
         }
         if ($author != "") {		// author
             $this->addProperty(
                 $lng->txt("author"),
-                $author
+                $this->html->escape($author)
             );
         }
         if ($copyright != "") {		// copyright
@@ -408,7 +399,7 @@ class ilInfoScreenGUI
         if ($learning_time != "") {		// typical learning time
             $this->addProperty(
                 $lng->txt("meta_typical_learning_time"),
-                $learning_time
+                $this->html->escape($learning_time)
             );
         }
     }
@@ -486,7 +477,7 @@ class ilInfoScreenGUI
             $ilAccess->checkAccess("edit_permissions", "", $ref_id)) {
             $this->addProperty(
                 $lng->txt("create_date"),
-                ilDatePresentation::formatDate(new ilDateTime($a_obj->getCreateDate(), IL_CAL_DATETIME))
+                ilDatePresentation::formatDate(new ilDateTime($a_obj->getCreateDate(), IL_CAL_DATETIME, 'UTC'))
             );
 
             // owner

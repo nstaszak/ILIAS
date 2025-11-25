@@ -89,11 +89,11 @@ class ilObjFile extends ilObject2 implements ilObjFileImplementationInterface
 
     protected function initFileInfo(int $id, bool $is_ref_id): void
     {
-        $repository = new ilObjFileInfoRepository(true);
+        $repository = new ilObjFileInfoRepository();
         if ($is_ref_id) {
             $this->file_info = $repository->getByRefId($id);
         } else {
-            $this->file_info = ($repository)->getByObjectId($id);
+            $this->file_info = $repository->getByObjectId($id);
         }
     }
 
@@ -153,6 +153,12 @@ class ilObjFile extends ilObject2 implements ilObjFileImplementationInterface
      */
     public function appendStream(FileStream $stream, string $title): int
     {
+        $title = $this->ensureSuffix(
+            $title,
+            $this->extractSuffixFromFilename($title)
+            ?? pathinfo($stream->getMetadata('uri'))['extension']
+            ?? null
+        );
         if ($this->getResourceId() && $i = $this->manager->find($this->getResourceId())) {
             $revision = $this->manager->appendNewRevisionFromStream($i, $stream, $this->stakeholder, $title);
         } else {
@@ -483,6 +489,9 @@ class ilObjFile extends ilObject2 implements ilObjFileImplementationInterface
         $new_obj->updateObjectFromRevision($new_current_revision); // Previews are already copied in 453
         $new_obj->setTitle($cloned_title); // see https://mantis.ilias.de/view.php?id=31375
         $new_obj->setPageCount($this->getPageCount());
+        $new_obj->setImportantInfo($this->getImportantInfo());
+        $new_obj->setRating($this->hasRating());
+        $new_obj->setOnclickMode($this->getOnClickMode());
         $new_obj->update();
 
         $new_obj->getObjectProperties()->storePropertyIsOnline(new ilObjectPropertyIsOnline(true));
@@ -509,7 +518,11 @@ class ilObjFile extends ilObject2 implements ilObjFileImplementationInterface
 
     protected function beforeUpdate(): bool
     {
-        $this->setTitle($this->ensureSuffix($this->getTitle(), $this->file_info->getSuffix()));
+        $suffix = $this->file_info->getSuffix();
+        if (empty($suffix)) {
+            $suffix = $this->extractSuffixFromFilename($this->getTitle());
+        }
+        $this->setTitle($this->ensureSuffix($this->getTitle(), $suffix));
 
         // no meta data handling for file list files
         if ($this->getMode() !== self::MODE_FILELIST) {

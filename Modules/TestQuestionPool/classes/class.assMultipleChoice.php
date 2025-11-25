@@ -136,11 +136,11 @@ class assMultipleChoice extends assQuestion implements ilObjQuestionScoringAdjus
     */
     public function isComplete(): bool
     {
-        if (strlen($this->title) and ($this->author) and ($this->question) and (count($this->answers)) and ($this->getMaximumPoints() > 0)) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->title !== ''
+            && $this->author !== ''
+            && $this->question !== ''
+            && $this->getAnswerCount() > 0
+            && $this->getMaximumPoints() >= 0;
     }
 
     /**
@@ -192,10 +192,10 @@ class assMultipleChoice extends assQuestion implements ilObjQuestionScoringAdjus
             $this->setQuestion(ilRTE::_replaceMediaObjectImageSrc($data["question_text"] ?? '', 1));
             $shuffle = (is_null($data['shuffle'])) ? true : $data['shuffle'];
             $this->setShuffle((bool) $shuffle);
-            if ($data['thumb_size'] !== null && $data['thumb_size'] >= self::MINIMUM_THUMB_SIZE) {
+            if ($data['thumb_size'] !== null && $data['thumb_size'] >= $this->getMinimumThumbSize()) {
                 $this->setThumbSize($data['thumb_size']);
             }
-            $this->isSingleline = ($data['allow_images']) ? false : true;
+            $this->isSingleline = $data['allow_images'] === null || $data['allow_images'] === '0';
             $this->lastChange = $data['tstamp'];
             $this->setSelectionLimit((int) $data['selection_limit'] > 0 ? (int) $data['selection_limit'] : null);
             $this->feedback_setting = $data['feedback_setting'];
@@ -483,16 +483,11 @@ class assMultipleChoice extends assQuestion implements ilObjQuestionScoringAdjus
      */
     public function getMaximumPoints(): float
     {
-        $points = 0;
-        $allpoints = 0;
-        foreach ($this->answers as $key => $value) {
-            if ($value->getPoints() > $value->getPointsUnchecked()) {
-                $allpoints += $value->getPoints();
-            } else {
-                $allpoints += $value->getPointsUnchecked();
-            }
+        $total_max_points = 0.0;
+        foreach ($this->getAnswers() as $answer) {
+            $total_max_points += max($answer->getPointsChecked(), $answer->getPointsUnchecked());
         }
-        return $allpoints;
+        return $total_max_points;
     }
 
     /**
@@ -729,7 +724,7 @@ class assMultipleChoice extends assQuestion implements ilObjQuestionScoringAdjus
 
                     // Reorder feedback
                     $feedback_order_db = intval($feedback_option['answer']);
-                    $db_answer_id = $db_answer_id_for_order[$feedback_order_db];
+                    $db_answer_id = $db_answer_id_for_order[$feedback_order_db] ?? null;
                     // This cuts feedback that currently would have no corresponding answer
                     // This case can happen while copying "broken" questions
                     // Or when saving a question with less answers than feedback
@@ -1068,7 +1063,7 @@ class assMultipleChoice extends assQuestion implements ilObjQuestionScoringAdjus
         $result = [];
         $result['id'] = $this->getId();
         $result['type'] = (string) $this->getQuestionType();
-        $result['title'] = $this->getTitle();
+        $result['title'] = $this->getTitleForHTMLOutput();
         $result['question'] = $this->formatSAQuestion($this->getQuestion());
         $result['nr_of_tries'] = $this->getNrOfTries();
         $result['shuffle'] = $this->getShuffle();
@@ -1394,7 +1389,7 @@ class assMultipleChoice extends assQuestion implements ilObjQuestionScoringAdjus
         return $config;
     }
 
-    public function isSingleline()
+    public function isSingleline(): bool
     {
         return (bool) $this->isSingleline;
     }

@@ -170,6 +170,8 @@ class ilDclRecordEditGUI
      */
     public function create(): void
     {
+        global $DIC;
+        $DIC->help()->setSubScreenId('create');
         $this->initForm();
         $this->tpl->setContent($this->form->getHTML());
     }
@@ -648,7 +650,7 @@ class ilDclRecordEditGUI
             $dispatchEvent = "create";
             $ref_id = $this->http->wrapper()->query()->retrieve('ref_id', $this->refinery->kindlyTo()->int());
             $objDataCollection = new ilObjDataCollection($ref_id);
-            $objDataCollection->sendNotification("new_record", $this->table_id, $record_obj->getId());
+            $objDataCollection->sendRecordNotification(ilDataCollectionMailNotification::TYPE_RECORD_CREATE, $record_obj);
         } else {
             $dispatchEventData['prev_record'] = $unchanged_obj;
         }

@@ -106,7 +106,7 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
 
         $this->tax_id = $this->object->getTaxonomyId();
         if ($this->tax_id > 0) {
-            $this->ctrl->saveParameter($this, array("show_tax", "tax_node"));
+            $this->ctrl->saveParameter($this, array("tax_node"));
 
             $this->tax = new ilObjTaxonomy($this->tax_id);
         }
@@ -212,6 +212,7 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
                 break;
 
             case strtolower(ilTaxonomySettingsGUI::class):
+                $this->checkPermission("write");
                 $this->getTemplate();
                 $this->setTabs();
                 $this->setLocator();
@@ -230,6 +231,7 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
                 break;
 
             case "ilexportgui":
+                $this->checkPermission("write");
                 $this->getTemplate();
                 $this->setTabs();
                 $this->tabs->activateTab("export");
@@ -259,6 +261,7 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
                 break;
 
             case "ilglossaryforeigntermcollectorgui":
+                $this->checkPermission("write");
                 $this->ctrl->setReturn($this, "");
                 $this->getTemplate();
                 $this->setTabs();
@@ -269,13 +272,13 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
                 break;
 
             case "iltermdefinitionbulkcreationgui":
+                $this->checkPermission("write");
                 $this->ctrl->setReturn($this, "listTerms");
                 $this->ctrl->forwardCommand($this->term_def_bulk_gui);
                 break;
 
             default:
                 $cmd = $this->ctrl->getCmd("listTerms");
-
                 if (($cmd == "create") && ($this->edit_request->getNewType() == "term")) {
                     $this->ctrl->setCmd("create");
                     $this->ctrl->setCmdClass("ilGlossaryTermGUI");
@@ -295,6 +298,23 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
 
                             if ($cmd == "redrawHeaderAction") {
                                 $cmd = "redrawHeaderActionObject";
+                            }
+                        }
+                    }
+                    if (in_array($cmd, [
+                        "redrawHeaderActionObject"
+                    ])) {
+                        $this->checkPermission("read");
+                    } elseif (in_array($cmd, [
+                        "showInfoScreen"
+                    ])) {
+                        $this->checkPermission("visible");
+                    } else {
+                        if (!$this->getCreationMode()) {
+                            if (!$this->access->checkAccess("write", "", $this->requested_ref_id) &&
+                                !$this->access->checkAccess("edit_content", "", $this->requested_ref_id)
+                            ) {
+                                $this->checkPermission("write");
                             }
                         }
                     }
@@ -588,15 +608,6 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
         $flash_active->addSubItem($flash_mode);
         $this->form->addItem($flash_active);
 
-        // show taxonomy
-        $show_tax = null;
-        $tax_ids = ilObjTaxonomy::getUsageOfObject($this->object->getId());
-        if (count($tax_ids) > 0) {
-            $show_tax = new ilCheckboxInputGUI($this->lng->txt("glo_show_taxonomy"), "show_tax");
-            $show_tax->setInfo($this->lng->txt("glo_show_taxonomy_info"));
-            $this->form->addItem($show_tax);
-        }
-
         // downloads
         $down = new ilCheckboxInputGUI($this->lng->txt("cont_downloads"), "glo_act_downloads");
         $down->setValue("y");
@@ -654,7 +665,6 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
     public function saveProperties(): void
     {
         $obj_service = $this->getObjectService();
-
         $this->initSettingsForm();
         if ($this->form->checkInput()) {
             $this->object->setTitle($this->form->getInput("title"));
@@ -760,7 +770,6 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
     public function listTerms(): void
     {
         $this->showTaxonomy();
-
         $panel_html = "";
         $modals = "";
         $tab_html = "";
@@ -939,22 +948,6 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
         $this->ctrl->redirect($this, "listTerms");
     }
 
-    public function actTaxonomy(): void
-    {
-        $this->ctrl->setParameter($this, "show_tax", 1);
-        $this->ctrl->redirect($this, "listTerms");
-    }
-
-    /**
-     * Hide Taxonomy
-     */
-    public function deactTaxonomy(): void
-    {
-        $this->ctrl->setParameter($this, "show_tax", "");
-        $this->ctrl->redirect($this, "listTerms");
-    }
-
-
     /**
      * add term
      */
@@ -1052,7 +1045,13 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
         $cgui->setConfirm($this->lng->txt("confirm"), "deleteTerms");
 
         foreach ($ids as $id) {
-            $term = new ilGlossaryTerm($id);
+            try {
+                $term = new ilGlossaryTerm($id);
+            } catch (Exception $e) {
+                $cgui->addItem("id[]", $id, "Error: Page is missing.");
+                continue;
+            }
+
 
             $add = "";
             $nr = ilGlossaryTerm::getNumberOfUsages($id);
@@ -1094,8 +1093,7 @@ class ilObjGlossaryGUI extends ilObjectGUI implements \ILIAS\Taxonomy\Settings\M
                 $refs->deleteTerm($id);
                 $refs->update();
             } else {
-                $term = new ilGlossaryTerm($id);
-                $term->delete();
+                $this->term_manager->deleteTerm($id);
             }
         }
         $this->ctrl->redirect($this, "listTerms");

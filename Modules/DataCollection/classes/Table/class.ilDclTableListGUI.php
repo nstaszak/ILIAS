@@ -53,13 +53,14 @@ class ilDclTableListGUI
         $this->ui_factory = $DIC->ui()->factory();
         $this->renderer = $DIC->ui()->renderer();
 
+        $this->tabs->setSetupMode(true);
+        $DIC->help()->setScreenId('dcl_tables');
+
         $this->parent_obj = $a_parent_obj;
         $this->obj_id = 0;
         if ($a_parent_obj->getRefId() >= 0) {
             $this->obj_id = ilObject::_lookupObjectId($a_parent_obj->getRefId());
         }
-
-
 
         if (!$this->checkAccess()) {
             $main_tpl->setOnScreenMessage('failure', $this->lng->txt('permission_denied'), true);
@@ -149,13 +150,13 @@ class ilDclTableListGUI
                 break;
 
             default:
+                $this->ctrl->clearParameterByClass(ilObjDataCollectionGUI::class, 'table_id');
                 $this->$cmd();
         }
     }
 
     public function listTables(): void
     {
-
         $add_new = $this->ui_factory->button()->primary(
             $this->lng->txt("dcl_add_new_table"),
             $this->ctrl->getLinkTargetByClass('ilDclTableEditGUI', 'create')

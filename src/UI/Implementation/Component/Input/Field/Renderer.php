@@ -241,7 +241,7 @@ class Renderer extends AbstractComponentRenderer
             // with declare(strict_types=1) in place,
             // htmlspecialchars will not silently convert to string anymore;
             // therefore, the typecast must be explicit
-            return htmlspecialchars((string) $v, ENT_QUOTES);
+            return htmlspecialchars((string) $v, ENT_QUOTES, 'utf-8', false);
         };
     }
 
@@ -251,7 +251,7 @@ class Renderer extends AbstractComponentRenderer
             // with declare(strict_types=1) in place,
             // htmlentities will not silently convert to string anymore;
             // therefore, the typecast must be explicit
-            return htmlentities((string) $v);
+            return htmlentities((string) $v, ENT_QUOTES, 'utf-8', false);
         };
     }
 
@@ -303,6 +303,7 @@ class Renderer extends AbstractComponentRenderer
         if ($component->getValue()) {
             $tpl->touchBlock("value");
         }
+        $tpl->touchBlock("hascollapsible");
         /**
          * @var $component F\OptionalGroup
          */
@@ -334,6 +335,7 @@ class Renderer extends AbstractComponentRenderer
         foreach ($component->getInputs() as $key => $group) {
             $opt_id = $id . '_' . $key . '_opt';
 
+            $tpl->touchBlock('hascollapsible');
             $tpl->setCurrentBlock('optionblock');
             $tpl->setVariable("NAME", $component->getName());
             $tpl->setVariable("OPTIONID", $opt_id);
@@ -371,7 +373,7 @@ class Renderer extends AbstractComponentRenderer
         if ($value) {
             $value = array_map(
                 function ($v) {
-                    return ['value' => urlencode($this->convertSpecialCharacters($v)), 'display' => $v];
+                    return ['value' => urlencode($v), 'display' => $v];
                 },
                 $value
             );
@@ -448,7 +450,7 @@ class Renderer extends AbstractComponentRenderer
             $tpl->setVariable("HIDDEN", "hidden");
         }
 
-        if(!($value && $component->isRequired())) {
+        if (!($value && $component->isRequired())) {
             $tpl->setVariable("VALUE", null);
             $tpl->setVariable("VALUE_STR", $component->isRequired() ? $this->txt('ui_select_dropdown_label') : '-');
             $tpl->parseCurrentBlock();
@@ -795,7 +797,9 @@ class Renderer extends AbstractComponentRenderer
         // display the action button (to choose files).
         $template->setVariable('ACTION_BUTTON', $default_renderer->render(
             $this->getUIFactory()->button()->shy(
-                $this->txt('select_files_from_computer'),
+                $input->getMaxFiles() <= 1
+                    ? $this->txt('select_file_from_computer')
+                    : $this->txt('select_files_from_computer'),
                 '#'
             )
         ));
@@ -814,7 +818,7 @@ class Renderer extends AbstractComponentRenderer
     {
         $template = $this->getTemplate('tpl.hidden.html', true, true);
         $this->applyName($input, $template);
-        $this->applyValue($input, $template);
+        $this->applyValue($input, $template, $this->escapeSpecialChars());
         $this->maybeDisable($input, $template);
         $this->bindJSandApplyId($input, $template);
         return $template->get();
@@ -990,7 +994,7 @@ class Renderer extends AbstractComponentRenderer
         string $template_html
     ): FI\HasDynamicInputs {
         $dynamic_inputs_template_html = $this->replaceTemplateIds($template_html);
-        $dynamic_input_count = count($input->getDynamicInputs());
+        $dynamic_input_count = $this->countInputsWithoutGroupsRecursively($input->getTemplateForDynamicInputs());
 
         // note that $dynamic_inputs_template_html is in tilted single quotes (`),
         // because otherwise the html syntax might collide with normal ones.
@@ -1008,6 +1012,23 @@ class Renderer extends AbstractComponentRenderer
                 });
             ";
         });
+    }
+
+    /**
+     * Counts all inputs and nested inputs of groups, without counting groups themselves.
+     */
+    protected function countInputsWithoutGroupsRecursively(FormInput|Input $input): int
+    {
+        if (!($input instanceof Component\Input\Group)) {
+            return 1;
+        }
+
+        $count = 0;
+        foreach ($input->getInputs() as $sub_input) {
+            $count += $this->countInputsWithoutGroupsRecursively($sub_input);
+        }
+
+        return $count;
     }
 
     protected function replaceTemplateIds(string $template_html): string

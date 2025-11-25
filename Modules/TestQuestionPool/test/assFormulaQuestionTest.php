@@ -16,6 +16,8 @@
  *
  *********************************************************************/
 
+use ILIAS\Refinery\Factory;
+
 /**
 * Unit tests
 *
@@ -76,8 +78,9 @@ class assFormulaQuestionTest extends assBaseTestCase
 
         $this->backup_dic = $DIC;
         $DIC = new ILIAS\DI\Container([
-            'tpl' => $this->getMockBuilder(ilGlobalTemplateInterface::class)
-                          ->getMock()
+            'tpl' => $this->getMockBuilder(ilGlobalTemplateInterface::class)->getMock(),
+            'refinery' => $this->getMockBuilder(Factory::class)->disableOriginalConstructor()->getMock(),
+            'lng' => $this->getMockBuilder(\ilLanguage::class)->disableOriginalConstructor()->getMock(),
         ]);
         $points = 5;
         $precision = 2;

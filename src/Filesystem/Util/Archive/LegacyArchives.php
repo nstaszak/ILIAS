@@ -43,15 +43,7 @@ final class LegacyArchives
     public function __construct()
     {
         $this->archives = new Archives();
-        if (defined('ILIAS_DATA_DIR') && defined('CLIENT_ID')) {
-            $base_temp_path = \ILIAS_DATA_DIR . '/' . \CLIENT_ID . '/temp';
-        } else {
-            $base_temp_path = sys_get_temp_dir();
-        }
-
         $this->zip_options = $this->archives->zipOptions();
-        $this->zip_options = $this->zip_options
-            ->withZipOutputPath($base_temp_path);
         $this->unzip_options = $this->archives->unzipOptions();
     }
 
@@ -77,7 +69,7 @@ final class LegacyArchives
         $zip->addDirectory($directory_to_zip);
         $zip_stream = $zip->get();
 
-        return file_put_contents($path_to_output_zip, $zip_stream->getContents()) > 0;
+        return $zip_stream->getSize() > 0;
     }
 
     /**

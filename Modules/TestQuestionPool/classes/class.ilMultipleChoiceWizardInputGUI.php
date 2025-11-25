@@ -75,6 +75,11 @@ class ilMultipleChoiceWizardInputGUI extends ilSingleChoiceWizardInputGUI
                         $this->setAlert($lng->txt("msg_input_is_required"));
                         return false;
                     }
+
+                    if (mb_strlen($answervalue) > $this->getMaxLength()) {
+                        $this->setAlert($lng->txt("msg_input_char_limit_max"));
+                        return false;
+                    }
                 }
             }
             // check points
@@ -238,6 +243,8 @@ class ilMultipleChoiceWizardInputGUI extends ilSingleChoiceWizardInputGUI
                     $tpl->setCurrentBlock('addimage');
                     $tpl->setVariable("IMAGE_BROWSE", $lng->txt('select_file'));
                     $tpl->setVariable("IMAGE_ID", $this->getPostVar() . "[image][$i]");
+                    $tpl->setVariable('MAX_SIZE_WARNING', $this->lng->txt('form_msg_file_size_exceeds'));
+                    $tpl->setVariable('MAX_SIZE', $this->upload_limit->getPhpUploadLimitInBytes());
                     $tpl->setVariable("IMAGE_SUBMIT", $lng->txt("upload"));
                     $tpl->setVariable("IMAGE_ROW_NUMBER", $i);
                     $tpl->setVariable("IMAGE_POST_VAR", $this->getPostVar());
@@ -303,6 +310,7 @@ class ilMultipleChoiceWizardInputGUI extends ilSingleChoiceWizardInputGUI
                 $tpl->setVariable("MULTILINE_ID", $this->getPostVar() . "[answer][$i]");
                 $tpl->setVariable("MULTILINE_ROW_NUMBER", $i);
                 $tpl->setVariable("MULTILINE_POST_VAR", $this->getPostVar());
+                $tpl->setVariable("MAXLENGTH", $this->getMaxLength());
                 if ($this->getDisabled()) {
                     $tpl->setVariable("DISABLED_MULTILINE", " disabled=\"disabled\"");
                 }

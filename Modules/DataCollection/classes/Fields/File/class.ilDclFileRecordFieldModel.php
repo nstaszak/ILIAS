@@ -27,13 +27,13 @@ class ilDclFileRecordFieldModel extends ilDclBaseRecordFieldModel
 {
     use ilDclFileFieldHelper;
 
-    private const FILE_TMP_NAME = 'tmp_name';
-    private const FILE_NAME = "name";
-    private const FILE_TYPE = "type";
+    protected const FILE_TMP_NAME = 'tmp_name';
+    protected const FILE_NAME = "name";
+    protected const FILE_TYPE = "type";
 
-    private \ILIAS\ResourceStorage\Services $irss;
-    private ilDataCollectionStakeholder $stakeholder;
-    private \ILIAS\FileUpload\FileUpload $upload;
+    protected \ILIAS\ResourceStorage\Services $irss;
+    protected ilDataCollectionStakeholder $stakeholder;
+    protected \ILIAS\FileUpload\FileUpload $upload;
 
     public function __construct(ilDclBaseRecordModel $record, ilDclBaseFieldModel $field)
     {
@@ -46,119 +46,72 @@ class ilDclFileRecordFieldModel extends ilDclBaseRecordFieldModel
 
     public function parseValue($value)
     {
-        if ($value === -1) { // marked for deletion.
-            return null;
-        }
-
-        $file = $value;
-
-        // Some general Request Information
         $has_record_id = $this->http->wrapper()->query()->has('record_id');
         $is_confirmed = $this->http->wrapper()->post()->has('save_confirmed');
         $has_save_confirmation = ($this->getRecord()->getTable()->getSaveConfirmation() && !$has_record_id);
 
-        if (
-            is_array($file)
-            && isset($file[self::FILE_TMP_NAME])
-            && $file[self::FILE_TMP_NAME] !== ""
-            && (!$has_save_confirmation || $is_confirmed)
-        ) {
-            if ($has_save_confirmation) {
-                $ilfilehash = $this->http->wrapper()->post()->retrieve(
-                    'ilfilehash',
-                    $this->refinery->kindlyTo()->string()
-                );
-
-                $move_file = ilDclPropertyFormGUI::getTempFilename(
-                    $ilfilehash,
-                    'field_' . $this->getField()->getId(),
-                    $file[self::FILE_NAME],
-                    $file[self::FILE_TYPE]
-                );
-
-                $file_stream = ILIAS\Filesystem\Stream\Streams::ofResource(fopen($move_file, 'rb'));
-            } else {
-                $move_file = $file[self::FILE_TMP_NAME];
-
-                if (false === $this->upload->hasBeenProcessed()) {
-                    $this->upload->process();
-                }
-
-                if (false === $this->upload->hasUploads()) {
-                    throw new ilException($this->lng->txt('upload_error_file_not_found'));
-                }
-
-                $file_stream = Streams::ofResource(fopen($move_file, 'rb'));
-            }
-
-            $file_title = $file[self::FILE_NAME] ?? basename($move_file);
-
-            // Storing the File to the IRSS
-            $existing_value = $this->getValueForRepresentation();
-            if (
-                is_string($existing_value)
-                && ($rid = $this->irss->manage()->find($existing_value)) !== null
-            ) {
-                // Append to existing RID
-                $this->irss->manage()->appendNewRevisionFromStream(
-                    $rid,
-                    $file_stream,
-                    $this->stakeholder,
-                    $file_title
-                );
-            } else {
-                // Create new RID
-                $rid = $this->irss->manage()->stream(
-                    $file_stream,
-                    $this->stakeholder,
-                    $file_title
-                );
-            }
-
-            return $rid->serialize();
+        if (($value[self::FILE_TMP_NAME] ?? '') !== '' && (!$has_save_confirmation || $is_confirmed)) {
+            return $this->handleFileUpload($value, $has_save_confirmation);
         } else {
-            // handover for save-confirmation
-            if (is_array($file) && isset($file[self::FILE_TMP_NAME]) && $file[self::FILE_TMP_NAME] != "") {
-                return $file;
+            if (($value[self::FILE_TMP_NAME] ?? '') !== '') {
+                return $value;
+            } else {
+                return $this->getValue();
             }
         }
-        return $this->getValue();
+    }
+
+    protected function handleFileUpload(array $value, bool $has_save_confirmation): mixed
+    {
+        if ($has_save_confirmation) {
+            $move_file = ilDclPropertyFormGUI::getTempFilename(
+                $this->http->wrapper()->post()->retrieve('ilfilehash', $this->refinery->kindlyTo()->string()),
+                'field_' . $this->getField()->getId(),
+                $value[self::FILE_NAME],
+                $value[self::FILE_TYPE]
+            );
+
+            $file_stream = ILIAS\Filesystem\Stream\Streams::ofResource(fopen($move_file, 'rb'));
+        } else {
+            $move_file = $value[self::FILE_TMP_NAME];
+
+            $file_stream = Streams::ofResource(fopen($move_file, 'rb'));
+        }
+
+        $file_title = $value[self::FILE_NAME] ?? basename($move_file);
+
+        $old = $this->getValue();
+        if (is_string($old) && ($rid = $this->irss->manage()->find($old)) !== null) {
+            $this->irss->manage()->replaceWithStream($rid, $file_stream, $this->stakeholder, $file_title);
+        } else {
+            $rid = $this->irss->manage()->stream($file_stream, $this->stakeholder, $file_title);
+        }
+
+        return $rid->serialize();
+    }
+
+    public function setValueFromForm(ilPropertyFormGUI $form): void
+    {
+        if ($this->value !== null && $form->getItemByPostVar("field_" . $this->getField()->getId())->getDeletionFlag()) {
+            $this->removeData();
+            $this->setValue(null, true);
+            $this->doUpdate();
+        }
+        parent::setValueFromForm($form);
     }
 
     public function delete(): void
     {
-        if (($rid = $this->valueToRID($this->value)) !== null) {
-            $this->irss->manage()->remove(
-                $rid,
-                $this->stakeholder
-            );
+        if ($this->value !== null) {
+            $this->removeData();
         }
-
         parent::delete();
     }
 
-    public function setValue($value, bool $omit_parsing = false): void
+    protected function removeData(): void
     {
-        $this->loadValue();
-
-        if (!$omit_parsing) {
-            $temporary = $this->parseValue($value);
-            $current = $this->value;
-            if ($temporary !== false) {
-                $this->value = $temporary;
-                if (
-                    $current
-                    && $current !== $temporary
-                    && ($rid = $this->valueToRID($value)) !== null
-                ) {
-                    $this->irss->manage()->remove(
-                        $rid,
-                        $this->stakeholder
-                    );
-                }
-            }
-        } else {
-            $this->value = $value;
+        if (null !== $rid = $this->irss->manage()->find($this->getValue())) {
+            $this->irss->manage()->remove($rid, $this->stakeholder);
         }
     }
 
@@ -174,17 +127,14 @@ class ilDclFileRecordFieldModel extends ilDclBaseRecordFieldModel
 
     public function afterClone(): void
     {
-        $field = ilDclCache::getCloneOf((int) $this->getField()->getId(), ilDclCache::TYPE_FIELD);
-        $record = ilDclCache::getCloneOf($this->getRecord()->getId(), ilDclCache::TYPE_RECORD);
-        $record_field = ilDclCache::getRecordFieldCache($record, $field);
-
-        if (!$record_field->getValue()) {
-            return;
-        }
-        $current = $this->valueToCurrentRevision($record_field->getValue());
-        if ($current !== null) {
-            $new_rid = $this->irss->manage()->clone($current->getIdentification());
-            $this->setValue($new_rid->serialize());
+        if ($this->value !== null) {
+            $value = null;
+            $current = $this->valueToCurrentRevision($this->value);
+            if ($current !== null) {
+                $new_rid = $this->irss->manage()->clone($current->getIdentification());
+                $value = $new_rid->serialize();
+            }
+            $this->setValue($value, true);
             $this->doUpdate();
         }
     }
