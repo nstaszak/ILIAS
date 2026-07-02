@@ -510,7 +510,7 @@ assessment#:#ass_create_export_file_with_results#:#テストエクスポート�
 assessment#:#ass_create_export_test_archive#:#テストアーカイブファイルを作成
 assessment#:#ass_create_export_test_results#:#テスト結果エクスポートファイルを作成
 assessment#:#ass_create_question#:#問題を作成
-assessment#:#ass_file_upload_reuse_btn#:#Reuse Selected Files###16 12 2025 new variable
+assessment#:#ass_file_upload_reuse_btn#:#選択したファイルを再利用
 assessment#:#ass_imap_hint#:#ツールチップとしてヒントを表示
 assessment#:#ass_imap_map_file_not_readable#:#アップロードされたイメージマップを読み込む事ができませんでした。
 assessment#:#ass_imap_no_map_found#:#アップロードされたイメージマップ内に書式が見つかりませんでした。
@@ -650,7 +650,6 @@ assessment#:#errFormulaQuestion#:#数式問題に間違った情報が含まれ�
 assessment#:#errRecursionInResult#:#式に無限再帰が含まれています。
 assessment#:#err_category_in_use#:#カテゴリが一つは削除できません。複数のカテゴリのユニットがすでに使用中です。
 assessment#:#err_divider_too_big#:#この問題の変数の分母は大きすぎます。
-assessment#:#err_divider_too_big_specific#:#The divider of this variable is too big.###04 11 2025 new variable
 assessment#:#err_division#:#この値は最大範囲よりも小さくすべきです。
 assessment#:#err_duplicate_results#:#利用可能な結果を複数回使用しています。問題文章中にこれは使用できません。
 assessment#:#err_no_formula#:#式を入力する必要があります
@@ -873,7 +872,7 @@ assessment#:#matching_type#:#問題サブタイプの一致
 assessment#:#material#:#教材
 assessment#:#material_file#:#教材ファイル
 assessment#:#maxchars#:#最大文字数
-assessment#:#maximum_nr_of_tries_reached#:#このテストの最大受験回数に達しています。テストへの再入力はできません。
+assessment#:#maximum_nr_of_tries_reached#:#このテストの最大受験回数に達しています。テストへの再入力はできません。(注意:受験回数制限のないテストでは表示されます）
 assessment#:#maximum_points#:#最高得点
 assessment#:#maxsize#:#最大アップロードファイルサイズ
 assessment#:#maxsize_info#:#ファイル アップロードを許可するバイト単位の最大サイズを入力します。このフィールドを空白のままにする場合は、このインストールの最大サイズが代わりに選択されます。
@@ -949,7 +948,7 @@ assessment#:#participants#:#受験者
 assessment#:#participants_invitation#:#手動選択受験者
 assessment#:#participants_invitation_description#:#このテストは"受験者"タブで手動追加したユーザのみアクセスする事ができます。
 assessment#:#participants_results_subtab#:#全受験者
-assessment#:#pass#:#合格回数
+assessment#:#pass#:#経過
 assessment#:#pass_finished#:#%s回
 assessment#:#passed_official#:#合格です
 assessment#:#passed_only#:#テストのみ合格です
@@ -1118,10 +1117,10 @@ assessment#:#redirect_after_finishing_rule#:#リダイレクト
 assessment#:#redirect_after_finishing_tst#:#リダイレクト
 assessment#:#redirect_after_finishing_tst_desc#:#テストを完了すると各受験者は自動的に決められたWebページへリダイレクトされます。これは受験者がテスト結果へアクセスしない場合のみ有効です。
 assessment#:#redirect_always#:#常に決められたwebページへ
-assessment#:#redirect_always_to_logout#:#Always to the logout screen###04 11 2025 new variable
+assessment#:#redirect_always_to_logout#:#常時ログアウト画面へ
 assessment#:#redirect_in_kiosk_mode#:#試験ビューが有効の際にのみ
-assessment#:#redirect_url_invalid#:#Please enter a valid url of the target webpage.###04 11 2025 new variable
-assessment#:#redirect_url_required_for_rule#:#The url of the webpage is required when "%s" is selected.###04 11 2025 new variable
+assessment#:#redirect_url_invalid#:#ターゲットWebページの有効なURLを入力してください
+assessment#:#redirect_url_required_for_rule#:#%s が選択されている場合、WebページのURLが必要です。
 assessment#:#redirection_url#:#webページのURL
 assessment#:#region#:#Region
 assessment#:#remove_as_participant#:#固定の受験者として削除
@@ -1419,7 +1418,7 @@ assessment#:#tst_final_information#:#テスト終了
 assessment#:#tst_finish_confirm_button#:#はい、テストを終了します
 assessment#:#tst_finish_confirm_cancel_button#:#いいえ、前の問題へ戻ります
 assessment#:#tst_finish_confirmation_question#:#このテストを終了すると最大受験可能回数に達します。解答を変更しようとしても再度入力する事はできなくなります。本当にこのテストを終了しますか?
-assessment#:#tst_finish_confirmation_question_no_attempts_left#:#コノテストを終了して受験回数上限になろうとしています。回答を変更しようとしてもこのテストを再受験できなくなります。本当にこのテストを終了しますか?
+assessment#:#tst_finish_confirmation_question_no_attempts_left#:#このテストを終了して受験回数上限になろうとしています。回答を変更しようとしてもこのテストを再受験できなくなります。本当にこのテストを終了しますか?
 assessment#:#tst_finish_notification#:#通知
 assessment#:#tst_finish_notification_advanced#:#完了テスト結果を送信
 assessment#:#tst_finish_notification_content_type#:#e-mailのb内容
@@ -1613,7 +1612,7 @@ assessment#:#tst_objective_progress_header#:#学習目標進捗
 assessment#:#tst_objectives_progress_header#:#学習目標進捗
 assessment#:#tst_old_style_rnd_quest_set_broken#:#1個以上の接続された問題集が削除されてしまっているのでこのランダムテストは修復できない状態です。よって受験者はテストを続行することができません。
 assessment#:#tst_optional_questions_confirmation_non_fixed_test#:#<b>すでにパスした学習目標に関係する問題はオプションです。</b><br /><br />すでにパスした学習目標に関係する問題をナビゲートしたい。<br />選択できます:<br /><br />進むにはこれらの問題を実行することができます。新しいランダム問題がこの試みで選択されていないので以前の回答からは選択されていません。この問題の実行中は学習目標結果も下方修正できます。<br /><br />この問題の実行をしないと確定すると後戻りできます。この場合に問題は評価へ考慮されません。
-assessment#:#tst_out_of_time_message#:#コノテストの処理時間上限値に達しました!
+assessment#:#tst_out_of_time_message#:#このテストの処理時間上限値に達しました!
 assessment#:#tst_participant#:#受験者
 assessment#:#tst_participant_fullname_pattern#:#%2$s, %1$s
 assessment#:#tst_participant_status#:#受験者状況
@@ -1842,7 +1841,7 @@ assessment#:#tst_setting_offer_hints_label#:#ヒント
 assessment#:#tst_settings_conflict_compulsory_and_lock#:#強制問題は"回答をロック"と一緒に使えません。
 assessment#:#tst_settings_conflict_postpone_and_lock#:#未回答問題は”次の問題へ後回し回答ロック"と一緒にキューに入れる事はできません。
 assessment#:#tst_settings_conflict_shuffle_and_lock#:#シャッフル問題は”次の問題へ後回し回答ロック"と一緒に使用することはできません。
-assessment#:#tst_settings_form_reload_needed#:#The form needed to be reloaded to avoid data loss as the available settings have changed due to the removal of all results of participants.###23 09 2025 new variable
+assessment#:#tst_settings_form_reload_needed#:#参加者のすべての結果が削除されたため、利用可能な設定が変更され、データ損失を避けるためにフォームを再読み込みする必要があります。
 assessment#:#tst_settings_header_additional#:#追加機能
 assessment#:#tst_settings_header_execution#:#テスト管理: アクセス
 assessment#:#tst_settings_header_intro#:#テスト開始前情報
@@ -1921,7 +1920,7 @@ assessment#:#tst_tbl_col_pass_finished#:#終了済回数
 assessment#:#tst_tbl_col_passed_status#:#評価
 assessment#:#tst_tbl_col_percent_result#:#回答率
 assessment#:#tst_tbl_col_reached_points#:#達成点
-assessment#:#tst_tbl_col_scored_pass#:#合格回数
+assessment#:#tst_tbl_col_scored_pass#:#採点回数
 assessment#:#tst_tbl_col_started_passes#:#開始済回数
 assessment#:#tst_tbl_invited_users#:#手動で選択の受験者
 assessment#:#tst_tbl_participants#:#受験者
@@ -1990,7 +1989,7 @@ assessment#:#unlock#:#解除
 assessment#:#uploaded_material#:#アップロードされた教材
 assessment#:#use_previous_solution#:#前回の解答を使用する
 assessment#:#use_previous_solution_advice#:#表示されている回答は前回のものです。何も変更しないでそのまま利用したい場合は、その解答の採用を必ず確認する必要があります。
-assessment#:#use_previous_solution_advice_file_upload#:#The shown files for the question are your previously uploaded ones. Select the files you want to reuse and click the button to confirm.###16 12 2025 new variable
+assessment#:#use_previous_solution_advice_file_upload#:#問題に表示されているファイルは、以前にアップロードしたファイルです。再利用したいファイルを選択し、ボタンをクリックして確定してください。
 assessment#:#user_has_finished_a_test#:#受験者はテストを終了しました。
 assessment#:#user_not_invited#:#あなたはこのテストの受験対象者ではありません。
 assessment#:#user_wrong_clientip#:#テストに使用する正しいIPがありません。
@@ -2005,7 +2004,7 @@ assessment#:#with_solutions_participants#:#解答ありの受験者
 assessment#:#without_solutions_participants#:#解答なしの受験者
 assessment#:#worked_through#:#答案済
 assessment#:#working_time#:#答案時間
-assessment#:#you_received_a_of_b_points#:#ポイントは配点%s中の%s です。
+assessment#:#you_received_a_of_b_points#:#あなたは %s 点中 %s 点を獲得しました
 auth#:#auth_account_code#:#コード
 auth#:#auth_account_code_info#:#アカウントを再設定するとILIASアカウントコードを利用できます。
 auth#:#auth_account_code_title#:#アカウントコード
@@ -2022,8 +2021,8 @@ auth#:#auth_cas_ldap_info#:#有効にすると、ユーザアカウントと役�
 auth#:#auth_cron_destroy_expired_sessions#:#期限切れセッションの削除
 auth#:#auth_cron_destroy_expired_sessions_desc#:#このジョブは期限切れセッションを削除します
 auth#:#auth_err_expired#:#使用されていないのでセッションは解除されました。
-auth#:#auth_err_invalid_user_account#:#内部不良により認証は失敗しました。
-auth#:#auth_err_ldap_exception#:#内部認証不良(LDAP)により認証は失敗しました。
+auth#:#auth_err_invalid_user_account#:#エラーにより認証は失敗しました。
+auth#:#auth_err_ldap_exception#:#認証エラー(LDAP)により認証は失敗しました。
 auth#:#auth_info_add#:#ILIASに一度も登録したことがなければオプションを選択。新規アカウントが作成されます。
 auth#:#auth_info_migrate#:#既にILIASのアカウントがあれば、パーソナルデータ(メール、テスト結果など）を移行するためのユーザ名とパスワードを入力します。
 auth#:#auth_ldap_server_ds#:#LDAP-Server
@@ -2473,14 +2472,14 @@ blog#:#blog_toggle_draft#:#告知を取り消す
 blog#:#blog_toggle_draft_admin#:#ブログ投稿を解除
 blog#:#blog_toggle_final#:#投稿を公開
 blog#:#blog_whole_blog#:#全Blog
-book#:#X_reservations_of#:#%s reservations of
-book#:#book_add#:#予約集を追加
+book#:#X_reservations_of#:#%s 件の予約
+book#:#book_add#:#予約枠へ追加
 book#:#book_add_object#:#オブジェクトを追加
-book#:#book_add_participant#:#Add Participant###16 12 2025 new variable
+book#:#book_add_participant#:#参加者を追加
 book#:#book_add_schedule#:#スケジュールを追加
 book#:#book_additional_info_file#:#追加説明
 book#:#book_all#:#全表示
-book#:#book_all_pools_need_schedules#:#設定は保存されませんでした。全ての予約集は一つのスケジュールである必要があります。
+book#:#book_all_pools_need_schedules#:#設定は保存されませんでした。全ての予約枠は一つのスケジュールである必要があります。
 book#:#book_all_users#:#全受験者
 book#:#book_assign#:#割当て
 book#:#book_assign_object#:#予約オブジェクトを割当てる
@@ -2506,7 +2505,7 @@ book#:#book_confirm_booking_schedule_number_of_objects_info#:#予約するには
 book#:#book_confirm_cancel#:#本当に次の予約をキャンセルしますか?
 book#:#book_confirm_cancel_aggregation#:#キャンセル数
 book#:#book_confirm_delete#:#本当に次のアイテムを削除しますか?
-book#:#book_copy#:#予約集をコピー
+book#:#book_copy#:#予約枠をコピー
 book#:#book_create_objects#:#項目を生成
 book#:#book_deadline#:#期限
 book#:#book_deadline_hours#:#予約期間に先立つX hours
@@ -2516,7 +2515,7 @@ book#:#book_deadline_slot_end#:#予約期間締め切りまで
 book#:#book_deadline_slot_start#:#予約期間開始まで
 book#:#book_deassign#:#割り当て解除
 book#:#book_download_info#:#追加説明をダウンロード
-book#:#book_edit#:#予約集を編集
+book#:#book_edit#:#予約枠を編集
 book#:#book_edit_object#:#オブジェクトを編集
 book#:#book_edit_schedule#:#スケジュールを編集
 book#:#book_filter_past_reservations#:#過去の予約を表示
@@ -2526,7 +2525,7 @@ book#:#book_is_used#:#使用中
 book#:#book_limit_objects_available#:#アイテムのみしか利用できないので%sを受講者へ"%s"を割当てる事ができません。
 book#:#book_list#:#List
 book#:#book_log#:#予約
-book#:#book_mail_permanent_link#:#予約集へのリンク
+book#:#book_mail_permanent_link#:#予約枠へのリンク
 book#:#book_mail_to_booker#:#ユーザへメール
 book#:#book_message#:#Message
 book#:#book_message_info#:#予約組織用にメッセージをここで入力可能です。
@@ -2534,11 +2533,11 @@ book#:#book_messages#:#Messages
 book#:#book_messages_info#:#項目を予約した時にユーザはメッセージを追加できます。
 book#:#book_missing_availability#:#全ての日に全項目を予約することはできませんでした。
 book#:#book_missing_items#:#$1 missing item(s).
-book#:#book_new#:#新規予約集
+book#:#book_new#:#新規予約枠
 book#:#book_no_bookings_for_you#:#予約は何も実行されていません。
 book#:#book_no_objects#:#割当てなし
 book#:#book_no_of_objects#:#オブジェクト数
-book#:#book_no_pools_selected#:#No booking pools have been assigned to this course. Booking pools can be assigned via the course's 'Resources' tab.###23 09 2025 new variable
+book#:#book_no_pools_selected#:#このコースには予約枠が割り当てられていません。予約枠は、コースの「リソース」タブから割り当てることができます。
 book#:#book_no_preferences_for_you#:#preferenceが何も保存されていません。
 book#:#book_no_recurrence#:#この日にちのみ予約
 book#:#book_not#:#不明
@@ -2555,21 +2554,21 @@ book#:#book_object_deleted#:#予約オブジェクトが削除されました。
 book#:#book_object_selection#:#アイテム選択
 book#:#book_object_updated#:#予約オブジェクトが更新されました。
 book#:#book_objects_available#:#オブジェクト利用可能 %s
-book#:#book_open#:#予約集を開く
+book#:#book_open#:#予約枠を開く
 book#:#book_overall_limit#:#予約制限数
 book#:#book_overall_limit_warning#:#予約数上限に達しました。
 book#:#book_participant_already_assigned#:#参加者は既に割当て済です。
 book#:#book_participant_assigned#:#参加者を割当てました
 book#:#book_period#:#予定時間
-book#:#book_pool_added#:#予約集が追加されました。
+book#:#book_pool_added#:#予約枠が追加されました。
 book#:#book_pool_selection#:#要約集の選択
 book#:#book_post_booking_file#:#ファイル
 book#:#book_post_booking_information#:#投稿予約情報
 book#:#book_post_booking_text#:#テキスト
 book#:#book_post_booking_text_info#:#テキストへ予約詳細を追加するには[PERIOD]と[OBJECT]を使用。
 book#:#book_pref_book_cron#:#Preferencesで予約
-book#:#book_pref_book_cron_info#:#期限後preferenceを使い自動的に予約集へ追記
-book#:#book_pref_deadline#:#期限後preferenceを使い自動的に予約集へ追記
+book#:#book_pref_book_cron_info#:#期限後preferenceを使い自動的に予約枠へ追記
+book#:#book_pref_deadline#:#期限後preferenceを使い自動的に予約枠へ追記
 book#:#book_pref_deadline_info#:#Preferencesはこの時点で取り止め
 book#:#book_pref_overview#:#Overview
 book#:#book_preference_info#:#%2 まで %1 preference を選択して下さい。.期限を過ぎると予約は全てのユーザのpreferenceを基に自動的に実行されます。
@@ -2580,7 +2579,7 @@ book#:#book_public_log_info#:#予約リストは全ユーザへ表示されま�
 book#:#book_recurrence#:#再現
 book#:#book_refresh#:#Refresh
 book#:#book_rem_intro#:#これは今後の予約の概要です。
-book#:#book_rem_reason#:#予約集のやり取り通知を有効にしているのでこのメールを受信します。
+book#:#book_rem_reason#:#予約枠のやり取り通知を有効にしているのでこのメールを受信します。
 book#:#book_reminder_day#:#予約前
 book#:#book_reminder_day_info#:#自己予約リストをユーザと予約のフルリスト管理者へ送る
 book#:#book_reminder_days#:#Day(s)
@@ -2616,14 +2615,14 @@ book#:#book_schedule_type_none_preference_info#:#このタイプはセミナー�
 book#:#book_schedule_updated#:#予約スケジュールが更新されました。
 book#:#book_schedule_warning_edit#:#現在利用できるスケジュールはありません。ブッキング集を使用するにはブッキング用のスケジュールを作成する必要があります。
 book#:#book_schedules#:#スケジュール
-book#:#book_select_pool#:#予約集を選択
+book#:#book_select_pool#:#予約枠を選択
 book#:#book_set_cancel#:#予約キャンセル
 book#:#book_set_delete#:#削除
 book#:#book_show_message#:#メッセージを表示
 book#:#book_title_description_nr#:#タイトル; 説明; ユニット数
 book#:#book_title_description_nr_info#:#セミコロンまたはタブ文字で区切られたタイトル, 説明とユニット数 (スプレッドシートソフトウエアからインポートした場合). アイテム別に1ライン使用。
 book#:#book_too_many_preferences#:#Preference選択が多すぎます。Preferenceは保存されませんでした。
-book#:#book_total_individual_bookings_limit#:#Limit the number of bookings that can be carried out by/for individual participants in total, across all available items. Each bookable item can still only be booked once per participant.###16 12 2025 new variable
+book#:#book_total_individual_bookings_limit#:#利用可能なすべてのアイテムにおいて、参加者ごとに予約できる合計数を制限します。予約可能なアイテムは、参加者1人につき1回のみ予約可能です。
 book#:#book_type_warning#:#現在利用できるオブジェクトはありませんブッキング集を使用するにはブッキングオブジェクトを作成する必要があります
 book#:#book_week#:#Week
 book#:#book_your_bookings#:#予約
@@ -2631,7 +2630,7 @@ book#:#book_your_preferences#:#Preference
 book#:#book_your_reservations#:#あなたの予約
 book#:#booking_multiple_succesfully#:#予約が正しく作成されました
 book#:#booking_nr_of_items#:#アイテム番号
-book#:#obj_book_duplicate#:#予約集をコピー
+book#:#obj_book_duplicate#:#予約枠をコピー
 book#:#participants#:#参加者
 book#:#reservation_deleted#:#予約を削除しました
 buddysystem#:#buddy_allow_to_contact_me#:#コンタクトを許可
@@ -4753,7 +4752,7 @@ common#:#msg_no_perm_perm#:#アクセス権限設定の編集アクセス権限�
 common#:#msg_no_perm_read#:#このアイテムアクセスへのアクセス権限がありません。
 common#:#msg_no_perm_read_item#:#アイテム '%s'へのアクセス権限がありません。
 common#:#msg_no_perm_read_lm#:#このラーニングモジュールを読み込むアクセス権限がありません。
-common#:#msg_no_perm_view_roles_of_user#:#You have no permission to view the role assignment of this user###26 08 2025 new variable
+common#:#msg_no_perm_view_roles_of_user#:#ユーザーの役割割り当てを表示する権限がありません
 common#:#msg_no_perm_write#:#書込みアクセス権限がありません
 common#:#msg_no_search_result#:#エントリーが見つかりません
 common#:#msg_no_search_string#:#クエリを入力してください
@@ -4835,7 +4834,7 @@ common#:#not_available#:#利用不可
 common#:#not_implemented_yet#:#未適用
 common#:#not_installed#:#未インストール
 common#:#not_logged_in#:#ログインしていません
-common#:#not_ok#:#Not OK###16 12 2025 new variable
+common#:#not_ok#:#Not OK
 common#:#note#:#注意
 common#:#notes#:#注意
 common#:#notes_and_comments#:#メモとコメント
@@ -4868,7 +4867,7 @@ common#:#obj_bibs#:#文献目録
 common#:#obj_bibs_desc#:#文献目録管理
 common#:#obj_blog#:#ブログ
 common#:#obj_blog_duplicate#:#ブログをコピー
-common#:#obj_book#:#予約集
+common#:#obj_book#:#予約枠
 common#:#obj_cadm#:#コンタクト
 common#:#obj_cadm_desc#:#コンタクト管理
 common#:#obj_cals#:#カレンダー
@@ -4962,7 +4961,7 @@ common#:#obj_lsos#:#学習シーケンス
 common#:#obj_lsos_desc#:#学習シーケンスの概要設定
 common#:#obj_lti#:#LTI Consumer
 common#:#obj_ltis#:#LTI
-common#:#obj_ltis_desc#:#学習ツール相互利用
+common#:#obj_ltis_desc#:#学習ツールの相互運用性
 common#:#obj_mail#:#メール
 common#:#obj_mail_desc#:#グローバルメイン設定をここで構成
 common#:#obj_mcst#:#メディアキャスト
@@ -5128,7 +5127,7 @@ common#:#objects#:#オブジェクト
 common#:#objf#:#オブジェクト定義
 common#:#objs_bibl#:#文献目録
 common#:#objs_blog#:#ブログ
-common#:#objs_book#:#予約集
+common#:#objs_book#:#予約枠
 common#:#objs_cat#:#カテゴリ
 common#:#objs_catr#:#カテゴリリンク
 common#:#objs_chtr#:#チャット
@@ -5533,7 +5532,7 @@ common#:#select#:#選択
 common#:#select_all#:#全て選択
 common#:#select_at_least_one_object#:#オブジェクトを最低一つ選択してください。
 common#:#select_file#:#ファイルを選択
-common#:#select_file_from_computer#:#Select File###16 12 2025 new variable
+common#:#select_file_from_computer#:#ファイルを選択
 common#:#select_files_from_computer#:#コンピュータのファイルを選択
 common#:#select_max_one_item#:#アイテムを一つだけ選択してください
 common#:#select_object_to_link#:#リンクしたいオブジェクトを選択してください
@@ -5838,6 +5837,7 @@ common#:#upload_settings#:#アップロード設定
 common#:#upload_svg_rejection_message#:#アップロードされたSVGファイルには悪性コードの可能性があり処理できません。
 common#:#upload_svg_rejection_message_base64#:#base64でコード化されたコンテンツがファイルに含まれます。
 common#:#upload_svg_rejection_message_elements#:#要素または許可されないまたは不明の属性がファイルに含まれます。
+common#:#upload_svg_rejection_message_foreign_object#:#ファイルに外部オブジェクトが含まれています。
 common#:#upload_svg_rejection_message_script#:#スクリプト-エレメントがファイルに含まれます。
 common#:#uploaded_and_checked#:#ファイルはアップロードされてチェックされましたので、これからインポートを開始できます。
 common#:#uploading#:#アップロード中…
@@ -6048,7 +6048,7 @@ cont#:#cont_item_list#:#List
 cont#:#cont_item_list_info#:#リスト内のコンテンツオブジェクトを表示
 cont#:#cont_list_presentation#:#アイテム表示形式
 cont#:#cont_mem_skills#:#能力
-cont#:#cont_news_edited#:#未加工
+cont#:#cont_news_edited#:#編集済
 cont#:#cont_news_settings#:#ニュース設定
 cont#:#cont_news_timeline#:#ニュースタイムライン
 cont#:#cont_news_timeline_auto_entries#:#自動エントリを含める
@@ -6058,6 +6058,7 @@ cont#:#cont_news_timeline_landing_page#:#ランディングページ
 cont#:#cont_news_timeline_landing_page_info#:#タイムラインページはランディングページになります。
 cont#:#cont_news_timeline_tab#:#タイムライン
 cont#:#cont_no_title#:#空のタイトル
+cont#:#cont_only_crs_grp_fold_download#:#コース、グループ、フォルダ、またはファイルのみをダウンロードできます。
 cont#:#cont_page_type_cont#:#リポジトリ；ページ(Cours, Group, ...)
 cont#:#cont_page_type_cstr#:#コース開始ページ(学習オブジェクトビュー)
 cont#:#cont_path#:#Path
@@ -6140,10 +6141,8 @@ content#:#cont_Headline2#:#ヘッダー行2
 content#:#cont_Headline3#:#ヘッダー行3
 content#:#cont_Information#:#Information
 content#:#cont_Interaction#:#相互作用
-content#:#cont_Link#:#Link
 content#:#cont_List#:#リスト
 content#:#cont_Literature#:#文献
-content#:#cont_Media#:#メディア (標準)
 content#:#cont_Mnemonic#:#ニーモニック
 content#:#cont_Numbers#:#Numbers
 content#:#cont_Poly#:#多角形
@@ -6255,6 +6254,8 @@ content#:#cont_chapters_after_pages#:#ページは同じレベルの全ての副
 content#:#cont_chapters_and_pages#:#章とページ
 content#:#cont_chapters_only#:#章のみ
 content#:#cont_char_format#:#文字
+content#:#cont_char_link#:#リンク
+content#:#cont_char_media#:#メディア(標準)
 content#:#cont_char_style_acc#:#強調
 content#:#cont_char_style_code#:#コード
 content#:#cont_char_style_com#:#コメント
@@ -6672,7 +6673,7 @@ content#:#cont_left_float#:#左、フローティング
 content#:#cont_license#:#ライセンス
 content#:#cont_license_info#:#ライセンス機能を有効
 content#:#cont_light#:#明るく
-content#:#cont_link#:#Link###26 08 2025 new variable
+content#:#cont_link#:#Link
 content#:#cont_link_area#:#リンクエリヤ
 content#:#cont_link_ext#:#リンク(外部)
 content#:#cont_link_glo_in_lm#:#全ての用語集表現をラーニングモジュール中に今リンクしなければなりませんか。
@@ -6740,7 +6741,7 @@ content#:#cont_mastery_score_12_info#:#SCOが自立的にステータスを決�
 content#:#cont_mastery_score_2004#:#scaled_passing_scoreを上書き
 content#:#cont_mastery_score_2004_info#:#学習モジュールの中央学習オブジェクトは点数がscaled_passing_scoreのある一定レベルに達すると合格として考慮されます。この値 - パーセント値として宣言すべき - は要求レベルを下げる例のようにここで上書きできます。フィールドが空の場合はSCORMマニフェストの情報が有効になります。次の値はマニフェストファイルへ提供されます。
 content#:#cont_max_time_allowed#:#adlcp：maxtimeallowed
-content#:#cont_media#:#Images/Media###26 08 2025 new variable
+content#:#cont_media#:#Images/Media
 content#:#cont_media_placeh#:#クリックして挿入メディアを編集
 content#:#cont_media_placehl#:#メディアプレースフォルダ
 content#:#cont_media_source#:#メディアソース
@@ -7379,13 +7380,13 @@ copg#:#copg_page_element_not_found#:#ページ要素が見つかりません。
 copg#:#copg_page_type_stys#:#ページをレイアウト
 copg#:#copg_par_format_selection#:#図書式選択
 copg#:#copg_pc_mob_does_not_exist#:#このメディア オブジェクトは存在しません。
-copg#:#copg_plugin#:#Plugin###23 09 2025 new variable
+copg#:#copg_plugin#:#Plugin
 copg#:#copg_plugin_not_avail#:#Plugin %s は利用できません
 copg#:#copg_questions_not_supported_here#:#問題はこのコンテキスト内でサポートされません。
 copg#:#copg_reload_page#:#ページの再読み込み
 copg#:#copg_remove_formats#:#書式を削除
 copg#:#copg_sec_link_info#:#全セクションのリンクを設定するには他のインタラクティブ要素がセクション内に含まれない事を確認して下さい。そうでないと動作が不安定になります。
-copg#:#copg_snippet_cannot_be_edited#:#これは定義済みコンテンツスニペットなのでここでは編集できません。
+copg#:#copg_snippet_cannot_be_edited#:#これは事前定義済みコンテンツスニペットなのでここでは編集できません。
 copg#:#copg_unsupported_media_type#:#このメディアオブジェクトは未サポートのメディアタイプがあります。
 copg#:#copg_x_minutes#:#%s 分
 cpad#:#cpad_reading_time_status#:#読込み時間
@@ -8577,7 +8578,7 @@ dcl#:#dcl_create_fields#:#”表”タブの表をクリックして”新規フ
 dcl#:#dcl_creation_date#:#作成日
 dcl#:#dcl_creation_date_description#:#エントリが作成された日付
 dcl#:#dcl_datatype#:#データタイプ
-dcl#:#dcl_date#:#日付入力
+dcl#:#dcl_date#:#作成日
 dcl#:#dcl_date_desc#:#日付用のフィールド
 dcl#:#dcl_date_selection#:#日付選択
 dcl#:#dcl_date_selection_desc#:#日付オプションの選択を提示
@@ -8696,7 +8697,7 @@ dcl#:#dcl_no_fields_yet#:#このテーブルに定義されるフィールドが
 dcl#:#dcl_no_read_access_on_any_standard_view#:#表のどのスタンダードビューへも読込みアクセス権がありません。
 dcl#:#dcl_no_search_results_found_for#:#モジュールが見つかりません
 dcl#:#dcl_no_such_reference#:#レファレンステーブル中に次の値はありません:
-dcl#:#dcl_no_table_found#:#No visible table found!###16 12 2025 new variable
+dcl#:#dcl_no_table_found#:#表示可能なテーブルが見つかりません!
 dcl#:#dcl_no_tableview_found#:#表示可能なテーブルビューがありません!
 dcl#:#dcl_not_checked#:#未チェック
 dcl#:#dcl_not_supported_in_import#:#このタイプのフィールドはインポートではサポートされません。
@@ -8709,8 +8710,8 @@ dcl#:#dcl_noturl_exception#:#リンク(http://で始まる)を入力する必要
 dcl#:#dcl_number#:#整数
 dcl#:#dcl_number_desc#:#整数値(最大9桁)用のフィールドです。小数や分数ではありません。
 dcl#:#dcl_online_info#:#データ収集がオンラインの場合に限りユーザはデータ収集を使用できます。
-dcl#:#dcl_open_detail_view#:#Open detail view###22.07.2025 new variable
-dcl#:#dcl_open_url#:#Open link###22.07.2025 new variable
+dcl#:#dcl_open_detail_view#:#詳細ビューを開く
+dcl#:#dcl_open_url#:#リンクを開く
 dcl#:#dcl_order#:#順
 dcl#:#dcl_origin_not_found#:#オリジンフィールドが見つかりませんでした。
 dcl#:#dcl_own_entries#:#自己エントリーのみ
@@ -8762,8 +8763,6 @@ dcl#:#dcl_std_field_not_importable#:# - 標準フィールドはインポート�
 dcl#:#dcl_std_filter#:#標準フィルター
 dcl#:#dcl_supported_filetypes#:#許可された拡張子
 dcl#:#dcl_supported_filetypes_desc#:#許可されたコンマ区切りの拡張子を設定できます。例: pdf, docx
-dcl#:#dcl_switch_table#:#表を切替
-dcl#:#dcl_switch_view#:#ビューを変更
 dcl#:#dcl_table#:#テーブル
 dcl#:#dcl_table_id#:#テーブルID
 dcl#:#dcl_table_info#:#編集設定(アクセス権タブを参照)アクセス権を持つユーザには、常時、追加・編集・削除エントリのアクセス権があります。"編集エントリ"(アクセス権タブを参照)アクセス権を持つユーザには以下のフォームで定義された設定に沿ったアクセス権のみを有します。
@@ -8801,7 +8800,7 @@ dcl#:#dcl_text_email_title#:#タイトル
 dcl#:#dcl_text_email_title_info#:#上記のURLまたはE-Mailアドレス用のタイトル。(オプション)
 dcl#:#dcl_text_selection#:#テキスト選択
 dcl#:#dcl_text_selection_desc#:#テキストオプションを提示
-dcl#:#dcl_title_standardview#:#標準ビュー
+dcl#:#dcl_title_standard#:#標準
 dcl#:#dcl_unique#:#ユニーク
 dcl#:#dcl_unique_desc#:#このフィールドの値は全てのエントリー内でユニークにする必要があります。
 dcl#:#dcl_unique_exception#:#入力した値はすでに別のレコードで使用されています。
@@ -8821,11 +8820,11 @@ dcl#:#dcl_width#:#幅
 dcl#:#dcl_wrong_input_type#:#入力したテキストはこのフィールドの定義(タイプ間違い)と一致しません。
 dcl#:#dcl_wrong_length#:#入力したテキストは長すぎます
 dcl#:#dcl_wrong_regex#:#入力したテキストはこのフィールドの定義(正規表現)と一致しません。
-dcl#:#dcl_xls_async_export#:#XLSX (asynchronous)用
+dcl#:#dcl_xls_async_export#:#XLSX用 (asynchronous)
 dcl#:#fieldtitle_allow_chars#:#使用できない文字: %s
 dcl#:#fileupload_not_migrated#:#ファイルの統合がまだ完了していないので表示できません。システム管理者へコンタクトしてください。
-dcl#:#table_not_found#:#Table not found!###16 12 2025 new variable
-dcl#:#tableview_not_found#:#Tableview not found!###16 12 2025 new variable
+dcl#:#table_not_found#:#テーブルが見つかりません!
+dcl#:#tableview_not_found#:#テーブル表示が見つかりません!
 didactic#:#activate_exclusive_template#:#グレイアウトの既定値
 didactic#:#activate_exclusive_template_info#:#標準テンプレートはこのテンプレートを有効にしていると利用できません。
 didactic#:#activate_local_didactic_template#:#アプリケーションの範囲
@@ -8874,7 +8873,7 @@ didactic#:#more_translations#:#もっと翻訳
 didactic#:#sess_closed#:#非公開セッション
 didactic#:#sess_closed_info#:#非参加者にはセッションは表示されません。
 dpro#:#dpro_accept_usr_agreement_anonymous#:#データ保護規約
-dpro#:#dpro_accept_usr_agreement_anonymous_intro#:#ILIAS利用の前に次のデータ保護規約を承諾します。
+dpro#:#dpro_accept_usr_agreement_anonymous_intro#:#ILIAS利用の前に次のデータ保護規約を承諾するものとします。
 dpro#:#dpro_account_reg_not_possible#:#データ保護承諾の宣言書がないため現在自己登録はできません。 詳細は<a href="%1$s">システム管理者</a> へ尋ねてください。
 dpro#:#dpro_agree_date#:#データ保護承諾宣言書
 dpro#:#dpro_last_reset_date#:#データ保護規約は %s にリセットされます。ドキュメントへ変更が行われると、データ保護規約のみがリセットされて全ユーザへドキュメントへの承諾を要求します。
@@ -9171,10 +9170,10 @@ etal#:#etal_date_series_edit#:#トークシリーズの日付
 etal#:#etal_delete_confirmation_msg#:#次のトークを本当に削除しますか?
 etal#:#etal_edit#:#全般
 etal#:#etal_invalid_user#:#このユーザは存在しないかまたは招待されていません。
-etal#:#etal_location#:#Location###04 11 2025 new variable
+etal#:#etal_location#:#位置
 etal#:#etal_new#:#新しいトーク
 etal#:#etal_open#:#Employeeトークを開く
-etal#:#etal_recurrence#:#Recurrence###04 11 2025 new variable
+etal#:#etal_recurrence#:#再発
 etal#:#etal_status_all#:#All
 etal#:#etal_status_completed#:#完了
 etal#:#etal_status_pending#:#保留
@@ -9299,7 +9298,7 @@ exc#:#exc_find_zip_error#:#提出物を開くことができません。オリ�
 exc#:#exc_fixed_date#:#確定日
 exc#:#exc_fixed_date_individual#:#個別期限のみ
 exc#:#exc_fixed_date_individual_info#:#共通の期限はありません。指導教員は各参加者別の個別期限を設定する必要があります。
-exc#:#exc_fixed_date_info#:#初期状態では、全ユーザは同じ固定の期限日です。
+exc#:#exc_fixed_date_info#:#当初、すべてのユーザーには同じ固定の締切期限が設定されます。
 exc#:#exc_fullscreen#:#Fullscreen
 exc#:#exc_future#:#近日中
 exc#:#exc_given_feedback#:#フィードバック
@@ -9421,6 +9420,7 @@ exc#:#exc_passed_status_determination#:#'合格'ステータスの確定
 exc#:#exc_passing_exc#:#演習問題の遂行
 exc#:#exc_past#:#過去分
 exc#:#exc_peer_deadline_mismatch#:#期限り後にフィードバックをする場合は、割当てる設定の期限よりフィードバック期限りを早くしてはいけません。
+exc#:#exc_peer_feedback_status#:#フィードバックステータス
 exc#:#exc_peer_review#:#ピアフィードバック
 exc#:#exc_peer_review_ass_setting_info#:#期限後の猶予期間が経過したことを承認されるとユーザはピア回答を評価できます。ピアフィードバックの設定次第でそれぞれのタブが作られます。有効にした後でこのオプションは保存され'ピアーフィードバック'タブが表示されます。
 exc#:#exc_peer_review_chars_invalid#:#フィードバックには最小%sの文字長がありません。
@@ -11003,14 +11003,14 @@ lti#:#clti_privacy_ident_il_uuid_sha256_info#:#これはコール毎に識別さ
 lti#:#clti_privacy_ident_il_uuid_sha256url#:#emailアドレスでフォーマットされたILIASドメイン付きの組合されたハッシュ
 lti#:#clti_privacy_ident_il_uuid_sha256url_info#:#これはコール毎に識別されますが、ILIASプラットフォームIDと異なるかなり短い最大80文字でILIASユーザに関するきわめて限定的な判断のみ許容されます。
 lti#:#clti_privacy_ident_il_uuid_user_id#:#emailアドレスとしてフォーマットされたユニークなILIASプラットフォームと組合されたILIASユーザ ID。
-lti#:#clti_privacy_ident_il_uuid_user_id_info#:#内部有事ユーザIDを送信します。これはコール毎に識別されますが、ILIASユーザに関して判断許可されることがあります。
+lti#:#clti_privacy_ident_il_uuid_user_id_info#:#内部数字ユーザIDを送信します。これはコール毎に識別されますが、ILIASユーザに関して判断許可されることがあります。
 lti#:#clti_privacy_ident_info#:#標準はemailアドレスが通常使われます。ユニークなILIASプラットフォームIDは:
 lti#:#clti_privacy_ident_real_email#:#E-Mail Address
 lti#:#clti_privacy_ident_real_email_info#:#識別用にユーザの E-Mail アドレスを送信します。(警告: E-Mail アドレスが複数ユーザで使用される事があります!)
 lti#:#clti_privacy_name#:#ユーザ名
 lti#:#clti_privacy_name_firstname#:#First name
 lti#:#clti_privacy_name_firstname_info#:#ILIASからユーザ名のfirst nameを送信
-lti#:#clti_privacy_name_fullname#:#フルネーム
+lti#:#clti_privacy_name_fullname#:#氏名
 lti#:#clti_privacy_name_fullname_info#:#タイトル, first name, last nameを送信
 lti#:#clti_privacy_name_info#:#ユーザ名の送信は通常必須ではありません。
 lti#:#clti_privacy_name_lastname#:#タイトルとlast name
@@ -11023,7 +11023,7 @@ lti#:#field_provider_xml#:#XML-ファイル
 lti#:#field_provider_xml_info#:#https://www.imsglobal.org/specs/lti/xml　準拠のサポートされるTool ConsumerとCommon CartridgXML-ファイル
 lti#:#form_import_provider#:#Global Providerをインポート
 lti#:#gbl_roles_to_users#:#LTIユーザへ割当るグローバル役割
-lti#:#global_provider_subtab#:#全ユーザのGlobal Providers
+lti#:#global_provider_subtab#:#全ユーザのGlobal Providers/tools
 lti#:#grade_activity_progress_all#:#アクティビティ進捗上の全てのインフォーメーション
 lti#:#grade_activity_progress_completed#:#完了しました
 lti#:#grade_activity_progress_initialized#:#初期化しました
@@ -11056,7 +11056,7 @@ lti#:#highscore_top_table#:#トップランキング
 lti#:#highscore_top_table_description#:#受講者はトップランキングの入った表で表示されます。
 lti#:#highscore_wtime#:#期間
 lti#:#highscore_wtime_description#:#期間の入った列はランキング内に含まれます。
-lti#:#launch_custom_params#:#Custom launch parameters###27 11 2025 new variable
+lti#:#launch_custom_params#:#カスタム起動パラメータ
 lti#:#launch_method#:#起動オプション
 lti#:#launch_method_embedded#:#エンベデッドコンテンツ
 lti#:#launch_method_embedded_info#:#コンテンツはILIASコンテンキスト内で開かれます。コンテンツタブ内でエンベデッドコンテンツとして表示されます。
@@ -11104,7 +11104,7 @@ lti#:#lti_con_key_type_rsa_public_key_info#:#PEMフォーマットのツール(p
 lti#:#lti_con_prov_always_learner#:#LTI ユーザは常時学習者です。
 lti#:#lti_con_prov_always_learner_info#:#通常ILIAS内の役割はLTI役割へマップされます。コース管理者はプロバイダー内にもっと権利(例、複数オブジェクト)がある可能性があります。役割マッピングを避けるにはこのオプションを有効にします。
 lti#:#lti_con_prov_authentication#:#認証
-lti#:#lti_con_prov_availability#:#利用期間
+lti#:#lti_con_prov_availability#:#Availability(都合)
 lti#:#lti_con_prov_availability_create#:#オブジェクト作成用
 lti#:#lti_con_prov_availability_existing#:#既存オブジェクト限定用
 lti#:#lti_con_prov_availability_non#:#利用不可
@@ -11125,7 +11125,7 @@ lti#:#lti_con_prov_has_outcome_service_info#:#LTI Outcome Serviceがサポート
 lti#:#lti_con_prov_hints#:#ヒント
 lti#:#lti_con_prov_icon#:#Icon
 lti#:#lti_con_prov_inc_usr_pic#:#ユーザ写真を送る。
-lti#:#lti_con_prov_inc_usr_pic_info#:#ILIASユーザ写真へのリンクじゃLTI consumerオブジェクト起動時に含まれます。
+lti#:#lti_con_prov_inc_usr_pic_info#:#ILIASユーザ写真へのリンクはLTI consumerオブジェクト起動時に含まれます。
 lti#:#lti_con_prov_instructor_email#:#インストラクターE-Mail
 lti#:#lti_con_prov_instructor_email_info#:#その前に選択された設定との違いはメールアドレスがインストラクター用に転送可能です。それを行うにはコース又はグループ管理者である必要があります。
 lti#:#lti_con_prov_instructor_name#:#インストラクター名
@@ -11135,14 +11135,14 @@ lti#:#lti_con_prov_keywords#:#キーワード
 lti#:#lti_con_prov_keywords_info#:#キーワードはセミコロン(:)で区切る必要があります。キーワードはキーワードとしてメタデータへ自動的に使われます。
 lti#:#lti_con_prov_launch_options#:#起動オプション
 lti#:#lti_con_prov_learning_progress_options#:#学習進捗のオプション
-lti#:#lti_con_prov_mastery_score_default#:#Default Mastery Score
+lti#:#lti_con_prov_mastery_score_default#:#デフォルト習熟度スコア
 lti#:#lti_con_prov_mastery_score_default_info#:#学習進捗はProvider Outcome Serviceから評価されてmastery scoreスレッショールドになります。
 lti#:#lti_con_prov_privacy_setting_conf#:#オプションの構成
 lti#:#lti_con_prov_privacy_setting_default#:#オブジェクト用の変更可能な既定の設定
 lti#:#lti_con_prov_privacy_setting_force#:#設定はオブジェクト用に変更されません。
 lti#:#lti_con_prov_privacy_setting_info#:#プライバシー設定用の構成オプション
 lti#:#lti_con_prov_privacy_settings#:#プライバシー設定
-lti#:#lti_con_prov_provider_key_global#:#定義済みのキーとシークレット
+lti#:#lti_con_prov_provider_key_global#:#事前定義済みのキーとシークレット
 lti#:#lti_con_prov_provider_key_global_info#:#設定していないとユーザはプロバイダを使用するためにキーとシークレットを追加しなければなりません。
 lti#:#lti_con_prov_remarks#:#内部の備考
 lti#:#lti_con_prov_secret#:#シークレット
@@ -11167,7 +11167,7 @@ lti#:#lti_con_version_1.1#:#Version 1.1
 lti#:#lti_con_version_1.3#:#Version 1.3
 lti#:#lti_con_version_1.3_before_id#:#ツールによる提供されるデータ入入力後にダイナミック登録がサポートされていない場合は、ツールで入力すべき追加データが表示されます。
 lti#:#lti_confirm_delete_providers#:#本当に次のプロバイダーを削除しますか?
-lti#:#lti_consumer#:#リリース用
+lti#:#lti_consumer#:#リリース対象
 lti#:#lti_consumer_created#:#Consumer作成
 lti#:#lti_consumer_deleted#:#Consumerを削除
 lti#:#lti_consumer_key#:#Consumer Key
@@ -11211,12 +11211,12 @@ lti#:#lti_obj_version#:#LTI Version
 lti#:#lti_obj_version_11#:#Version 1.1
 lti#:#lti_obj_version_13#:#Version 1.3
 lti#:#lti_object_consumer#:#LTI Consumers
-lti#:#lti_object_release_settings_form#:#LTI Shareを編集
-lti#:#lti_provider#:#LTI-Share
+lti#:#lti_object_release_settings_form#:#LTI Releaseを編集
+lti#:#lti_provider#:#LTI Release
 lti#:#lti_provider_not_avail_msg#:#LTI Providerを'利用不可'に設定する
 lti#:#lti_provider_not_set_msg#:#LTIプロバイダー / ツール構成が完全に終了していません。
 lti#:#lti_providing_tab#:#LTI ProviderとしてのILIAS
-lti#:#lti_released_objects#:#Object-Share
+lti#:#lti_released_objects#:#Object Release
 lti#:#lti_select_provider#:#プロバイダーを選択
 lti#:#lti_session#:#LTIセッション
 lti#:#lti_settings#:#LTI設定
@@ -11229,7 +11229,7 @@ lti#:#lti_success_reset_to_usr_def_multi#:#ユーザ定義のプロバイダー�
 lti#:#lti_tutor#:#LTIインストラクター
 lti#:#lti_user_role_created#:#LTIユーザの推奨グローバル役割が作成されました。
 lti#:#lti_user_role_info#:#LTIユーザの推奨グローバル役割がこのシステムではまだ作成されていません。この特別グローバル役割は、リポジトリとカテゴリのアクセス権'表示する' が入っているのみです。
-lti#:#mastery_score#:#Mastery Score
+lti#:#mastery_score#:#習熟度スコア
 lti#:#mastery_score_info#:#学習進捗はProvider Outcome Serviceとmastery scoreスレッショールドから評価されます。
 lti#:#obj_tile_image_info#:#四角形のイメージを使用
 lti#:#online_info#:#これはユーザーへオブジェクトを表示して利用可能にします。
@@ -11256,7 +11256,7 @@ lti#:#tbl_grade_period#:#期間
 lti#:#tbl_grade_score#:#点数
 lti#:#tbl_grade_stored#:#ILIASへ送信済
 lti#:#tbl_lti_prov_all_categories#:#全カテゴリー
-lti#:#tbl_lti_prov_availability#:#利用期間
+lti#:#tbl_lti_prov_availability#:#Availability(都合)
 lti#:#tbl_lti_prov_category#:#カテゴリー
 lti#:#tbl_lti_prov_description#:#説明
 lti#:#tbl_lti_prov_icon#:#Icon
@@ -11267,16 +11267,16 @@ lti#:#tbl_lti_prov_outcome#:#Outcome Service
 lti#:#tbl_lti_prov_own_provider#:#Own Provider
 lti#:#tbl_lti_prov_provider_creator#:#作成者
 lti#:#tbl_lti_prov_title#:#プロバイダーのタイトル
-lti#:#tbl_lti_prov_usages#:#利用状況
-lti#:#tbl_lti_prov_usages_trashed#:#利用状況を破棄
-lti#:#tbl_lti_prov_usages_untrashed#:#リポジトリ利用状況
+lti#:#tbl_lti_prov_usages#:#利用例
+lti#:#tbl_lti_prov_usages_trashed#:#利用例を破棄
+lti#:#tbl_lti_prov_usages_untrashed#:#リポジトリ利用例
 lti#:#tbl_lti_prov_used_by#:#ツリー構造のオブジェクト別利用のプロバイダー
-lti#:#tbl_lti_prov_with_key#:#Key / Secretで定義済み
+lti#:#tbl_lti_prov_with_key#:#Key / Secretで事前定義済み
 lti#:#tbl_provider_header#:#LTI Provider
 lti#:#tbl_provider_usage_header#:#LTI Provider
-lti#:#tbl_provider_usage_header_info#:#プロバイダー削除前にゴミ箱の利用状況も削除しなければなりません。
+lti#:#tbl_provider_usage_header_info#:#プロバイダー削除前にゴミ箱の利用例も削除しなければなりません。
 lti#:#title_info#:#タイトルをオブジェクトにする
-lti#:#usage_subtab#:#利用状況
+lti#:#usage_subtab#:#利用例
 lti#:#use_xapi#:#xAPI-Supportを使用
 lti#:#use_xapi_info#:#このLTI ProviderはxAPI-Statementsをサポートします。
 lti#:#user_lng#:#User言語
@@ -11719,6 +11719,7 @@ mep#:#mep_all_mobs#:#すべてのメディア オブジェクト
 mep#:#mep_bulk_upload#:#Bulk Upload
 mep#:#mep_choose_from_folder#:#フォルダから選択
 mep#:#mep_choose_from_mep#:#問題集から選択
+mep#:#mep_clipboard_info#:#ここでメディアファイルをアップロードすると、ページエディターにアクセスできるすべてのページからアクセスできます。クリップボードはメディアプールからもアクセスできます。このストレージはあなた専用であり、他のユーザーは閲覧できません。
 mep#:#mep_content#:#コンテンツ
 mep#:#mep_content_snippet_in_use#:#スニペットコンテンツ '%s'は使用中で削除できません
 mep#:#mep_content_snippet_used_in_older_versions#:#注意: この断片はいずれかのページの旧バージョンに使用されます。このページをこの断片を含むバージョンへロールバックすると断片はページ内で欠損します。
@@ -11837,7 +11838,7 @@ meta#:#md_copyright_alt_text#:#テキスト表現
 meta#:#md_copyright_alt_text_info#:#イメージ'alt'属性用に使用
 meta#:#md_copyright_default#:#Default
 meta#:#md_copyright_edit#:#著作権のプリセットを編集
-meta#:#md_copyright_enable_info#:#定義済みの著作権の選択を提供するには、このオプションを選択します。
+meta#:#md_copyright_enable_info#:#事前定義済みの著作権の選択を提供するには、このオプションを選択します。
 meta#:#md_copyright_enabled#:#著作権選択を可能にする
 meta#:#md_copyright_full_name#:#Full Name
 meta#:#md_copyright_image#:#Image
@@ -11863,7 +11864,7 @@ meta#:#md_record_export_table#:#エクスポート ファイル
 meta#:#md_record_list_table#:#利用可能なメタデータセット
 meta#:#md_separated_by#:#%sで区切る
 meta#:#md_time#:#時間
-meta#:#md_used#:#現在の利用状況
+meta#:#md_used#:#現在の利用例
 meta#:#meta_1#:#1
 meta#:#meta_2#:#2
 meta#:#meta_3#:#3
@@ -12156,10 +12157,10 @@ meta#:#meta_copyright_change_warning_title#:#Copyright設定の変更
 meta#:#meta_copyright_in_use#:#使用中
 meta#:#meta_copyright_outdated#:#旧 / 使用不可
 meta#:#meta_copyright_outdated_error#:#選択のCopyrightは期限が切れていて使用されていません。
-meta#:#meta_copyright_show_usages#:#使用中を表示
+meta#:#meta_copyright_show_usages#:#使用例を表示
 meta#:#meta_copyright_status#:#Status
 meta#:#meta_copyright_sub_items#:#Sub Items
-meta#:#meta_copyright_usage#:#利用状況
+meta#:#meta_copyright_usage#:#利用例
 meta#:#meta_cost#:#原価
 meta#:#meta_coverage#:#適用範囲
 meta#:#meta_coverage_plural#:#範囲
@@ -12704,6 +12705,7 @@ news#:#news_news_item_visibility_info#:#パブリックニュースはRSS 経由
 news#:#news_news_items#:#新しいアイテム
 news#:#news_no_js_click_here#:#ニュースが表示されない場合はここをクリックします。
 news#:#news_no_news_items#:#ニュースはありません。
+news#:#news_not_available#:#利用できないニュース
 news#:#news_notifications#:#通知
 news#:#news_notifications_public#:#パブリック通知
 news#:#news_notifications_public_info#:#このオプションが有効になっていると、ILIAS外部のパーソナルRSSフィードで通知を得る事ができます。認証しなくても通知アクセスできるようになる事に注意願います。
@@ -12864,7 +12866,7 @@ obj#:#obj_target_location#:#目標場所
 obj#:#obj_tile_image#:#タイルイメージ
 obj#:#obj_tile_image_info#:#この画像はサムネイルスタイルイメージ(通称タイトル)として配置されているコンテナ内のこのオブジェクト表示(例:カテゴリ、フォルダーグループ等)のために使用されます。タイトルは現在のコンテナ設定が'コンテンツ表示オプション'を('リスト'ではなく）'タイル'にした場合のみ使用されます。
 obj#:#obj_tool_booking#:#リソース
-obj#:#obj_tool_booking_info#:#リソースを予約するには予約集を使用
+obj#:#obj_tool_booking_info#:#リソースを予約するには予約枠を使用
 obj#:#obj_tool_ext_mail_subject_prefix#:#Mail Subject Prefix
 obj#:#obj_tool_ext_mail_subject_prefix_info#:#外部メールをメンバーへこのメールがわかりやすいように認識させるための件名へ追加するショートメッセージを入力します。
 obj#:#obj_tool_setting_badges#:#バッジ
@@ -13140,7 +13142,7 @@ prg#:#auto_membership_src_type#:#Type
 prg#:#auto_membership_title#:#メンバーシップ自動化用のソース
 prg#:#auto_memberships#:#メンバーシップ自動化
 prg#:#category#:#RefIdカテゴリー
-prg#:#cert_relevance#:#Certificate
+prg#:#cert_relevance#:#証明書
 prg#:#completion_date#:#完了日
 prg#:#confirm_to_remove_selected_assignments#:#本当にユーザ割当てを削除しますか?
 prg#:#cont_ed_insert_prgactionnote#:#学習プログラムアクションNoteを挿入
@@ -13711,7 +13713,7 @@ pwsp#:#pwsp_enable_personal_resources#:#パーソナルリソースを有効化
 pwsp#:#pwsp_enable_wsp_blogs#:#ブログを有効化
 pwsp#:#pwsp_enable_wsp_files#:#ファイルを有効化
 pwsp#:#pwsp_enable_wsp_links#:#リンクを有効化
-pwsp#:#pwsp_type_cannot_be_copied#:#Objects of type '%s' cannot be copied.###23 09 2025 new variable
+pwsp#:#pwsp_type_cannot_be_copied#:#オブジェクトタイプ '%s' はコピーできません。
 qpl#:#qpl_filter_commented_exclude#:#コメントなしの問題
 qpl#:#qpl_filter_commented_only#:#コメント有の問題
 qpl#:#qpl_page_type_qfbg#:#全般フィードバック
@@ -13812,7 +13814,7 @@ rbac#:#blog_read#:#ユーザはブログ内容を読むことができます
 rbac#:#blog_redact#:#ユーザは他の寄稿者の投稿も編集できます。
 rbac#:#blog_visible#:#ブログを表示
 rbac#:#blog_write#:#ユーザはブログ設定を編集できます
-rbac#:#book_copy#:#ユーザは予約集をコピーできます。
+rbac#:#book_copy#:#ユーザは予約枠をコピーできます。
 rbac#:#book_delete#:#ユーザは予定集を移動もしくは削除する事ができます。
 rbac#:#book_edit_permission#:#ユーザはブッキング集のアクセス権設定を変更できます
 rbac#:#book_read#:#ブッキング集とブッキングリソースへの読込みアクセス
@@ -13938,7 +13940,7 @@ rbac#:#dpro_visible#:#データ保護規約管理を表示
 rbac#:#dpro_write#:#データ保護規約の設定を変更
 rbac#:#dshs_change_presentation#:#ダッシュボード表示のアクセス権を変更
 rbac#:#dshs_edit_permission#:#ユーザはダッシュボード管理のアクセス権設定変更ができます。
-rbac#:#dshs_read#:#ユーザはダッシュボード管理の読み取りアクセス権があります。
+rbac#:#dshs_read#:#ユーザはダッシュボード管理の読込アクセス権があります
 rbac#:#dshs_visible#:#ダッシュボード管理を表示
 rbac#:#dshs_write#:#ダッシュボード管理設定を編集
 rbac#:#ecss_edit_permission#:#ユーザはECS管理のアクセス権設定を編集できます
@@ -14278,7 +14280,7 @@ rbac#:#prgs_edit_permission#:#学習プログラム管理のアクセス権設�
 rbac#:#prgs_read#:#ユーザは学習プログラム管理へ読み込みアクセス権があります。
 rbac#:#prgs_visible#:#学習プログラム管理が表示されます。
 rbac#:#prgs_write#:#学習；プログラム管理の設定を編集
-rbac#:#prss_edit_permission#:#ユーザはパーソナルリソース管理のアクセス権設定を変更できます。
+rbac#:#prss_edit_permission#:#User can chユーザはパーソナルリソース管理のアクセス権設定を変更できます。
 rbac#:#prss_read#:#ユーザはパーソナルリソース管理の読込みアクセス権があります。
 rbac#:#prss_visible#:#パーソナルリソースが表示されます。
 rbac#:#prss_write#:#ユーザはパーソナルリソース管理の設定を編集できます。
@@ -14286,7 +14288,7 @@ rbac#:#prtt_copy#:#ユーザはポートフォリオテンプレートをコピ�
 rbac#:#prtt_delete#:#ユーザはポートフォリオテンプレートを移動または削除できます
 rbac#:#prtt_edit_permission#:#ユーザはポートフォリオテンプレートのアクセス権設定を変更できます
 rbac#:#prtt_read#:#ユーザはポートフォリオテンプレートへの読込みアクセス権があります
-rbac#:#prtt_visible#:#予約集を表示
+rbac#:#prtt_visible#:#予約枠を表示
 rbac#:#prtt_write#:#ユーザはポ－トフォリオテンプレートの設定と内容を編集できます
 rbac#:#ps_edit_permission#:#ユーザはプライバシー・セキュリティのアクセス権設定を変更できます
 rbac#:#ps_export_member_data#:#ユーザはコースとグループのメンバーデータをエクスポートできます
@@ -14326,7 +14328,7 @@ rbac#:#rbac_copy_role_copy#:#アクセス権をコピー
 rbac#:#rbac_copy_role_remove_perm#:#アクセス権を削除
 rbac#:#rbac_create_bibl#:#文献目録を作成
 rbac#:#rbac_create_blog#:#ブログ作成
-rbac#:#rbac_create_book#:#予約集を作成
+rbac#:#rbac_create_book#:#予約枠を作成
 rbac#:#rbac_create_cat#:#カテゴリを表示作成
 rbac#:#rbac_create_catr#:#カテゴリリンクを作成
 rbac#:#rbac_create_chtr#:#チャットルームを作成
@@ -15483,7 +15485,7 @@ skmg#:#skmg_create_skill_template_reference#:#能力テンプレートレファ�
 skmg#:#skmg_create_skll#:#能力を作成
 skmg#:#skmg_custom_image_alt#:#Competenceプロファイルのカスタムイメージ
 skmg#:#skmg_delete_profiles#:#本当にこの次のプロファイルを削除しますか?
-skmg#:#skmg_delete_warning#:#次のアイテムを本当に削除しますか?アイテムを削除すると、利用状況、割り当て、達成度も合わせて削除されます。安全のために、以下の全利用リストが見つかります。アイテムが能力プロファイル内で使用されている場合は、プロファイルからも削除されます。割当られたユーザの能力プロファイルの達成につながることがあります。アイテムを削除すべきかどうか不明確な場合はシングルアイテム設定内のステータスを使用してください。
+skmg#:#skmg_delete_warning#:#次のアイテムを本当に削除しますか?アイテムを削除すると、利用例、割り当て、達成度も合わせて削除されます。安全のために、以下の全利用リストが見つかります。アイテムが能力プロファイル内で使用されている場合は、プロファイルからも削除されます。割当られたユーザの能力プロファイルの達成につながることがあります。アイテムを削除すべきかどうか不明確な場合はシングルアイテム設定内のステータスを使用してください。
 skmg#:#skmg_description_info#:#説明はテンプレートから来ます。
 skmg#:#skmg_edit_level#:#レベル編集
 skmg#:#skmg_edit_profile#:#プロファイル編集
@@ -15608,7 +15610,7 @@ skmg#:#skmg_trigger#:#トリガー
 skmg#:#skmg_type#:#タイプ
 skmg#:#skmg_type_of_formation#:#フォーメーションのタイプ
 skmg#:#skmg_update_order#:#順番を更新
-skmg#:#skmg_usage#:#使用
+skmg#:#skmg_usage#:#使用例
 skmg#:#skmg_usage_obj_objects#:#オブジェクト
 skmg#:#skmg_usage_obj_profiles#:#プロファイル
 skmg#:#skmg_usage_obj_users#:#ユーザ
@@ -15619,7 +15621,6 @@ skmg#:#skmg_usage_type_info_prof#:#スキルプロファイル内で使用済み
 skmg#:#skmg_usage_type_info_res#:#推奨リソースとして割当てられたリポジトリオブジェクト
 skmg#:#skmg_usage_type_info_user#:#ユーザへ割当て済み
 skmg#:#skmg_your_self_evaluation#:#あなたの自己評価
-style#:#Style#:#Style
 style#:#adapt_icon#:#アイコンを適合
 style#:#adapt_icon_description#:#アイコンを適合またはアイコン自体を変更します。
 style#:#adapt_icons#:#アイコンカラーを適合
@@ -15768,7 +15769,7 @@ style#:#sty_color#:#カラー
 style#:#sty_color_already_exists#:#この名前のカラーは、既にこのスタイルの中に存在します。
 style#:#sty_color_code#:#カラーコード
 style#:#sty_color_flavors#:#Color Flavors
-style#:#sty_color_info#:#定義済みの色は、別の目的で簡単に再利用できます。"!"で始まるスタイルクラスのカラー属性の名前を使って、定義済みの色を参照します。色合い(flavor)を使用するには、括弧内の明度色の名前に例えば MyColor(20)と追加します。
+style#:#sty_color_info#:#事前定義済みの色は、別の目的で簡単に再利用できます。"!"で始まるスタイルクラスのカラー属性の名前を使って、事前定義済みの色を参照します。色合い(flavor)を使用するには、括弧内の明度色の名前に例えば MyColor(20)と追加します。
 style#:#sty_color_name#:#カラー名
 style#:#sty_colors#:#カラー
 style#:#sty_commands#:#コマンド
@@ -15854,7 +15855,7 @@ style#:#sty_media_queries#:#メディアクエリー
 style#:#sty_media_query_info#:#既定の(特別なメディアクエリーなし)ブロックの後に個々のCSSブロックは各メディアクエリー用に追加されます。
 style#:#sty_min_height#:#最少高
 style#:#sty_move_lm_styles#:#ラーニングモジュールのスタイルを変更
-style#:#sty_move_obj_styles#:#Change Style of Objects###23 09 2025 new variable
+style#:#sty_move_obj_styles#:#オブジェストのスタイルを変更
 style#:#sty_move_style#:#スタイルを変更
 style#:#sty_move_user_styles#:#ユーザスタイルを変更
 style#:#sty_msg_characteristic_must_only_include#:#スタイル クラスのタイトルのみに次の文字を含めることができます
@@ -15862,7 +15863,7 @@ style#:#sty_msg_color_must_only_include#:#色の名前は次の文字を含め�
 style#:#sty_msg_input_must_be_numeric#:#入力は数値にする必要があります。
 style#:#sty_name#:#名前
 style#:#sty_nr_learning_modules#:#ラーニングモジュール数
-style#:#sty_nr_objects#:#Number of Objects###23 09 2025 new variable
+style#:#sty_nr_objects#:#オブジェクト数
 style#:#sty_odd_col_class#:#奇数列
 style#:#sty_odd_row_class#:#奇数行
 style#:#sty_ol#:#順番リスト
@@ -16045,7 +16046,7 @@ style#:#sty_white_space#:#空白
 style#:#sty_width#:#幅
 style#:#sty_width_height#:#幅 x 高さ
 style#:#sty_word_spacing#:#文字の間隔
-style#:#style#:#Style###26 08 2025 new variable
+style#:#style#:#Style
 style#:#style_assignments_deleted#:#次のサブスタイルのスタイル割当ては削除されました:
 style#:#style_copied#:#スタイルは正しくコピーされました。
 style#:#style_current_style#:#現在のスタイル
@@ -16916,7 +16917,7 @@ tbl#:#tbl_template_delete#:#保存した表示を削除します
 tbl#:#tbl_template_deleted#:#保全した表示を削除しました。
 tbl#:#tbl_templates#:#表示
 tos#:#tos_accept_usr_agreement_anonymous#:#利用規約
-tos#:#tos_accept_usr_agreement_anonymous_intro#:#ILIASを利用する前に次の利用規約を承諾します。
+tos#:#tos_accept_usr_agreement_anonymous_intro#:#ILIASを利用する前に次の利用規約を承諾するものとします。
 tos#:#tos_account_reg_not_possible#:#ユーザ許諾が無いので自己登録はできません。詳細に関しては<a href="%1$s">システム管理者</a>へコンタクトしてください。
 tos#:#tos_agree_date#:#使用許諾 承諾日
 tos#:#tos_agreement#:#サービス使用許諾
@@ -17192,6 +17193,7 @@ trac#:#trac_view_mode_all#:#全オブジェクト
 trac#:#trac_view_mode_collection#:#全体状況確認オブジェクトのみ
 trac#:#trac_visits#:#訪問回数
 trac#:#trac_visits_info#:#1回の訪問としてページ毎の訪問を数えます。
+trac#:#trac_visits_nr#:#訪問回数
 trac#:#user_total#:#ユーザ合計
 trac#:#view_mode#:#表示モード
 tstv#:#tstv_create#:#テスト証明の作成
@@ -17453,7 +17455,7 @@ wiki#:#wiki_change_notification_page_body_delete#:#次のwikiページが削除�
 wiki#:#wiki_change_notification_page_body_update#:#次のwikiページがアップロードされました
 wiki#:#wiki_change_notification_page_link#:#URL
 wiki#:#wiki_change_notification_salutation#:#こんにちは%s, さん
-wiki#:#wiki_change_notification_subject#:#Wiki "%1$s" が更新されました: %2$s
+wiki#:#wiki_change_notification_subject#:#Wiki "%s"が更新されました。
 wiki#:#wiki_changed_by#:#更新者
 wiki#:#wiki_commented_by#:#コメント者
 wiki#:#wiki_contributor#:#寄稿者
